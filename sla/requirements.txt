@@ -1,0 +1,8 @@
+docker==3.2.1
+pyjwt==1.4.2
+simple-crypt==4.1.7
+skale-py==0.49.0
+pingparsing==0.13.2
+schedule
+tenacity
+mysql-connector==2.1.6

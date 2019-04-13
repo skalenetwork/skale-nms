@@ -1,0 +1,8 @@
+docker==3.2.1
+skale-py==0.49.0
+tenacity
+schedule
+mysql-connector==2.1.6
+
+
+

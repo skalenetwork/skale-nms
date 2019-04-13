@@ -1,0 +1,16 @@
+FROM python:3.6.5
+
+RUN mkdir /usr/src/events
+WORKDIR /usr/src/events
+
+RUN apt-get update && apt install -y libsecp256k1-dev
+
+COPY ./events ./events
+COPY ./agent   ./agent
+COPY ./tools   ./tools
+COPY ./database   ./database
+
+RUN pip install --no-cache-dir -r ./events/requirements.txt
+
+ENV PYTHONPATH="/usr/src/events"
+CMD [ "python", "./events/events_agent.py" ]
