@@ -17,17 +17,22 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import logging
 import os
 from distutils import util
 
 import yaml
 from skale import BlockchainEnv, Skale
 
-from tools.config import PROJECT_DIR, LOG_FOLDER, CUSTOM_CONTRACTS_PATH, LOCAL_WALLET_FILEPATH, LOCAL_WALLET_FILENAME
+from tools.config import CUSTOM_CONTRACTS_PATH, LOCAL_WALLET_FILENAME, LOCAL_WALLET_FILEPATH, LOG_FOLDER, PROJECT_DIR
 
+# NETWORK = 'aws_test'
+NETWORK = 'do'
 ENV_FILE = "envs.yml"
 ABI_FILE = "data.json"
 TEST_DATA_DIR = os.path.join(PROJECT_DIR, "test_data")
+
+logger = logging.getLogger(__name__)
 
 
 def get_log_filepath(agent_name, node_id):
@@ -66,8 +71,8 @@ def init_skale():
                 envs = yaml.load(stream)
             except yaml.YAMLError as err:
                 print(err)
-            rpc_ip = envs['aws_test']['ip']
-            rpc_port = envs['aws_test']['ws_port']
+            rpc_ip = envs[NETWORK]['ip']
+            rpc_port = envs[NETWORK]['ws_port']
 
     rpc_port = int(rpc_port)
 

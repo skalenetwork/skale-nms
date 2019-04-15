@@ -22,16 +22,15 @@ Module contains BaseAgent class - base class for SLA and Bounty agents
 """
 import json
 import logging
-import logging.handlers as py_handlers
-import sys
 import time
 
 import schedule
 import tenacity
 
-from agent import helper
-from tools.config import LOG_BACKUP_COUNT, LOG_FILE_SIZE_BYTES, LOG_FORMAT, NODE_CONFIG_FILEPATH
+from tools import helper
+from tools.config import NODE_CONFIG_FILEPATH
 from tools.config_storage import ConfigStorage
+from tools.logger import init_agent_logger
 
 
 class BaseAgent:
@@ -39,37 +38,17 @@ class BaseAgent:
 
     def __init__(self, skale, node_id=None):
         self.agent_name = self.__class__.__name__
+        init_agent_logger(self.agent_name, node_id)
+        self.logger = logging.getLogger(__name__)
 
-        log_filepath = helper.get_log_filepath(self.agent_name, node_id)
-
-        self.logger = logging.getLogger(self.agent_name)
-        self.logger.setLevel(logging.DEBUG)
-
-        try:
-            fh = py_handlers.RotatingFileHandler(
-                log_filepath,
-                maxBytes=LOG_FILE_SIZE_BYTES,
-                backupCount=LOG_BACKUP_COUNT)
-            formatter = logging.Formatter(LOG_FORMAT)
-            fh.setFormatter(formatter)
-
-            self.logger.addHandler(fh)
-        except Exception as err:
-            self.logger.error(f"Cannot log into the file: {err}")
-
-        sh = logging.StreamHandler(stream=sys.stdout)
-        sh.setFormatter(formatter)
-        self.logger.addHandler(sh)
-
-        self.logger.info(f"Initialization of {self.agent_name} started...")
-        self.id = node_id if node_id else self.get_id_from_config()
+        self.logger.info(f"Initialization of {self.agent_name} ...")
         local_wallet_filepath = helper.get_local_wallet_filepath(node_id)
+        self.id = self.get_id_from_config() if node_id is None else node_id
         self.local_wallet = ConfigStorage(local_wallet_filepath)
-
-        self.account = self.local_wallet['address']
         self.skale = skale
+
         self.logger.debug(f"Node ID = {self.id}")
-        self.logger.debug(f"Account = {self.account}")
+        self.logger.debug(f"Account = {self.local_wallet['address']}")
         self.logger.info(f"Initialization of {self.agent_name} is completed")
 
     @tenacity.retry(
@@ -108,7 +87,3 @@ class BaseAgent:
         while True:
             schedule.run_pending()
             time.sleep(1)
-
-
-if __name__ == "__main__":
-    pass

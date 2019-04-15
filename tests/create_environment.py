@@ -17,14 +17,14 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import socket
 import os
+import socket
 
 import skale.utils.helper as Helper
 
 from tools.config import LOCAL_WALLET_FILENAME
 from tools.config_storage import ConfigStorage
-from agent.helper import init_skale, TEST_DATA_DIR
+from tools.helper import TEST_DATA_DIR, init_skale
 
 TEST_LOCAL_WALLET_PATH = os.path.join(TEST_DATA_DIR, LOCAL_WALLET_FILENAME)
 skale = init_skale()
@@ -142,6 +142,14 @@ def create_node(node_id):
     wallet = ConfigStorage(TEST_LOCAL_WALLET_PATH + str(node_id))
     address = wallet['address']
 
+    eth_private_key = os.environ.get("ETH_PRIVATE_KEY")
+
+    db_address = Helper.private_key_to_address(eth_private_key)
+
+    db_address = skale.web3.toChecksumAddress(db_address)
+    sender_wallet = {"address": db_address,
+                     "private_key": eth_private_key}
+
     deposit = 100000000000000000000
     eth_amount = 10000000000000000000
     # eth_amount = 1000000000000000000000
@@ -226,6 +234,12 @@ if __name__ == "__main__":
     _first_node_id = 0
     _nodes_number = 2
     # create_set_of_nodes(_first_node_id, _nodes_number)
+    eth_private_key = os.environ.get("ETH_PRIVATE_KEY")
+    db_address = Helper.private_key_to_address(eth_private_key)
+
+    db_address = skale.web3.toChecksumAddress(db_address)
+    sender_wallet = {"address": db_address,
+                     "private_key": eth_private_key}
 
     deposit = 200000000000000000000
     eth_amount = 10000000000000000000  # 10 ETH

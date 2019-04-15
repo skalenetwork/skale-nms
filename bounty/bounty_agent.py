@@ -26,8 +26,8 @@ from datetime import datetime
 
 import skale.utils.helper as Helper
 
-from agent import base_agent
-from agent.helper import init_skale
+from tools import base_agent
+from tools.helper import init_skale
 
 
 class BountyCollector(base_agent.BaseAgent):

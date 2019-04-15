@@ -25,34 +25,26 @@ import socket
 import sys
 from datetime import datetime
 
-import skale.utils.helper as helper
+from skale.utils.helper import await_receipt
 
-from agent import base_agent
-from agent.helper import init_skale
 from database import db
 from sla import ping
+from tools import base_agent
+from tools.helper import init_skale
 
 
 class Validator(base_agent.BaseAgent):
 
     def __init__(self, skale, node_id=None):
         super().__init__(skale, node_id)
-        self.nodes = []
-        self.nodes_for_report = []
 
-    def get_validated_nodes(self, node_id: int = None, account: str = None) -> list:
-        """
-        Returns a list of nodes to validate - node node_id, report date, ip address
-        """
+    def get_validated_nodes(self) -> list:
+        """Returns a list of nodes to validate - node node_id, report date, ip address"""
 
-        if node_id is None:
-            node_id = self.id
-        if account is None:
-            account = self.account
-        account = self.skale.web3.toChecksumAddress(account)
+        account = self.skale.web3.toChecksumAddress(self.local_wallet['address'])
 
         try:
-            nodes_in_bytes_array = self.skale.validators_data.get_validated_array(node_id, account)
+            nodes_in_bytes_array = self.skale.validators_data.get_validated_array(self.id, account)
             print(nodes_in_bytes_array)
         except Exception as err:
             self.logger.error(f"Cannot get a list of nodes for validating: {str(err)}", exc_info=True)
@@ -65,25 +57,25 @@ class Validator(base_agent.BaseAgent):
             node_ip = socket.inet_ntoa(node_in_bytes[28:])
 
             nodes.append({'id': node_id, 'ip': node_ip, 'rep_date': report_date})
-        self.nodes = nodes
-        return self.nodes
+        return nodes
 
-    def show_validated_nodes(self):
-        self.logger.info(f"Number of nodes to validate: {len(self.nodes)}")
-        for node in self.nodes:
+    def show_validated_nodes(self, nodes):
+        self.logger.info(f"Number of nodes to validate: {len(nodes)}")
+        for node in nodes:
             self.logger.debug(f"id: {node['id']}, ip: {node['ip']}")
 
-    def validate_nodes(self):
+    def validate_and_get_reported_nodes(self, nodes) -> list:
+        """Validate nodes and returns a list of nodes to be reported"""
 
         self.logger.info("Validating nodes:")
-        if len(self.nodes) == 0:
+        if len(nodes) == 0:
             self.logger.info(f"- No nodes to validate")
         else:
-            self.logger.info(f"Number of nodes for validating: {len(self.nodes)}")
-            self.logger.info(f"Nodes for validating: {self.nodes}")
+            self.logger.info(f"Number of nodes for validating: {len(nodes)}")
+            self.logger.info(f"Nodes for validating: {nodes}")
 
-        self.nodes_for_report = []
-        for node in self.nodes:
+        nodes_for_report = []
+        for node in nodes:
             # metrics = ping.get_node_metrics(node['ip'])  # TODO: uncomment when we have real nodes
             # metrics = sim.generate_node_metrics()  # use to simulate metrics
             metrics = ping.get_node_metrics(
@@ -95,16 +87,19 @@ class Validator(base_agent.BaseAgent):
             self.logger.debug(f"now date: {now}")
             self.logger.debug(f"report date: {rep_date}")
             if rep_date < now:
-                self.nodes_for_report.append({'id': node['id'], 'rep_date': node['rep_date']})
+                nodes_for_report.append({'id': node['id'], 'rep_date': node['rep_date']})
+        return nodes_for_report
 
-    def send_verdicts(self):
+    def send_verdicts(self, nodes_for_report) -> list:
+        """Send verdicts for every node from nodes_for_report"""
+
         self.logger.info("Sending Verdicts:")
-        if len(self.nodes_for_report) == 0:
+        if len(nodes_for_report) == 0:
             self.logger.info(f"- No nodes for sending verdicts about")
         else:
-            self.logger.info(f"Number of nodes for report: {len(self.nodes_for_report)}")
-            self.logger.info(f"Nodes for report: {self.nodes_for_report}")
-        for node in self.nodes_for_report:
+            self.logger.info(f"Number of nodes for report: {len(nodes_for_report)}")
+            self.logger.info(f"Nodes for report: {nodes_for_report}")
+        for node in nodes_for_report:
             metrics = db.get_month_metrics_for_node(self.id, node['id'], node['rep_date'])
 
             self.logger.info(f"Sending verdict for node #{node['id']}")
@@ -113,7 +108,7 @@ class Validator(base_agent.BaseAgent):
                 self.skale.web3.eth.enable_unaudited_features()
                 res = self.skale.manager.send_verdict(self.id, node['id'], metrics['downtime'],
                                                       int(metrics['latency']), self.local_wallet)
-                receipt = helper.await_receipt(self.skale.web3, res['tx'])
+                receipt = await_receipt(self.skale.web3, res['tx'])
                 self.logger.debug('--- receipt ---')
                 self.logger.debug(receipt)
                 if receipt['status'] == 1:
@@ -131,16 +126,15 @@ class Validator(base_agent.BaseAgent):
         """
         self.logger.debug("___________________________")
         self.logger.debug("New periodic job started...")
-
         try:
-            self.get_validated_nodes()
+            nodes = self.get_validated_nodes()
         except Exception as err:
             self.logger.error(f"Failed to get list of validated nodes {str(err)}")
-            self.nodes = []
+            nodes = []
 
-        self.validate_nodes()
+        nodes_for_report = self.validate_and_get_reported_nodes(nodes)
 
-        self.send_verdicts()
+        self.send_verdicts(nodes_for_report)
         self.logger.debug("Periodic job finished...")
 
 

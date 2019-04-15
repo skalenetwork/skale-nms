@@ -1,4 +1,4 @@
-[![codecov](https://codecov.io/gh/skalenetwork/SLA/branch/develop/graph/badge.svg?token=aPCwLvSCAi)](https://codecov.io/gh/skalenetwork/SLA)
+[![Build Status](https://travis-ci.com/skalenetwork/SLA.svg?token=5WWNQpSwuzBij2zT49wg&branch=develop)](https://travis-ci.com/skalenetwork/SLA)
 
 # sla-agent
 Repo contains SLA agent and Bounty collector - parts of Skale node
