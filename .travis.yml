@@ -8,5 +8,5 @@ script:
 - export IS_TEST=true
 - export PYTHONPATH=$PYTHONPATH:.
 - py.test -v -s --cov=sla/ tests/test_sla.py
-env:
-  global:
+after_success:
+- codecov -t $CODECOV_TOKEN
