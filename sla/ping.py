@@ -26,28 +26,28 @@ def get_node_metrics(host) -> dict:
     ping_parser = pingparsing.PingParsing()
     transmitter = pingparsing.PingTransmitter()
     transmitter.destination_host = host
-    # transmitter.ping_option = "-w5"
+    # transmitter.ping_option = '-w5'
     transmitter.count = 1
     result = transmitter.ping()
 
     print(ping_parser.parse(result).as_dict())
 
     if ping_parser.parse(
-            result).as_dict()["rtt_avg"] is None or ping_parser.parse(
-                result).as_dict()["packet_loss_count"] > 0:
+            result).as_dict()['rtt_avg'] is None or ping_parser.parse(
+                result).as_dict()['packet_loss_count'] > 0:
         # or ping_parser.parse(result).as_dict()['packet_loss_rate'] > 10.0
         is_alive = False
         latency = 1000
-        print("No connection to host!")
+        print('No connection to host!')
     else:
         is_alive = True
-        latency = ping_parser.parse(result).as_dict()["rtt_avg"]
-        print("Ping ok!")
+        latency = ping_parser.parse(result).as_dict()['rtt_avg']
+        print('Ping ok!')
 
     return {'is_alive': is_alive, 'latency': latency}
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 
     host = '8.8.8.8'
     get_node_metrics(host)

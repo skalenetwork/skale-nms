@@ -27,8 +27,8 @@ def setup_module(module):
 
 
 def test_get_metrics():
-    db.save_to_db(0, 1, "true", 40)
-    db.save_to_db(0, 1, "true", 60)
+    db.save_to_db(0, 1, 'true', 40)
+    db.save_to_db(0, 1, 'true', 60)
     now = datetime.utcnow()
     data = db.get_month_metrics_for_node(0, 1, now - timedelta(minutes=1))
     print(data)

@@ -47,7 +47,7 @@ class Validator(base_agent.BaseAgent):
             nodes_in_bytes_array = self.skale.validators_data.get_validated_array(self.id, account)
             print(nodes_in_bytes_array)
         except Exception as err:
-            self.logger.error(f"Cannot get a list of nodes for validating: {str(err)}", exc_info=True)
+            self.logger.error(f'Cannot get a list of nodes for validating: {str(err)}', exc_info=True)
             raise
 
         nodes = []
@@ -60,19 +60,19 @@ class Validator(base_agent.BaseAgent):
         return nodes
 
     def show_validated_nodes(self, nodes):
-        self.logger.info(f"Number of nodes to validate: {len(nodes)}")
+        self.logger.info(f'Number of nodes to validate: {len(nodes)}')
         for node in nodes:
-            self.logger.debug(f"id: {node['id']}, ip: {node['ip']}")
+            self.logger.debug(f'id: {node["id"]}, ip: {node["ip"]}')
 
     def validate_and_get_reported_nodes(self, nodes) -> list:
         """Validate nodes and returns a list of nodes to be reported"""
 
-        self.logger.info("Validating nodes:")
+        self.logger.info('Validating nodes:')
         if len(nodes) == 0:
-            self.logger.info(f"- No nodes to validate")
+            self.logger.info(f'- No nodes to validate')
         else:
-            self.logger.info(f"Number of nodes for validating: {len(nodes)}")
-            self.logger.info(f"Nodes for validating: {nodes}")
+            self.logger.info(f'Number of nodes for validating: {len(nodes)}')
+            self.logger.info(f'Nodes for validating: {nodes}')
 
         nodes_for_report = []
         for node in nodes:
@@ -84,8 +84,8 @@ class Validator(base_agent.BaseAgent):
 
             rep_date = datetime.utcfromtimestamp(node['rep_date'])
             now = datetime.utcnow()
-            self.logger.debug(f"now date: {now}")
-            self.logger.debug(f"report date: {rep_date}")
+            self.logger.debug(f'now date: {now}')
+            self.logger.debug(f'report date: {rep_date}')
             if rep_date < now:
                 nodes_for_report.append({'id': node['id'], 'rep_date': node['rep_date']})
         return nodes_for_report
@@ -93,16 +93,16 @@ class Validator(base_agent.BaseAgent):
     def send_verdicts(self, nodes_for_report) -> list:
         """Send verdicts for every node from nodes_for_report"""
 
-        self.logger.info("Sending Verdicts:")
+        self.logger.info('Sending Verdicts:')
         if len(nodes_for_report) == 0:
-            self.logger.info(f"- No nodes for sending verdicts about")
+            self.logger.info(f'- No nodes for sending verdicts about')
         else:
-            self.logger.info(f"Number of nodes for report: {len(nodes_for_report)}")
-            self.logger.info(f"Nodes for report: {nodes_for_report}")
+            self.logger.info(f'Number of nodes for report: {len(nodes_for_report)}')
+            self.logger.info(f'Nodes for report: {nodes_for_report}')
         for node in nodes_for_report:
             metrics = db.get_month_metrics_for_node(self.id, node['id'], node['rep_date'])
 
-            self.logger.info(f"Sending verdict for node #{node['id']}")
+            self.logger.info(f'Sending verdict for node #{node["id"]}')
             self.logger.info(f'wallet = {self.local_wallet["address"]}    {self.local_wallet["private_key"]}')
             try:
                 self.skale.web3.eth.enable_unaudited_features()
@@ -112,11 +112,11 @@ class Validator(base_agent.BaseAgent):
                 self.logger.debug('--- receipt ---')
                 self.logger.debug(receipt)
                 if receipt['status'] == 1:
-                    self.logger.info("The verdict was successfully sent")
+                    self.logger.info('The verdict was successfully sent')
                 if receipt['status'] == 0:
-                    self.logger.info("The verdict wasn't sent - transaction failed")
+                    self.logger.info('The verdict was not sent - transaction failed')
             except Exception as err:
-                self.logger.error(f"Failed send verdict for the node #{node['id']}. Error: {str(err)}", exc_info=True)
+                self.logger.error(f'Failed send verdict for the node #{node["id"]}. Error: {str(err)}', exc_info=True)
                 # raise
                 break
 
@@ -124,21 +124,21 @@ class Validator(base_agent.BaseAgent):
         """
         Periodic job
         """
-        self.logger.debug("___________________________")
-        self.logger.debug("New periodic job started...")
+        self.logger.debug('___________________________')
+        self.logger.debug('New periodic job started...')
         try:
             nodes = self.get_validated_nodes()
         except Exception as err:
-            self.logger.error(f"Failed to get list of validated nodes {str(err)}")
+            self.logger.error(f'Failed to get list of validated nodes {str(err)}')
             nodes = []
 
         nodes_for_report = self.validate_and_get_reported_nodes(nodes)
 
         self.send_verdicts(nodes_for_report)
-        self.logger.debug("Periodic job finished...")
+        self.logger.debug('Periodic job finished...')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 
     if len(sys.argv) > 1:
         is_debug_mode = True

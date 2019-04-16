@@ -116,7 +116,7 @@ def save_events(tx_dt, tx_hash, my_id, bounty, latency, downtime, gas, logger):
     except SQLError as err:
         logger.error('Is your query correct? Error:', str(err))
     except Exception as err:
-        logger.error("Error:", str(err))
+        logger.error('Error:', str(err))
 
 
 def get_month_metrics_for_node(my_id, node_id, max_date) -> dict:
@@ -176,7 +176,7 @@ def get_latency_for_node(my_id, node_id, max_date):
 def clear_db():
 
     with UseDatabase(db_config) as cursor:
-        _SQL = "DELETE FROM report"
+        _SQL = 'DELETE FROM report'
         cursor.execute(_SQL)
 
 
@@ -190,5 +190,5 @@ def get_recs(my_id, node_id, max_date):
         return data
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     clear_db()

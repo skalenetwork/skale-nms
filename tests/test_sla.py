@@ -23,7 +23,6 @@ from tests import create_environment
 from tools.helper import init_skale
 
 
-
 def setup_module(module):
     global nodes_count_before, nodes_count_to_add
     ids = create_environment.get_active_ids()
@@ -31,7 +30,7 @@ def setup_module(module):
     nodes_count_before = len(ids)
     max_id = max(ids) if len(ids) else -1
     print(f'max_id = {max_id}')
-    print(f"nodes count before = {nodes_count_before}")
+    print(f'nodes count before = {nodes_count_before}')
     nodes_count_to_add = 2
     create_environment.create_set_of_nodes(max_id + 1, nodes_count_to_add)
 
@@ -39,8 +38,8 @@ def setup_module(module):
 def test_nodes_are_created():
 
     nodes_count_after = len(create_environment.get_active_ids())
-    print(f"wait nodes_number = {nodes_count_before + nodes_count_to_add}")
-    print(f"got nodes_number = {nodes_count_after}")
+    print(f'wait nodes_number = {nodes_count_before + nodes_count_to_add}')
+    print(f'got nodes_number = {nodes_count_after}')
 
     assert nodes_count_after == nodes_count_before + nodes_count_to_add
 

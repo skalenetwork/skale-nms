@@ -28,7 +28,7 @@ def generate_node_metrics(false_downtime_coeff=0.015, min_latency=20, max_latenc
     return {'is_alive': is_alive, 'latency': latency}
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 
     for i in range(10):
         print(generate_node_metrics())
