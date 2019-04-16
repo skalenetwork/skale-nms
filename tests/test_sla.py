@@ -17,11 +17,11 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from agent.helper import init_skale
-from sla import ping
-from sla import sim
+from sla import ping, sim
 from sla import sla_agent as sla
 from tests import create_environment
+from tools.helper import init_skale
+
 
 
 def setup_module(module):
@@ -89,5 +89,4 @@ def test_get_validated_nodes():
     nodes = validator.get_validated_nodes()
     print(f'nodes = {nodes}')
     assert type(nodes) is list
-    assert type(validator.nodes) is list
     assert any(node.get('id') == cur_nodes_count - 1 for node in nodes)

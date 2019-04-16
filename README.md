@@ -1,14 +1,14 @@
-[![codecov](https://codecov.io/gh/skalenetwork/SLA/branch/develop/graph/badge.svg?token=aPCwLvSCAi)](https://codecov.io/gh/skalenetwork/SLA)
+[![Build Status](https://travis-ci.com/skalenetwork/SLA.svg?token=5WWNQpSwuzBij2zT49wg&branch=develop)](https://travis-ci.com/skalenetwork/SLA)
+[![codecov](https://codecov.io/gh/skalenetwork/SLA/branch/master/graph/badge.svg?token=aPCwLvSCAi)](https://codecov.io/gh/skalenetwork/SLA)
 
-# sla-agent
-Repo contains SLA agent and Bounty collector - parts of Skale node
+# SLA
+Repo contains SLA agent and Bounty collector - parts of Skale network node
 
 ### Project structure
-SLA agent and Bounty collector use a common base class BaseAgent (dir agent).
-Realizations of agents are located in 'sla' and 'bounty' directories respectively.  
+Realizations of SLA agent and Bounty collector are located in 'sla' and 'bounty' directories respectively.  
 
 ### Usage
-For building docker containers for all agents and pushing them to Docker Hub use:
+To build docker containers for all agents and push them to Docker Hub use:
 ```bash
 sh ./build_all.sh
 ```

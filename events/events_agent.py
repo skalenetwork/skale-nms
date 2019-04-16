@@ -22,8 +22,8 @@ from datetime import datetime
 
 from skale import EventListener
 
-from agent import base_agent
 from database import db
+from tools import base_agent
 
 EVENTS_POLL_INTERVAL = 5
 skale = base_agent.skale

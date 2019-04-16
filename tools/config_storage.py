@@ -17,8 +17,12 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import os, json, logging
+import json
+import logging
+import os
+
 logger = logging.getLogger(__name__)
+
 
 class ConfigStorage:
     def __init__(self, path, init={}):
@@ -53,7 +57,7 @@ class ConfigStorage:
         try:
             return self.config[item]
         except KeyError:
-            logger.info(f'key {item} is not found in config {self.path}')
+            logger.debug(f'key {item} is not found in config {self.path}')
             return None
 
     def __safe_read_config(self):
