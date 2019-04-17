@@ -76,10 +76,10 @@ class Validator(base_agent.BaseAgent):
 
         nodes_for_report = []
         for node in nodes:
-            # metrics = ping.get_node_metrics(node['ip'])  # TODO: uncomment when we have real nodes
-            # metrics = sim.generate_node_metrics()  # use to simulate metrics
-            metrics = ping.get_node_metrics(
-                '8.8.8.8')  # ping Google while we have no real nodes # TODO: remove when we have real nodes
+            test_ip = '8.8.8.8'
+            host = test_ip if self.is_test_mode else node['ip']
+            metrics = ping.get_node_metrics(host)
+            # metrics = sim.generate_node_metrics()  # use to simulate metrics for some tests
             db.save_to_db(self.id, node['id'], metrics['is_alive'], metrics['latency'])
 
             # Check report date of current validated node
@@ -88,11 +88,11 @@ class Validator(base_agent.BaseAgent):
             self.logger.debug(f'now date: {now}')
             self.logger.debug(f'report date: {rep_date}')
             if rep_date < now:
-                # Forming a list of nodes that already have to be reported
+                # Forming a list of nodes that already need to be reported
                 nodes_for_report.append({'id': node['id'], 'rep_date': node['rep_date']})
         return nodes_for_report
 
-    def send_verdicts(self, nodes_for_report) -> list:
+    def send_verdicts(self, nodes_for_report):
         """Send verdicts for every node from nodes_for_report"""
 
         self.logger.info('Sending Verdicts:')
@@ -140,13 +140,11 @@ class Validator(base_agent.BaseAgent):
 
 if __name__ == '__main__':
 
-    if len(sys.argv) > 1:
-        is_debug_mode = True
-        _node_id = int(sys.argv[1])
+    if len(sys.argv) > 1 and sys.argv[1].isdecimal():
+        node_id = int(sys.argv[1])
     else:
-        _node_id = None
+        node_id = None
 
-    _skale = init_skale()
-    print(_skale.nodes_data.get_active_node_ids())
-    validator = Validator(_skale, _node_id)
+    skale = init_skale()
+    validator = Validator(skale, node_id)
     validator.run()

@@ -81,11 +81,11 @@ class BountyCollector(base_agent.BaseAgent):
 
 if __name__ == '__main__':
 
-    if len(sys.argv) > 1:
-        is_debug_mode = True
-        _node_id = int(sys.argv[1])
+    if len(sys.argv) > 1 and sys.argv[1].isdecimal():
+        node_id = int(sys.argv[1])
     else:
-        _node_id = None
+        node_id = None
+
     skale = init_skale()
     bounty_collector = BountyCollector(skale, _node_id)
     bounty_collector.run()
