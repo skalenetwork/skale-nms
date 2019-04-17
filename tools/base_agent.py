@@ -32,6 +32,8 @@ from tools.config import NODE_CONFIG_FILEPATH
 from tools.config_storage import ConfigStorage
 from tools.logger import init_agent_logger
 
+CHECK_PERIOD = 1  # in min
+
 
 class BaseAgent:
     """Base class for SLA and Bounty agents"""
@@ -43,7 +45,12 @@ class BaseAgent:
 
         self.logger.info(f"Initialization of {self.agent_name} ...")
         local_wallet_filepath = helper.get_local_wallet_filepath(node_id)
-        self.id = self.get_id_from_config() if node_id is None else node_id
+        if node_id is None:
+            self.id = self.get_id_from_config()
+            self.is_test_mode = False
+        else:
+            self.id = node_id
+            self.is_test_mode = True
         self.local_wallet = ConfigStorage(local_wallet_filepath)
         self.skale = skale
 
@@ -80,10 +87,10 @@ class BaseAgent:
         pass
 
     def run(self) -> None:
-        """Starts running agent"""
+        """Starts agent"""
         self.logger.info(f"{self.agent_name} started")
         self.job()
-        schedule.every(1).minutes.do(self.job)
+        schedule.every(CHECK_PERIOD).minutes.do(self.job)
         while True:
             schedule.run_pending()
             time.sleep(1)

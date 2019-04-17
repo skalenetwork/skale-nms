@@ -32,74 +32,60 @@ from tools.helper import init_skale
 
 class BountyCollector(base_agent.BaseAgent):
 
-    def __init__(self, skale, node_id=None):
-        super().__init__(skale, node_id)
-        self.reward_date = 0
-        self.is_reward_time = False
+    def get_reward_date(self):
+        reward_period = self.skale.validators_data.get_reward_period()
+        reward_date = self.skale.nodes_data.get(self.id)['last_reward_date'] + reward_period
+        return datetime.utcfromtimestamp(reward_date)
 
-    def update_reward_date(self):
-        reward_period = skale.validators_data.get_reward_period()
+    def get_bounty(self):
+        address = self.local_wallet['address']
+        self.logger.debug(f'ETH balance: {self.skale.web3.eth.getBalance(address)}')
+        self.logger.debug(f'SKL balance: {self.skale.token.contract.functions.balanceOf(address).call()}')
+        self.logger.info('--- Getting Bounty ---')
         try:
-            self.reward_date = self.skale.nodes_data.get(
-                self.id)['last_reward_date'] + reward_period
+            res = self.skale.manager.get_bounty(self.id, self.local_wallet)
         except Exception as err:
-            self.logger.exception('Error: ', err)
+            self.logger.error(f'Failed getting bounty tx: {err}')
+            # TODO: notify Skale Admin
             raise
+        self.logger.debug('Waiting for receipt of tx...')
+        receipt = Helper.await_receipt(self.skale.web3, res['tx'])
+        if receipt['status'] == 1:
+            self.logger.info('The bounty was successfully received')
+        if receipt['status'] == 0:
+            self.logger.info('The bounty was not received - transaction failed')
+            # TODO: notify Skale Admin
+        self.logger.info(f'Receipt: {receipt}')
+        self.logger.debug(f'ETH balance: {self.skale.web3.eth.getBalance(address)}')
+        self.logger.debug(f'SKL balance: {self.skale.token.contract.functions.balanceOf(address).call()}')
+        self.logger.debug('Waiting for the next periodic check')
 
     def job(self) -> None:
         """ Periodic job"""
-        self.logger.debug("Checking my reward date...")
-        utcnow = datetime.utcnow()
-        self.logger.debug(f"Now (UTC): {utcnow}")
+        utc_now = datetime.utcnow()
+        self.logger.debug('Checking my reward date...')
+        self.logger.debug(f'Now (UTC): {utc_now}')
+
         try:
-            self.update_reward_date()
+            reward_date = self.get_reward_date()
         except Exception as err:
-            self.logger.error(f"Cannot get reward date {err}")
-            return 1
+            self.logger.error(f'Cannot get reward date: {err}')
+            # TODO: notify Skale Admin
+            return
 
-        reward_date = datetime.utcfromtimestamp(self.reward_date)
-        self.logger.debug(f"Next reward date: {reward_date}")
+        self.logger.debug(f'Next reward date: {reward_date}')
 
-        if utcnow >= reward_date:
-
-            address = self.local_wallet['address']
-            self.logger.debug(
-                f"ETH balance before getting bounty: {self.skale.web3.eth.getBalance(address)}"
-            )
-            self.logger.debug(
-                f"SKL balance before getting bounty: {self.skale.token.contract.functions.balanceOf(address).call()}"
-            )
-            self.logger.info("--- Getting Bounty ---")
-            self.skale.web3.eth.enable_unaudited_features()
-            res = self.skale.manager.get_bounty(self.id, self.local_wallet)
-            self.logger.debug("Waiting for receipt of tx...")
-            receipt = Helper.await_receipt(self.skale.web3, res['tx'])
-            self.logger.debug(f"Receipt: {receipt}")
-            if receipt['status'] == 1:
-                self.logger.info("The bounty was successfully received")
-            print(receipt)
-            print('+++++++++++')
-            print(len(receipt['transactionHash']))
-
-            if receipt['status'] == 0:
-                self.logger.info(
-                    "The bounty wasn't received - transaction failed")
-            self.logger.debug(
-                f"ETH balance after getting bounty: {self.skale.web3.eth.getBalance(address)}"
-            )
-            self.logger.debug(
-                f"SKL balance after getting bounty: {self.skale.token.contract.functions.balanceOf(address).call()}"
-            )
-            self.logger.debug("-----------------------------------")
+        if utc_now >= reward_date:
+            self.get_bounty()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 
-    if len(sys.argv) > 1:
-        is_debug_mode = True
-        _node_id = int(sys.argv[1])
+    if len(sys.argv) > 1 and sys.argv[1].isdecimal():
+        node_id = int(sys.argv[1])
     else:
-        _node_id = None
+        node_id = None
+
     skale = init_skale()
-    bounty_collector = BountyCollector(skale, _node_id)
+    bounty_collector = BountyCollector(skale, node_id)
     bounty_collector.run()
