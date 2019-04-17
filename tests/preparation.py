@@ -18,7 +18,6 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import os
-import socket
 
 import skale.utils.helper as Helper
 
@@ -27,59 +26,8 @@ from tools.config_storage import ConfigStorage
 from tools.helper import TEST_DATA_DIR, init_skale
 
 TEST_LOCAL_WALLET_PATH = os.path.join(TEST_DATA_DIR, LOCAL_WALLET_FILENAME)
+
 skale = init_skale()
-print(TEST_LOCAL_WALLET_PATH)
-
-
-def get_node_info(node_id: int = None) -> tuple:
-    """
-    Returns a tuple of node properties: account, reward_date
-    """
-    node = skale.nodes_data.get(node_id)
-    print(node)
-    print(socket.inet_ntoa(node['ip']))
-    account = Helper.public_key_to_address(node['publicKey'].hex())
-    return account, node['last_reward_date']
-
-
-class MyError(Exception):
-    pass
-
-
-def get_validated_nodes(node_id: int = None, account: str = None) -> None:
-    """
-    Returns a list of nodes to validate - node node_id, report date, ip address
-    """
-    if node_id is not None:
-        # self.id = node_id
-        account, reward_date = get_node_info(node_id)
-    try:
-        # nodes_in_bytes_array = skale.validators.get_validated_array(node_id, account)
-        nodes_in_bytes_array = skale.validators_data.get_validated_array(node_id, account)
-    except Exception as err:
-        print(f'Cannot get a list of nodes for validating {str(err)}')
-        raise
-        # return None
-
-    print(f'Number of nodes for validating: {len(nodes_in_bytes_array)}')
-
-    nodes = []
-    for node_in_bytes in nodes_in_bytes_array:
-        node_id = int.from_bytes(node_in_bytes[:14], byteorder='big')
-        report_date = int.from_bytes(node_in_bytes[14:28], byteorder='big')
-        node_ip = socket.inet_ntoa(node_in_bytes[28:])
-
-        print('---------------------------------')
-        print(node_id)
-        print(report_date)
-        print(node_ip)
-
-        nodes.append({'id': node_id, 'ip': node_ip, 'rep_date': report_date})
-    return nodes
-
-
-def get_event(event):
-    print('Got it!')
 
 
 def get_eth_nonce(web3, address):
@@ -110,12 +58,10 @@ def sign_and_send(skale, method, gas_amount, wallet):
 
 def generate_local_wallet(node_id):
     print('generating local wallet')
-    # todo: pass optional extra_entropy
     account = skale.web3.eth.account.create()
     private_key = account.privateKey.hex()
-    print(f'private_key:    {private_key}')
     account_dict = {'address': account.address, 'private_key': private_key}
-    print('---- dict:')
+    print('---- account dict:')
     print(account_dict)
 
     local_wallet_config = ConfigStorage(TEST_LOCAL_WALLET_PATH + str(node_id))
@@ -125,17 +71,11 @@ def generate_local_wallet(node_id):
     return {'address': account.address}
 
 
-def get_ip(first):
-
-    base_ip = '10.1.0.'
-
-    last = 255
-    for _i in range(first, last):
-        # print(base_ip + str(i))
-        yield base_ip + str(_i)
-
-
 def create_node(node_id):
+
+    deposit = 100000000000000000000  # 100 SKL
+    eth_amount = 10000000000000000000  # 10 ETH
+    # eth_amount = 1000000000000000000000  # 1000 ETH
 
     generate_local_wallet(node_id)
 
@@ -143,22 +83,13 @@ def create_node(node_id):
     address = wallet['address']
 
     eth_private_key = os.environ.get('ETH_PRIVATE_KEY')
-
-    db_address = Helper.private_key_to_address(eth_private_key)
-
-    db_address = skale.web3.toChecksumAddress(db_address)
-    sender_wallet = {'address': db_address,
+    eth_base_account = Helper.private_key_to_address(eth_private_key)
+    eth_base_account = skale.web3.toChecksumAddress(eth_base_account)
+    sender_wallet = {'address': eth_base_account,
                      'private_key': eth_private_key}
 
-    deposit = 100000000000000000000
-    eth_amount = 10000000000000000000
-    # eth_amount = 1000000000000000000000
-
-    print(f'ETH balance of etherbase account : {skale.web3.eth.getBalance(db_address)}')
-    print(f'SKL balance of etherbase account: {skale.token.contract.functions.balanceOf(db_address).call()}')
-
-    eth_base_bal = skale.web3.eth.getBalance(db_address)
-    skl_base_bal = skale.token.contract.functions.balanceOf(db_address).call()
+    eth_base_bal = skale.web3.eth.getBalance(eth_base_account)
+    skl_base_bal = skale.token.contract.functions.balanceOf(eth_base_account).call()
 
     print(f'ETH balance of etherbase account : {eth_base_bal}')
     print(f'SKL balance of etherbase account: {skl_base_bal}')
@@ -180,20 +111,20 @@ def create_node(node_id):
         tx = Helper.send_eth(skale.web3, address, eth_amount, sender_wallet)
         receipt = Helper.await_receipt(skale.web3, tx)
 
-        print('receipt ETH transfer')
-        print(receipt)
+        print(f'receipt of ETH transfer: {receipt}')
 
         print(f'ETH balance after: {skale.web3.eth.getBalance(address)}')
         print(f'SKL balance after: {skale.token.contract.functions.balanceOf(address).call()}')
         print(wallet['address'])
 
         # create node
-        res = skale.manager.create_node('10.1.0.' + str(node_id), int(56), 'node_' + str(node_id), wallet)
+        ip_base = '10.1.0.'
+        test_port = 56
+        res = skale.manager.create_node(ip_base + str(node_id), test_port, 'node_' + str(node_id), wallet)
         print(f'create_node res: {res}')
 
         receipt = Helper.await_receipt(skale.web3, res['tx'])  # todo: return tx and wait for the receipt in async mode
         print(f'create_node receipt: {receipt}')
-        # time.sleep(5)
 
     else:
         print('Insufficient funds!')
@@ -211,38 +142,8 @@ def create_set_of_nodes(first_node_id, nodes_number):
     if first_node_id not in active_ids:
 
         print(f'Starting creating {nodes_number} nodes from id = {first_node_id}:')
-        for _node_id in range(first_node_id, first_node_id + nodes_number):
-            print(f'--- creating node, id = {_node_id}')
-            create_node(_node_id)
-            # print(f'--- Details for the node with id = {_node_id}:')
-    #         try:
-    #             get_node_info(_node_id)
-    #             print(get_validated_nodes(_node_id))
-    #         except Exception as err:
-    #             print(f'Error: {err}')
+        for node_id in range(first_node_id, first_node_id + nodes_number):
+            print(f'--- creating node, id = {node_id}')
+            create_node(node_id)
     else:
         print(f'Node with id = {first_node_id} is already exists! Try another start id...')
-
-
-if __name__ == '__main__':
-
-    # active_ids = skale.nodes_data.get_active_node_ids()
-    # print(active_ids)
-
-    # _node_id = 5
-
-    _first_node_id = 0
-    _nodes_number = 2
-    # create_set_of_nodes(_first_node_id, _nodes_number)
-    eth_private_key = os.environ.get('ETH_PRIVATE_KEY')
-    db_address = Helper.private_key_to_address(eth_private_key)
-
-    db_address = skale.web3.toChecksumAddress(db_address)
-    sender_wallet = {'address': db_address,
-                     'private_key': eth_private_key}
-
-    deposit = 200000000000000000000
-    eth_amount = 10000000000000000000  # 10 ETH
-
-    print(f'ETH balance of etherbase account : {skale.web3.eth.getBalance(db_address)}')
-    print(f'SKL balance of etherbase account: {skale.token.contract.functions.balanceOf(db_address).call()}')
