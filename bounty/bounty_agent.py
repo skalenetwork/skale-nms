@@ -33,7 +33,7 @@ from tools.helper import init_skale
 class BountyCollector(base_agent.BaseAgent):
 
     def get_reward_date(self):
-        reward_period = skale.validators_data.get_reward_period()
+        reward_period = self.skale.validators_data.get_reward_period()
         reward_date = self.skale.nodes_data.get(self.id)['last_reward_date'] + reward_period
         return datetime.utcfromtimestamp(reward_date)
 
@@ -87,5 +87,5 @@ if __name__ == '__main__':
         node_id = None
 
     skale = init_skale()
-    bounty_collector = BountyCollector(skale, _node_id)
+    bounty_collector = BountyCollector(skale, node_id)
     bounty_collector.run()
