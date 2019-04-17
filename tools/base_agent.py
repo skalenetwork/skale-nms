@@ -32,6 +32,8 @@ from tools.config import NODE_CONFIG_FILEPATH
 from tools.config_storage import ConfigStorage
 from tools.logger import init_agent_logger
 
+CHECK_PERIOD = 1  # in min
+
 
 class BaseAgent:
     """Base class for SLA and Bounty agents"""
@@ -80,10 +82,10 @@ class BaseAgent:
         pass
 
     def run(self) -> None:
-        """Starts running agent"""
+        """Starts agent"""
         self.logger.info(f"{self.agent_name} started")
         self.job()
-        schedule.every(1).minutes.do(self.job)
+        schedule.every(CHECK_PERIOD).minutes.do(self.job)
         while True:
             schedule.run_pending()
             time.sleep(1)

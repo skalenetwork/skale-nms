@@ -21,7 +21,7 @@ import logging
 import logging.handlers as py_handlers
 import os
 import sys
-from logging import FileHandler, Formatter, StreamHandler
+from logging import Formatter, StreamHandler
 
 from tools.config import LOG_BACKUP_COUNT, LOG_FILE_SIZE_BYTES, LOG_FOLDER, LOG_FORMAT, PROJECT_DIR
 

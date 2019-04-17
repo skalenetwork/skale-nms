@@ -43,13 +43,13 @@ class Validator(base_agent.BaseAgent):
 
         account = self.skale.web3.toChecksumAddress(self.local_wallet['address'])
 
+        # get raw binary data list from Skale Manager SC
         try:
             nodes_in_bytes_array = self.skale.validators_data.get_validated_array(self.id, account)
-            print(nodes_in_bytes_array)
         except Exception as err:
             self.logger.error(f'Cannot get a list of nodes for validating: {str(err)}', exc_info=True)
             raise
-
+        # extract  node id, report date and ip from binary
         nodes = []
         for node_in_bytes in nodes_in_bytes_array:
             node_id = int.from_bytes(node_in_bytes[:14], byteorder='big')
@@ -82,11 +82,13 @@ class Validator(base_agent.BaseAgent):
                 '8.8.8.8')  # ping Google while we have no real nodes # TODO: remove when we have real nodes
             db.save_to_db(self.id, node['id'], metrics['is_alive'], metrics['latency'])
 
+            # Check report date of current validated node
             rep_date = datetime.utcfromtimestamp(node['rep_date'])
             now = datetime.utcnow()
             self.logger.debug(f'now date: {now}')
             self.logger.debug(f'report date: {rep_date}')
             if rep_date < now:
+                # Forming a list of nodes that already have to be reported
                 nodes_for_report.append({'id': node['id'], 'rep_date': node['rep_date']})
         return nodes_for_report
 
@@ -103,22 +105,20 @@ class Validator(base_agent.BaseAgent):
             metrics = db.get_month_metrics_for_node(self.id, node['id'], node['rep_date'])
 
             self.logger.info(f'Sending verdict for node #{node["id"]}')
-            self.logger.info(f'wallet = {self.local_wallet["address"]}    {self.local_wallet["private_key"]}')
+            self.logger.debug(f'wallet = {self.local_wallet["address"]}    {self.local_wallet["private_key"]}')
             try:
-                self.skale.web3.eth.enable_unaudited_features()
                 res = self.skale.manager.send_verdict(self.id, node['id'], metrics['downtime'],
                                                       int(metrics['latency']), self.local_wallet)
-                receipt = await_receipt(self.skale.web3, res['tx'])
-                self.logger.debug('--- receipt ---')
-                self.logger.debug(receipt)
-                if receipt['status'] == 1:
-                    self.logger.info('The verdict was successfully sent')
-                if receipt['status'] == 0:
-                    self.logger.info('The verdict was not sent - transaction failed')
             except Exception as err:
                 self.logger.error(f'Failed send verdict for the node #{node["id"]}. Error: {str(err)}', exc_info=True)
-                # raise
                 break
+
+            receipt = await_receipt(self.skale.web3, res['tx'])
+            if receipt['status'] == 1:
+                self.logger.info('The verdict was successfully sent')
+            if receipt['status'] == 0:
+                self.logger.info('The verdict was not sent - transaction failed')
+            self.logger.info(f'Receipt: {receipt}')
 
     def job(self) -> None:
         """
