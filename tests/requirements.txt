@@ -1,7 +1,8 @@
 skale-py==0.56.0
 schedule
 tenacity
-mysql-connector-python-rf
+PyMySQL
+peewee
 pingparsing==0.13.2
 schedule
 tenacity

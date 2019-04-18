@@ -23,7 +23,7 @@ checks its health metrics and sends transactions with average metrics to CS when
 
 import socket
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from skale.utils.helper import await_receipt
 
@@ -80,7 +80,7 @@ class Validator(base_agent.BaseAgent):
             host = test_ip if self.is_test_mode else node['ip']
             metrics = ping.get_node_metrics(host)
             # metrics = sim.generate_node_metrics()  # use to simulate metrics for some tests
-            db.save_to_db(self.id, node['id'], metrics['is_alive'], metrics['latency'])
+            db.save_metrics_to_db(self.id, node['id'], metrics['is_alive'], metrics['latency'])
 
             # Check report date of current validated node
             rep_date = datetime.utcfromtimestamp(node['rep_date'])
@@ -102,7 +102,9 @@ class Validator(base_agent.BaseAgent):
             self.logger.info(f'Number of nodes for report: {len(nodes_for_report)}')
             self.logger.info(f'Nodes for report: {nodes_for_report}')
         for node in nodes_for_report:
-            metrics = db.get_month_metrics_for_node(self.id, node['id'], node['rep_date'])
+            reward_period = self.skale.validators_data.get_reward_period()
+            start_date = node['rep_date'] - timedelta(seconds=reward_period)
+            metrics = db.get_month_metrics_for_node(self.id, node['id'], start_date, node['rep_date'])
 
             self.logger.info(f'Sending verdict for node #{node["id"]}')
             self.logger.debug(f'wallet = {self.local_wallet["address"]}    {self.local_wallet["private_key"]}')
