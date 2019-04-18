@@ -21,12 +21,17 @@
 # Context manager for a database (MySQL)
 #########################################
 
+import os
 from datetime import datetime, timedelta
 
 from peewee import BooleanField, DateTimeField, IntegerField, Model, MySQLDatabase, fn
+from dotenv import load_dotenv
 
-user = 'user'
-password = 'pass'
+dotenv_path = '.env'
+load_dotenv(dotenv_path)
+
+user = os.environ.get("DB_USER")
+password = os.environ.get("DB_PASSWORD")
 db_name = 'test'
 host = '127.0.0.1'
 
