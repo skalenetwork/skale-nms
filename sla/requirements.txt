@@ -1,9 +1,9 @@
 docker==3.2.1
 pyjwt==1.4.2
 simple-crypt==4.1.7
-skale-py==0.49.0
+skale-py==0.56.0
 pingparsing==0.13.2
-schedule
-tenacity
-PyMySQL
-peewee
+schedule==0.6.0
+tenacity==5.0.3
+PyMySQL==0.9.3
+peewee==3.7.1
