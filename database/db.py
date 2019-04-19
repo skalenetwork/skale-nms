@@ -22,10 +22,9 @@
 #########################################
 
 import os
-from datetime import datetime, timedelta
 
-from peewee import BooleanField, DateTimeField, IntegerField, Model, MySQLDatabase, fn
 from dotenv import load_dotenv
+from peewee import BooleanField, DateTimeField, IntegerField, Model, MySQLDatabase, fn
 
 dotenv_path = '.env'
 load_dotenv(dotenv_path)
@@ -78,17 +77,3 @@ def get_month_metrics_for_node(my_id, node_id, start_date, end_date) -> dict:
 def clear_all_reports():
     nrows = Report.delete().execute()
     print(f'{nrows} records deleted')
-
-
-if __name__ == '__main__':
-
-    clear_all_reports()
-    save_metrics_to_db(0, 1, 0, 40)
-    save_metrics_to_db(0, 1, 1, 60)
-    SHIFT = 60
-    now = datetime.utcnow()
-
-    start_date = now - timedelta(minutes=SHIFT)
-    end_date = now
-    metrics = get_month_metrics_for_node(0, 1, start_date, end_date)
-    print(metrics['downtime'], metrics['latency'])
