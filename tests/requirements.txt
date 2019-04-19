@@ -1,12 +1,11 @@
 skale-py==0.56.0
-schedule
-tenacity
-mysql-connector-python-rf
+schedule==0.6.0
+tenacity==5.0.3
+PyMySQL==0.9.3
+peewee==3.7.1
 pingparsing==0.13.2
-schedule
-tenacity
-codecov
-pytest-cov
+python-dotenv==0.10.1
+pytest-cov==2.6.1
 
 
 

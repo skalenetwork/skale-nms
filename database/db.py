@@ -21,174 +21,59 @@
 # Context manager for a database (MySQL)
 #########################################
 
-import mysql.connector
+import os
+
+from dotenv import load_dotenv
+from peewee import BooleanField, DateTimeField, IntegerField, Model, MySQLDatabase, fn
+
+dotenv_path = '.env'
+load_dotenv(dotenv_path)
+
+user = os.environ.get("DB_USER")
+password = os.environ.get("DB_PASSWORD")
+db_name = 'test'
+host = '127.0.0.1'
+
+dbhandle = MySQLDatabase(
+    db_name, user=user,
+    password=password,
+    host=host
+)
 
 
-db_config = {'host': '127.0.0.1',
-             'user': 'user',
-             'password': 'pass',
-             'database': 'test'}
+class BaseModel(Model):
+    class Meta:
+        database = dbhandle
 
 
-class ConnectError(Exception):
-    """Raised if the backend-database cannot be connected to."""
-    pass
+class Report(BaseModel):
+    my_id = IntegerField()
+    node_id = IntegerField()
+    is_alive = BooleanField()
+    latency = IntegerField()
+    stamp = DateTimeField()
 
 
-class CredentialsError(Exception):
-    """Raised if the database is up, but there's a login issue."""
-    pass
+def save_metrics_to_db(my_id, node_id, is_alive, latency):
+    """ Save metrics (downtime and latency) to database"""
+    report = Report(my_id=my_id,
+                    node_id=node_id,
+                    is_alive=is_alive,
+                    latency=latency)
+    report.save()
 
 
-class SQLError(Exception):
-    """Raised if the query caused problems."""
-    pass
+def get_month_metrics_for_node(my_id, node_id, start_date, end_date) -> dict:
+    """ Returns a dict with aggregated month metrics - downtime and latency"""
+
+    results = Report.select(fn.SUM(Report.is_alive).alias('sum'),
+                            fn.AVG(Report.latency).alias('avg')).where((
+                                Report.my_id == my_id) & (Report.node_id == node_id) & (
+                                Report.stamp >= start_date) & (Report.stamp <= end_date))
+
+    return {'downtime': results[0].sum, 'latency': results[0].avg}
 
 
-class UseDatabase:
-
-    def __init__(self, config: dict):
-        """Add the database configuration parameters:
-            host - the IP address of the host running MySQL
-            user - the MySQL username to use
-            password - the user's password
-            database - the name of the database to use
-        """
-        self.configuration = config
-
-    def __enter__(self) -> 'cursor':
-        """Connect to database and create (returns) a DB cursor
-        """
-        try:
-            self.conn = mysql.connector.connect(**self.configuration)
-            self.cursor = self.conn.cursor()
-            return self.cursor
-        except mysql.connector.errors.InterfaceError as err:
-            raise ConnectError(err) from err
-        except mysql.connector.errors.ProgrammingError as err:
-            raise CredentialsError(err) from err
-
-    def __exit__(self, exc_type, exc_value, exc_traceback):
-        """Commits and destroy the cursor and the connection
-        """
-        self.conn.commit()
-        self.cursor.close()
-        self.conn.close()
-        if exc_type is mysql.connector.errors.ProgrammingError:
-            raise SQLError(exc_value)
-        elif exc_type:
-            raise exc_type(exc_value)
-
-
-def save_to_db(my_id, node_id, is_alive, latency):
-
-    try:
-        with UseDatabase(db_config) as cursor:
-            _SQL = f"""
-                   INSERT INTO report (my_id, node_id, is_alive, latency) 
-                   VALUES ({my_id},{node_id},{is_alive},{latency})"""
-
-            cursor.execute(_SQL)
-    except ConnectionError as err:
-        print('Is your database switched on? Error:', str(err))
-    except CredentialsError as err:
-        print('User-id/Password issues. Error:', str(err))
-    except SQLError as err:
-        print('Is your query correct? Error:', str(err))
-    except Exception as err:
-        print("Error:", str(err))
-
-
-def save_events(tx_dt, tx_hash, my_id, bounty, latency, downtime, gas, logger):
-
-    try:
-        with UseDatabase(db_config) as cursor:
-            _SQL = f"""
-                   INSERT INTO bounty (tx_dt, tx_hash, my_id, bounty, latency, downtime, gas) 
-                   VALUES ('{tx_dt}',{tx_hash},{my_id},{bounty},{latency},{downtime},{gas})"""
-
-            cursor.execute(_SQL)
-    except ConnectionError as err:
-        logger.error('Is your database switched on? Error:', str(err))
-        return
-    except CredentialsError as err:
-        logger.error('User-id/Password issues. Error:', str(err))
-    except SQLError as err:
-        logger.error('Is your query correct? Error:', str(err))
-    except Exception as err:
-        logger.error('Error:', str(err))
-
-
-def get_month_metrics_for_node(my_id, node_id, max_date) -> dict:
-    """ Returns a dict with month metrics
-    """
-
-    try:
-        with UseDatabase(db_config) as cursor:
-            _SQL = f"""
-                   SELECT COUNT(*) AS downtime FROM report  
-                   WHERE my_id = {my_id} AND node_id = {node_id} AND is_alive = 1 AND stamp > '{max_date}'
-                """
-            cursor.execute(_SQL)
-            downtime = cursor.fetchone()[0]
-            _SQL = f"""
-                   SELECT AVG(latency) AS latency FROM report 
-                WHERE my_id = {my_id} AND node_id = {node_id} AND stamp > '{max_date}'
-                """
-            print(_SQL)
-            cursor.execute(_SQL)
-            latency = cursor.fetchone()[0]
-            return {'downtime': downtime, 'latency': latency}
-    except ConnectionError as err:
-        print('Is your database switched on? Error:', str(err))
-    except CredentialsError as err:
-        print('User-id/Password issues. Error:', str(err))
-    except SQLError as err:
-        print('Is your query correct? Error:', str(err))
-    except Exception as err:
-        print("Error:", str(err))
-
-
-def get_downtime_for_node(my_id, node_id, max_date):
-
-    with UseDatabase(db_config) as cursor:
-        _SQL = f"""
-            SELECT COUNT(*) AS downtime FROM report 
-            WHERE my_id = {my_id} AND node_id = {node_id} AND is_alive = 1 AND stamp > '{max_date}'
-            """
-        cursor.execute(_SQL)
-        data = cursor.fetchone()[0]
-        return data
-
-
-def get_latency_for_node(my_id, node_id, max_date):
-
-    with UseDatabase(db_config) as cursor:
-        _SQL = f"""
-            SELECT AVG(latency) AS latency FROM report 
-            WHERE my_id = {my_id} AND node_id = {node_id} AND stamp > '{max_date}'
-            """
-        cursor.execute(_SQL)
-        data = cursor.fetchone()[0]
-        return data
-
-
-def clear_db():
-
-    with UseDatabase(db_config) as cursor:
-        _SQL = 'DELETE FROM report'
-        cursor.execute(_SQL)
-
-
-def get_recs(my_id, node_id, max_date):
-    """ Test function - returns all records for defined parameters
-    """
-    with UseDatabase(db_config) as cursor:
-        _SQL = f"""SELECT * FROM report WHERE my_id = {my_id} AND node_id = {node_id} AND stamp > '{max_date}'"""
-        cursor.execute(_SQL)
-        data = cursor.fetchall()
-        return data
-
-
-if __name__ == '__main__':
-    clear_db()
+def clear_all_reports():
+    nrows = Report.delete().execute()
+    print(f'{nrows} records deleted')
