@@ -111,20 +111,19 @@ class Validator(base_agent.BaseAgent):
             self.logger.info(f'metrics; {metrics}, start: {start_date}. end: {node["rep_date"]}')
             self.logger.info(f'Sending verdict for node #{node["id"]}')
             self.logger.debug(f'wallet = {self.local_wallet["address"]}    {self.local_wallet["private_key"]}')
-            if metrics['downtime'] is not None and metrics['latency'] is not None:
-                try:
-                    res = self.skale.manager.send_verdict(self.id, node['id'], metrics['downtime'],
-                                                          int(metrics['latency']), self.local_wallet)
-                except Exception as err:
-                    self.logger.error(f'Failed send verdict for the node #{node["id"]}. Error: {str(err)}', exc_info=True)
-                    break
+            try:
+                res = self.skale.manager.send_verdict(self.id, node['id'], metrics['downtime'],
+                                                      int(metrics['latency']), self.local_wallet)
+            except Exception as err:
+                self.logger.error(f'Failed send verdict for the node #{node["id"]}. Error: {str(err)}', exc_info=True)
+                break
 
-                receipt = await_receipt(self.skale.web3, res['tx'])
-                if receipt['status'] == 1:
-                    self.logger.info('The verdict was successfully sent')
-                if receipt['status'] == 0:
-                    self.logger.info('The verdict was not sent - transaction failed')
-                self.logger.info(f'Receipt: {receipt}')
+            receipt = await_receipt(self.skale.web3, res['tx'])
+            if receipt['status'] == 1:
+                self.logger.info('The verdict was successfully sent')
+            if receipt['status'] == 0:
+                self.logger.info('The verdict was not sent - transaction failed')
+            self.logger.info(f'Receipt: {receipt}')
 
     def job(self) -> None:
         """
