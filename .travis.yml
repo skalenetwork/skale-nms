@@ -3,6 +3,7 @@ python:
 - '3.6'
 cache: pip
 install:
+- apt-get install libmysqlclient-dev
 - pip install -r tests/requirements.txt
 script:
 - export IS_TEST=true

@@ -5,6 +5,7 @@ skale-py==0.61.0
 pingparsing==0.13.2
 schedule==0.6.0
 tenacity==5.0.3
-PyMySQL==0.9.3
+mysqlclient==1.4.2.post1
 peewee==3.7.1
 python-dotenv==0.10.1
+pyyaml==3.13
