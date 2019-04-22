@@ -26,8 +26,12 @@ import os
 from dotenv import load_dotenv
 from peewee import BooleanField, DateTimeField, IntegerField, Model, MySQLDatabase, fn
 
-dotenv_path = '.env'
-load_dotenv(dotenv_path)
+from tools.helper import TEST_DATA_DIR_PATH
+
+ENV_FILE = ".env"
+DOTENV_PATH = os.path.join(TEST_DATA_DIR_PATH, ENV_FILE)
+
+load_dotenv(DOTENV_PATH)
 
 user = os.environ.get("DB_USER")
 password = os.environ.get("DB_PASSWORD")

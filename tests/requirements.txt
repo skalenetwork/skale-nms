@@ -6,6 +6,7 @@ peewee==3.7.1
 pingparsing==0.13.2
 python-dotenv==0.10.1
 pytest-cov==2.6.1
+pyyaml==3.13
 
 
 

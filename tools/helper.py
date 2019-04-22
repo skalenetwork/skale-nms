@@ -30,7 +30,8 @@ from tools.config import CUSTOM_CONTRACTS_PATH, LOCAL_WALLET_FILENAME, LOCAL_WAL
 NETWORK = 'do'
 ENV_FILE = "envs.yml"
 ABI_FILE = "data.json"
-TEST_DATA_DIR = os.path.join(PROJECT_DIR, "test_data")
+TEST_DATA_DIR = "test_data"
+TEST_DATA_DIR_PATH = os.path.join(PROJECT_DIR, TEST_DATA_DIR)
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +42,7 @@ def get_log_filepath(agent_name, node_id):
         log_folder = LOG_FOLDER
         log_filename = agent_name.lower() + ".log"
     else:
-        log_folder = TEST_DATA_DIR
+        log_folder = TEST_DATA_DIR_PATH
         log_filename = agent_name.lower() + '_' + str(node_id) + ".log"
     log_filepath = os.path.join(log_folder, log_filename)
 
@@ -53,7 +54,7 @@ def get_local_wallet_filepath(node_id):
     if node_id is None:
         local_wallet_filepath = LOCAL_WALLET_FILEPATH
     else:
-        local_wallet_filepath = os.path.join(TEST_DATA_DIR, LOCAL_WALLET_FILENAME) + str(node_id)
+        local_wallet_filepath = os.path.join(TEST_DATA_DIR_PATH, LOCAL_WALLET_FILENAME) + str(node_id)
     print(local_wallet_filepath)
 
     return local_wallet_filepath
@@ -65,7 +66,7 @@ def init_skale():
     rpc_port = os.environ.get("RPC_PORT")
 
     if rpc_ip is None:
-        env_file_path = os.path.join(TEST_DATA_DIR, ENV_FILE)
+        env_file_path = os.path.join(TEST_DATA_DIR_PATH, ENV_FILE)
         with open(env_file_path, 'r') as stream:
             try:
                 envs = yaml.load(stream)
@@ -78,7 +79,7 @@ def init_skale():
 
     is_test = os.environ.get("IS_TEST", "False")
     is_test = bool(util.strtobool(is_test))
-    abi_filepath = os.path.join(TEST_DATA_DIR, ABI_FILE) if is_test else CUSTOM_CONTRACTS_PATH
+    abi_filepath = os.path.join(TEST_DATA_DIR_PATH, ABI_FILE) if is_test else CUSTOM_CONTRACTS_PATH
     skale = Skale(BlockchainEnv.CUSTOM, rpc_ip, rpc_port, abi_filepath)
 
     return skale
