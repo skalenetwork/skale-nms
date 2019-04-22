@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ver=0.1.7
+ver=0.1.8
 
 docker build -t skalelabshub/events-collect:${ver} .. -f ../DockerfileEvents
 echo "Skale Events collector v${ver} was built successfully" &&

@@ -6,7 +6,6 @@ WORKDIR /usr/src/events
 RUN apt-get update && apt install -y libsecp256k1-dev
 
 COPY ./events ./events
-COPY ./agent   ./agent
 COPY ./tools   ./tools
 COPY ./database   ./database
 

@@ -3,10 +3,9 @@ FROM python:3.6.5
 RUN mkdir /usr/src/sla
 WORKDIR /usr/src/sla
 
-RUN apt-get update && apt install -y libsecp256k1-dev
+RUN apt-get update && apt install -y libsecp256k1-dev libmysqlclient-dev
 
 COPY ./sla ./sla
-COPY ./agent   ./agent
 COPY ./tools   ./tools
 COPY ./database   ./database
 
