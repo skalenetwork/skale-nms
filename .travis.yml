@@ -2,8 +2,10 @@ language: python
 python:
 - '3.6'
 cache: pip
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install -y libmysqlclient-dev
 install:
-- apt-get install libmysqlclient-dev
 - pip install -r tests/requirements.txt
 script:
 - export IS_TEST=true
