@@ -7,7 +7,6 @@ RUN apt-get update && apt install -y libsecp256k1-dev default-libmysqlclient-dev
 
 COPY ./sla ./sla
 COPY ./tools   ./tools
-COPY ./database   ./database
 
 RUN pip install --no-cache-dir -r ./sla/requirements.txt
 
