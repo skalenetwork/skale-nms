@@ -23,13 +23,12 @@ checks its health metrics and sends transactions with average metrics to CS when
 
 import socket
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from skale.utils.helper import await_receipt
 
-from database import db
 from sla import ping
-from tools import base_agent
+from tools import base_agent, db
 from tools.helper import init_skale
 
 

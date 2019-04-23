@@ -19,7 +19,7 @@
 
 from datetime import datetime, timedelta
 
-from database import db
+from tools import db
 
 
 def setup_module(module):
