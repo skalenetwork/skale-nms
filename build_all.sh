@@ -6,5 +6,3 @@ cd ../bounty/
 ./build.sh
 cd ../events/
 ./build.sh
-cd ../database/
-./build.sh

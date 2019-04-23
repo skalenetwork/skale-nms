@@ -22,12 +22,10 @@ from datetime import datetime
 
 from skale import EventListener
 
-from database import db
 from tools import base_agent
 
 EVENTS_POLL_INTERVAL = 5
 skale = base_agent.skale
-# EventListener = skale.EventListener
 
 
 class EventCollector(base_agent.BaseAgent):
@@ -85,10 +83,10 @@ class EventCollector(base_agent.BaseAgent):
             self.logger.info(f'getBounty transaction hash: {event["transactionHash"]}')
             tx_dt = datetime.utcfromtimestamp(event["args"]["time"])
 
-            db.save_events(tx_dt, event['transactionHash'].hex(),
-                           event['args']['nodeIndex'], float(event['args']['bounty']),
-                           event['args']['averageLatency'], event['args']['averageDowntime'],
-                           event['args']['gasSpend'], self.logger)
+            # db.save_events(tx_dt, event['transactionHash'].hex(),
+            #                event['args']['nodeIndex'], float(event['args']['bounty']),
+            #                event['args']['averageLatency'], event['args']['averageDowntime'],
+            #                event['args']['gasSpend'], self.logger)
 
     def run(self) -> None:
         """

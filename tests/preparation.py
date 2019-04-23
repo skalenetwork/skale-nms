@@ -23,9 +23,9 @@ import skale.utils.helper as Helper
 
 from tools.config import LOCAL_WALLET_FILENAME
 from tools.config_storage import ConfigStorage
-from tools.helper import TEST_DATA_DIR, init_skale
+from tools.helper import TEST_DATA_DIR_PATH, init_skale
 
-TEST_LOCAL_WALLET_PATH = os.path.join(TEST_DATA_DIR, LOCAL_WALLET_FILENAME)
+TEST_LOCAL_WALLET_PATH = os.path.join(TEST_DATA_DIR_PATH, LOCAL_WALLET_FILENAME)
 
 skale = init_skale()
 

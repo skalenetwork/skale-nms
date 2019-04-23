@@ -23,13 +23,12 @@ checks its health metrics and sends transactions with average metrics to CS when
 
 import socket
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from skale.utils.helper import await_receipt
 
-from database import db
 from sla import ping
-from tools import base_agent
+from tools import base_agent, db
 from tools.helper import init_skale
 
 
@@ -103,9 +102,12 @@ class Validator(base_agent.BaseAgent):
             self.logger.info(f'Nodes for report: {nodes_for_report}')
         for node in nodes_for_report:
             reward_period = self.skale.validators_data.get_reward_period()
-            start_date = node['rep_date'] - timedelta(seconds=reward_period)
-            metrics = db.get_month_metrics_for_node(self.id, node['id'], start_date, node['rep_date'])
-
+            start_date = node['rep_date'] - reward_period
+            try:
+                metrics = db.get_month_metrics_for_node(self.id, node['id'], start_date, node['rep_date'])
+            except Exception as err:
+                self.logger.exception(f'Failed getting month metrics from db: {err}')
+            self.logger.info(f'metrics; {metrics}, start: {start_date}. end: {node["rep_date"]}')
             self.logger.info(f'Sending verdict for node #{node["id"]}')
             self.logger.debug(f'wallet = {self.local_wallet["address"]}    {self.local_wallet["private_key"]}')
             try:

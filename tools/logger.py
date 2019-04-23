@@ -25,7 +25,7 @@ from logging import Formatter, StreamHandler
 
 from tools.config import LOG_BACKUP_COUNT, LOG_FILE_SIZE_BYTES, LOG_FOLDER, LOG_FORMAT, PROJECT_DIR
 
-TEST_DATA_DIR = os.path.join(PROJECT_DIR, "test_data")
+from tools.helper import TEST_DATA_DIR_PATH
 
 
 def init_logger(log_file_path):
@@ -40,7 +40,7 @@ def init_logger(log_file_path):
 
     stream_handler = StreamHandler(sys.stderr)
     stream_handler.setFormatter(formatter)
-    stream_handler.setLevel(logging.INFO)
+    stream_handler.setLevel(logging.DEBUG)
     handlers.append(stream_handler)
 
     logging.basicConfig(level=logging.DEBUG, handlers=handlers)
@@ -57,7 +57,7 @@ def get_log_filepath(agent_name, node_id):
         log_folder = LOG_FOLDER
         log_filename = agent_name.lower() + ".log"
     else:
-        log_folder = TEST_DATA_DIR
+        log_folder = TEST_DATA_DIR_PATH
         log_filename = agent_name.lower() + '_' + str(node_id) + ".log"
     log_filepath = os.path.join(log_folder, log_filename)
 
