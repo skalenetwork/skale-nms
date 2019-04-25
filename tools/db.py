@@ -37,11 +37,13 @@ user = os.environ.get("DB_USER")
 password = os.environ.get("DB_PASSWORD")
 db_name = 'test'
 host = '127.0.0.1'
+port = '3308'
 
 dbhandle = MySQLDatabase(
     db_name, user=user,
     password=password,
-    host=host
+    host=host,
+    port=port
 )
 
 
