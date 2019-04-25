@@ -24,24 +24,24 @@ from tools import db
 
 def test_pass():
     assert True
-# def setup_module(module):
-#     db.clear_all_reports()
-#
-#
-# def test_get_metrics():
-#     db.save_metrics_to_db(0, 1, 'true', 40)
-#     db.save_metrics_to_db(0, 1, 'true', 60)
-#     now = datetime.utcnow()
-#     data = db.get_month_metrics_for_node(0, 1, now - timedelta(minutes=1), now)
-#     print(data)
-#     assert data['latency'] == int(50)
-#     assert data['downtime'] == 2
-#
-#
-# def test_clear_all_reports():
-#     db.clear_all_reports()
-#     now = datetime.utcnow()
-#     data = db.get_month_metrics_for_node(0, 1, now - timedelta(minutes=1), now)
-#     print(data)
-#     assert data['latency'] == 0
-#     assert data['downtime'] == 0
+def setup_module(module):
+    db.clear_all_reports()
+
+
+def test_get_metrics():
+    db.save_metrics_to_db(0, 1, 'true', 40)
+    db.save_metrics_to_db(0, 1, 'true', 60)
+    now = datetime.utcnow()
+    data = db.get_month_metrics_for_node(0, 1, now - timedelta(minutes=1), now)
+    print(data)
+    assert data['latency'] == int(50)
+    assert data['downtime'] == 2
+
+
+def test_clear_all_reports():
+    db.clear_all_reports()
+    now = datetime.utcnow()
+    data = db.get_month_metrics_for_node(0, 1, now - timedelta(minutes=1), now)
+    print(data)
+    assert data['latency'] == 0
+    assert data['downtime'] == 0
