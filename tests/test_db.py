@@ -41,5 +41,5 @@ def test_clear_all_reports():
     now = datetime.utcnow()
     data = db.get_month_metrics_for_node(0, 1, now - timedelta(minutes=1), now)
     print(data)
-    assert data['latency'] is None
-    assert data['downtime'] is None
+    assert data['latency'] == 0
+    assert data['downtime'] == 0
