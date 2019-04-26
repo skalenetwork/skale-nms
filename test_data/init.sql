@@ -1,4 +1,4 @@
-USE test;
+USE db_skale;
 CREATE TABLE `report` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `my_id` int(11) unsigned NOT NULL,
