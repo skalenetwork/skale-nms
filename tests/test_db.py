@@ -22,13 +22,11 @@ from datetime import datetime, timedelta
 from tools import db
 
 
-def test_pass():
-    assert True
 def setup_module(module):
     db.clear_all_reports()
 
 
-def test_get_metrics():
+def test_get_month_metrics():
     db.save_metrics_to_db(0, 1, 'true', 40)
     db.save_metrics_to_db(0, 1, 'true', 60)
     now = datetime.utcnow()
