@@ -18,6 +18,6 @@ install:
 script:
 - export IS_TEST=true
 - export PYTHONPATH=$PYTHONPATH:.
-- py.test -v -s --cov=tools/ tests/test_db.py
+- py.test -v -s --cov=sla/ tests/test_sla.py
 after_success:
 - codecov -t $CODECOV_TOKEN
