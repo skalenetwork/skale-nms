@@ -17,9 +17,6 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#########################################
-# Context manager for a database (MySQL)
-#########################################
 
 import os
 
@@ -35,13 +32,15 @@ load_dotenv(DOTENV_PATH)
 
 user = os.environ.get("DB_USER")
 password = os.environ.get("DB_PASSWORD")
-db_name = 'test'
+db_name = 'db_skale'
 host = '127.0.0.1'
+port = 3307
 
 dbhandle = MySQLDatabase(
     db_name, user=user,
     password=password,
-    host=host
+    host=host,
+    port=port
 )
 
 

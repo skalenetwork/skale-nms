@@ -1,15 +1,23 @@
 language: python
+services:
+  - docker
 python:
 - '3.6'
 cache: pip
+addons:
+  apt:
+    packages:
+      - docker-ce
 before_install:
   - sudo apt-get update
   - sudo apt-get install -y libmysqlclient-dev
+  - docker run -d --restart=always --name skale-mysql -e MYSQL_ROOT_PASSWORD=$DB_ROOT_PASSWORD -e MYSQL_DATABASE=db_skale -e MYSQL_USER=$DB_USER -e MYSQL_PASSWORD=$DB_PASSWORD -v $TRAVIS_BUILD_DIR/test_data/init.sql:/docker-entrypoint-initdb.d/init.sql -p 3307:3306  mysql/mysql-server:5.7
+  - docker -v
 install:
 - pip install -r tests/requirements.txt
 script:
 - export IS_TEST=true
 - export PYTHONPATH=$PYTHONPATH:.
-- py.test -v -s --cov=sla/ tests/test_sla.py
+- py.test -v -s --cov=tools/ tests/test_db.py
 after_success:
 - codecov -t $CODECOV_TOKEN
