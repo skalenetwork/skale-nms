@@ -76,6 +76,8 @@ def test_get_validated_nodes():
     assert type(nodes) is list
     reported_nodes = validator.validate_and_get_reported_nodes(nodes)
     assert type(reported_nodes) is list
+    err_send_verdicts_count = validator.send_verdicts(reported_nodes)
+    assert err_send_verdicts_count == 0
     # print(f'Reported nodes = {reported_nodes}')
 
 

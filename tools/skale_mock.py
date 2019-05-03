@@ -17,8 +17,11 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import struct
 import socket
+import struct
+from datetime import datetime
+
+REWARD_PERIOD = 600
 
 
 def node_to_bytes(node_id, date, node_ip):
@@ -41,18 +44,36 @@ class ValidatorsData:
     def get_validated_array(self, node_id=None, account=None):
         rep_date0 = 1556627743
         rep_date1 = 1556928000
-        ip0 = '0.0.0.0'
-        ip1 = '0.0.0.1'
-        print(f'node id = {node_id}')
-        bytes_node0 = node_to_bytes(node_id + 1, rep_date0, ip0)
-        bytes_node1 = node_to_bytes(node_id + 2, rep_date1, ip1)
+        ip = '0.0.0.0'
+        bytes_node0 = node_to_bytes(node_id + 1, rep_date0, ip)
+        bytes_node1 = node_to_bytes(node_id + 2, rep_date1, ip)
         return [bytes_node0, bytes_node1]
 
-    def get_reward_period():
-        return 600
+    def get_reward_period(self):
+        return REWARD_PERIOD
+
+
+class Manager:
+    def send_verdict(self, my_node_id, node_id, downtime, latency, wallet):
+        return {'tx': 0x0}
+
+
+class NodesData:
+    def get(self, node_id=None):
+        utc_now = datetime.utcnow()
+        last_reward_date = utc_now - REWARD_PERIOD
+        return {'last_reward_date': last_reward_date}
+
+
+class Eth:
+    def getTransactionReceipt(self, tx):
+        return {'status': 1}
 
 
 class Web3:
+    def __init__(self):
+        self.eth = Eth()
+
     def toChecksumAddress(self, account=None):
         return account
 
@@ -62,10 +83,9 @@ class Skale:
         self.validators_data = ValidatorsData()
         self.web3 = Web3()
         self.local_wallet = {'address': None}
+        self.manager = Manager()
 
 
 def init_skale():
     skale = Skale(None)
     return skale
-
-
