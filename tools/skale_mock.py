@@ -33,20 +33,23 @@ def node_to_bytes(node_id, date, node_ip):
 
 
 def bytes_to_node(node_in_bytes):
-
     node_id = int.from_bytes(node_in_bytes[:14], byteorder='big')
     report_date = int.from_bytes(node_in_bytes[14:28], byteorder='big')
     node_ip = socket.inet_ntoa(node_in_bytes[28:])
-    return node_id, report_date, node_ip
+    return {'id': node_id, 'ip': node_ip, 'rep_date': report_date}
+
+
+# Set of classes for mocking sla/bounty features of skale.py for testing without real SCs
 
 
 class ValidatorsData:
     def get_validated_array(self, node_id=None, account=None):
-        rep_date0 = 1556627743
-        rep_date1 = 1556928000
-        ip = '0.0.0.0'
-        bytes_node0 = node_to_bytes(node_id + 1, rep_date0, ip)
-        bytes_node1 = node_to_bytes(node_id + 2, rep_date1, ip)
+        now = int(datetime.utcnow().timestamp())
+        rep_date0 = now
+        rep_date1 = now + REWARD_PERIOD
+        mock_ip = '0.0.0.0'
+        bytes_node0 = node_to_bytes(node_id + 1, rep_date0, mock_ip)
+        bytes_node1 = node_to_bytes(node_id + 2, rep_date1, mock_ip)
         return [bytes_node0, bytes_node1]
 
     def get_reward_period(self):
@@ -79,6 +82,7 @@ class Web3:
 
 
 class Skale:
+    """Mock class for testing SLA and Bounty agents"""
     def __init__(self, skale_env, ip=None, ws_port=None, abi_filepath=None):
         self.validators_data = ValidatorsData()
         self.web3 = Web3()
