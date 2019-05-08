@@ -28,6 +28,8 @@ from tools.skale_mock import init_skale
 
 TEST_LOCAL_WALLET_PATH = os.path.join(TEST_DATA_DIR_PATH, LOCAL_WALLET_FILENAME)
 ID = 0
+IP_GOOD = '8.8.8.8'
+IP_BAD = '192.0.2.0'
 
 
 def setup_module(module):
@@ -35,7 +37,7 @@ def setup_module(module):
 
 
 def test_get_node_metrics_pos():
-    ip = '8.8.8.8'
+    ip = IP_GOOD
     metrics_ok = ping.get_node_metrics(ip)
     latency = metrics_ok['latency']
     downtime = metrics_ok['is_alive']
@@ -47,7 +49,7 @@ def test_get_node_metrics_pos():
 
 
 def test_get_node_metrics_neg():
-    ip = '192.0.2.0'
+    ip = IP_BAD
     metrics_ok = ping.get_node_metrics(ip)
     latency = metrics_ok['latency']
     downtime = metrics_ok['is_alive']
@@ -69,7 +71,7 @@ def test_generate_node_metrics():
     assert type(downtime) is bool
 
 
-def test_get_validated_nodes():
+def test_sla_with_mock_skale():
     skale = init_skale()
     validator = sla.Validator(skale, ID)
     nodes = validator.get_validated_nodes()
@@ -78,7 +80,7 @@ def test_get_validated_nodes():
     assert type(reported_nodes) is list
     err_send_verdicts_count = validator.send_verdicts(reported_nodes)
     assert err_send_verdicts_count == 0
-    # print(f'Reported nodes = {reported_nodes}')
+    validator.job()
 
 
 def prepare_wallets(count):
