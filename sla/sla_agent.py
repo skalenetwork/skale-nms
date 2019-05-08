@@ -100,6 +100,7 @@ class Validator(base_agent.BaseAgent):
         else:
             self.logger.info(f'Number of nodes for report: {len(nodes_for_report)}')
             self.logger.info(f'Nodes for report: {nodes_for_report}')
+        err_status = 0
         for node in nodes_for_report:
             reward_period = self.skale.validators_data.get_reward_period()
             start_date = node['rep_date'] - reward_period
@@ -122,7 +123,9 @@ class Validator(base_agent.BaseAgent):
                 self.logger.info('The verdict was successfully sent')
             if receipt['status'] == 0:
                 self.logger.info('The verdict was not sent - transaction failed')
+                err_status += err_status
             self.logger.info(f'Receipt: {receipt}')
+            return err_status
 
     def job(self) -> None:
         """
