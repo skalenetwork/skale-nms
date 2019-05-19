@@ -28,7 +28,7 @@ pip install -r sla/requirements.txt
 #### Testing
 ##### Requirements for tests
 To run tests locally you need to have MySQL v5.7 installed and database 'db_skale' and some tables created (see below). 
-Also you have to change the name of `'test_data/.env_template'` to `'test_data/.env'` and fill it out with your environment variables:
+Also you have to change the name of `test_data/.env_template` to `test_data/.env` and fill it out with your environment variables:
 ```
 IS_TEST=true #leave it as is
 ETH_PRIVATE_KEY='YOUR_PRIVATE_KEY' 
@@ -54,7 +54,7 @@ MySQL on port 3307 (not 3306)
 ```
 py.test -v tests/test_sla.py
 ```
-### Build and publish
+### Build and run
 For building SLA agent docker container and pushing it to Docker Hub use:
 ```bash
 cd sla
@@ -78,7 +78,7 @@ Python >= 3.6.5
 pip install -r bounty/requirements.txt
 ```
 
-### Build and publish
+### Build and run
 For building Bounty collector docker container and pushing it to Docker Hub use:
 ```bash
 cd bounty
@@ -90,7 +90,7 @@ cd bounty
 sh ./install.sh
 ```
 ## Build and publish all containers
-To build docker containers bith for SLA agent and Bounty collector and push them to Docker Hub use:
+To build docker containers both for SLA agent and Bounty collector and push them to Docker Hub use:
 ```bash
 sh ./build_all.sh
 ```
