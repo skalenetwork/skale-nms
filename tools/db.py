@@ -21,7 +21,7 @@
 import os
 
 from dotenv import load_dotenv
-from peewee import BooleanField, DateTimeField, IntegerField, Model, MySQLDatabase, fn
+from peewee import BooleanField, DateTimeField, IntegerField, Model, MySQLDatabase, CharField, fn
 
 from tools.helper import TEST_DATA_DIR_PATH
 
@@ -65,6 +65,7 @@ class Bounty(BaseModel):
     latency = IntegerField()
     gas = IntegerField()
     stamp = DateTimeField()
+    tx_hash = CharField()
 
 
 def save_metrics_to_db(my_id, node_id, is_alive, latency):
@@ -83,7 +84,8 @@ def save_events(tx_dt, tx_hash, my_id, bounty, latency, downtime, gas):
                   bounty=bounty,
                   downtime=downtime,
                   latency=latency,
-                  gas=gas)
+                  gas=gas,
+                  tx_hash=tx_hash)
 
     data.save()
 

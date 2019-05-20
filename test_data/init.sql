@@ -18,5 +18,7 @@ CREATE TABLE `bounty` (
   `downtime` int(11) unsigned NOT NULL,
   `gas` int(11) unsigned NOT NULL,
   `stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `tx_hash` CHAR(66) NOT NULL DEFAULT '0x'
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4196 DEFAULT CHARSET=utf8;
+
