@@ -80,13 +80,13 @@ class EventCollector(base_agent.BaseAgent):
                              f'averageLatency: {event["args"]["averageLatency"]}, '
                              f'averageDowntime: {event["args"]["averageDowntime"]}')
 
-            self.logger.info(f'getBounty transaction hash: {event["transactionHash"]}')
+            self.logger.info(f'getBounty transaction hash: {event["transactionHash"].hex()}')
             tx_dt = datetime.utcfromtimestamp(event["args"]["time"])
 
-            # db.save_events(tx_dt, event['transactionHash'].hex(),
-            #                event['args']['nodeIndex'], float(event['args']['bounty']),
-            #                event['args']['averageLatency'], event['args']['averageDowntime'],
-            #                event['args']['gasSpend'], self.logger)
+            db.save_events(tx_dt, event['transactionHash'].hex(),
+                           event['args']['nodeIndex'], float(event['args']['bounty']),
+                           event['args']['averageLatency'], event['args']['averageDowntime'],
+                           event['args']['gasSpend'])
 
     def run(self) -> None:
         """

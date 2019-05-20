@@ -57,6 +57,16 @@ class Report(BaseModel):
     stamp = DateTimeField()
 
 
+class Bounty(BaseModel):
+    my_id = IntegerField()
+    tx_dt = DateTimeField()
+    bounty = IntegerField()
+    downtime = IntegerField()
+    latency = IntegerField()
+    gas = IntegerField()
+    stamp = DateTimeField()
+
+
 def save_metrics_to_db(my_id, node_id, is_alive, latency):
     """ Save metrics (downtime and latency) to database"""
     report = Report(my_id=my_id,
@@ -64,6 +74,18 @@ def save_metrics_to_db(my_id, node_id, is_alive, latency):
                     is_alive=is_alive,
                     latency=latency)
     report.save()
+
+
+def save_events(tx_dt, tx_hash, my_id, bounty, latency, downtime, gas):
+    """ Save bounty events data to database"""
+    data = Bounty(my_id=my_id,
+                  tx_dt=tx_dt,
+                  bounty=bounty,
+                  downtime=downtime,
+                  latency=latency,
+                  gas=gas)
+
+    data.save()
 
 
 def get_month_metrics_for_node(my_id, node_id, start_date, end_date) -> dict:
