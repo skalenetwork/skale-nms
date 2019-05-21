@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ver=0.1.8
+ver=0.2.0
 
 docker build -t skalelabshub/sla-manager:${ver} .. -f ../DockerfileSLA
 echo "Skale SLA manager v${ver} was built successfully" &&
