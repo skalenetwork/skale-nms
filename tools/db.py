@@ -98,7 +98,9 @@ def get_month_metrics_for_node(my_id, node_id, start_date, end_date) -> dict:
                                 Report.my_id == my_id) & (Report.node_id == node_id) & (
                                 Report.stamp >= start_date) & (Report.stamp <= end_date))
 
-    return {'downtime': results[0].sum or 0, 'latency': results[0].avg or 0}
+    downtime = int(results[0].sum) if results[0].sum is not None else 0
+    latency = results[0].avg if results[0].avg is not None else 0
+    return {'downtime': downtime, 'latency': latency}
 
 
 def clear_all_reports():
