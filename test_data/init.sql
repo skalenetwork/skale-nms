@@ -11,8 +11,9 @@ CREATE TABLE `report` (
 
 CREATE TABLE `bounty` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tx_dt` DATETIME NOT NULL DEFAULT '2000-01-01 00:00:00',
   `my_id` int(11) unsigned NOT NULL,
+  `tx_dt` DATETIME NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `tx_hash` CHAR(66) NOT NULL DEFAULT '0x',
   `bounty` DECIMAL(65,0) unsigned NOT NULL,
   `latency` int(11) unsigned NOT NULL,
   `downtime` int(11) unsigned NOT NULL,
@@ -20,3 +21,4 @@ CREATE TABLE `bounty` (
   `stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4196 DEFAULT CHARSET=utf8;
+

@@ -21,7 +21,7 @@
 import os
 
 from dotenv import load_dotenv
-from peewee import BooleanField, DateTimeField, IntegerField, Model, MySQLDatabase, fn
+from peewee import BooleanField, DateTimeField, IntegerField, Model, MySQLDatabase, CharField, fn
 
 from tools.helper import TEST_DATA_DIR_PATH
 
@@ -57,6 +57,17 @@ class Report(BaseModel):
     stamp = DateTimeField()
 
 
+class Bounty(BaseModel):
+    my_id = IntegerField()
+    tx_dt = DateTimeField()
+    bounty = IntegerField()
+    downtime = IntegerField()
+    latency = IntegerField()
+    gas = IntegerField()
+    stamp = DateTimeField()
+    tx_hash = CharField()
+
+
 def save_metrics_to_db(my_id, node_id, is_alive, latency):
     """ Save metrics (downtime and latency) to database"""
     report = Report(my_id=my_id,
@@ -64,6 +75,19 @@ def save_metrics_to_db(my_id, node_id, is_alive, latency):
                     is_alive=is_alive,
                     latency=latency)
     report.save()
+
+
+def save_events(tx_dt, tx_hash, my_id, bounty, latency, downtime, gas):
+    """ Save bounty events data to database"""
+    data = Bounty(my_id=my_id,
+                  tx_dt=tx_dt,
+                  bounty=bounty,
+                  downtime=downtime,
+                  latency=latency,
+                  gas=gas,
+                  tx_hash=tx_hash)
+
+    data.save()
 
 
 def get_month_metrics_for_node(my_id, node_id, start_date, end_date) -> dict:
@@ -74,7 +98,9 @@ def get_month_metrics_for_node(my_id, node_id, start_date, end_date) -> dict:
                                 Report.my_id == my_id) & (Report.node_id == node_id) & (
                                 Report.stamp >= start_date) & (Report.stamp <= end_date))
 
-    return {'downtime': results[0].sum or 0, 'latency': results[0].avg or 0}
+    downtime = int(results[0].sum) if results[0].sum is not None else 0
+    latency = results[0].avg if results[0].avg is not None else 0
+    return {'downtime': downtime, 'latency': latency}
 
 
 def clear_all_reports():

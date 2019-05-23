@@ -32,7 +32,7 @@ def test_get_month_metrics():
     now = datetime.utcnow()
     data = db.get_month_metrics_for_node(0, 1, now - timedelta(minutes=1), now)
     print(data)
-    assert data['latency'] == int(50)
+    assert data['latency'] == 50
     assert data['downtime'] == 2
 
 

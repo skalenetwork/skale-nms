@@ -56,7 +56,7 @@ def test_get_node_metrics_neg():
     print(metrics_ok)
 
     assert type(latency) is int
-    assert latency == 1000
+    assert latency == 10000
     assert downtime is False
 
 

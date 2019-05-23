@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ver=0.1.8
+ver=0.2.1
 
 docker build -t skalelabshub/bounty-agent:${ver} .. -f ../DockerfileBounty
 echo "Skale Bounty agent v${ver} was built successfully" &&

@@ -37,11 +37,11 @@ def get_node_metrics(host) -> dict:
                 result).as_dict()['packet_loss_count'] > 0:
         # or ping_parser.parse(result).as_dict()['packet_loss_rate'] > 10.0
         is_alive = False
-        latency = 1000
+        latency = 10000
         print('No connection to host!')
     else:
         is_alive = True
-        latency = ping_parser.parse(result).as_dict()['rtt_avg']
+        latency = ping_parser.parse(result).as_dict()['rtt_avg'] * 1000
         print('Ping ok!')
 
     return {'is_alive': is_alive, 'latency': latency}

@@ -105,15 +105,15 @@ class Validator(base_agent.BaseAgent):
             reward_period = self.skale.validators_data.get_reward_period()
             start_date = node['rep_date'] - reward_period
             try:
-                metrics = db.get_month_metrics_for_node(self.id, node['id'], start_date, node['rep_date'])
+                metrics = db.get_month_metrics_for_node(self.id, node['id'], datetime.utcfromtimestamp(start_date), datetime.utcfromtimestamp(node['rep_date']))
             except Exception as err:
                 self.logger.exception(f'Failed getting month metrics from db: {err}')
-            self.logger.info(f'metrics; {metrics}, start: {start_date}. end: {node["rep_date"]}')
+            self.logger.info(f'metrics: {metrics}')
             self.logger.info(f'Sending verdict for node #{node["id"]}')
             self.logger.debug(f'wallet = {self.local_wallet["address"]}    {self.local_wallet["private_key"]}')
             try:
                 res = self.skale.manager.send_verdict(self.id, node['id'], metrics['downtime'],
-                                                      int(metrics['latency']), self.local_wallet)
+                                                      metrics['latency'], self.local_wallet)
             except Exception as err:
                 self.logger.error(f'Failed send verdict for the node #{node["id"]}. Error: {str(err)}', exc_info=True)
                 break
@@ -125,7 +125,7 @@ class Validator(base_agent.BaseAgent):
                 self.logger.info('The verdict was not sent - transaction failed')
                 err_status += err_status
             self.logger.info(f'Receipt: {receipt}')
-            return err_status
+        return err_status
 
     def job(self) -> None:
         """

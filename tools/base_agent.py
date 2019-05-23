@@ -56,7 +56,7 @@ class BaseAgent:
 
         self.logger.debug(f"Node ID = {self.id}")
         self.logger.debug(f"Account = {self.local_wallet['address']}")
-        self.logger.info(f"Initialization of {self.agent_name} is completed")
+        self.logger.info(f"Initialization of {self.agent_name} (id = {self.id}) is completed")
 
     @tenacity.retry(
         wait=tenacity.wait_fixed(10),

@@ -22,16 +22,16 @@ from datetime import datetime
 
 from skale import EventListener
 
-from tools import base_agent
+from tools import base_agent, db
+from tools.helper import init_skale
 
 EVENTS_POLL_INTERVAL = 5
-skale = base_agent.skale
 
 
 class EventCollector(base_agent.BaseAgent):
 
-    def __init__(self, node_id=None):
-        super().__init__(node_id)
+    def __init__(self, skale, node_id=None):
+        super().__init__(skale, node_id)
         try:
             new_node_event = skale.nodes.contract.events.NodeCreated
             new_node_listener = EventListener(new_node_event, self.new_node_created_handler, EVENTS_POLL_INTERVAL)
@@ -80,13 +80,13 @@ class EventCollector(base_agent.BaseAgent):
                              f'averageLatency: {event["args"]["averageLatency"]}, '
                              f'averageDowntime: {event["args"]["averageDowntime"]}')
 
-            self.logger.info(f'getBounty transaction hash: {event["transactionHash"]}')
+            self.logger.info(f'getBounty transaction hash: {event["transactionHash"].hex()}')
             tx_dt = datetime.utcfromtimestamp(event["args"]["time"])
 
-            # db.save_events(tx_dt, event['transactionHash'].hex(),
-            #                event['args']['nodeIndex'], float(event['args']['bounty']),
-            #                event['args']['averageLatency'], event['args']['averageDowntime'],
-            #                event['args']['gasSpend'], self.logger)
+            db.save_events(tx_dt, str(event['transactionHash'].hex()),
+                           event['args']['nodeIndex'], float(event['args']['bounty']),
+                           event['args']['averageLatency'], event['args']['averageDowntime'],
+                           event['args']['gasSpend'])
 
     def run(self) -> None:
         """
@@ -100,9 +100,10 @@ if __name__ == '__main__':
 
     if len(sys.argv) > 1:
         is_debug_mode = True
-        _node_id = int(sys.argv[1])
+        node_id = int(sys.argv[1])
     else:
-        _node_id = None
+        node_id = None
 
-    event_collector = EventCollector(_node_id)
+    skale = init_skale()
+    event_collector = EventCollector(skale, node_id)
     event_collector.run()
