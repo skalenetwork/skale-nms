@@ -68,6 +68,15 @@ class Bounty(BaseModel):
     tx_hash = CharField()
 
 
+class Bounty_Rcp(BaseModel):
+    tx_hash = CharField()
+    eth_balance_before = CharField()
+    skl_balance_before = CharField()
+    eth_balance = CharField()
+    skl_balance = CharField()
+    gas_used = IntegerField()
+
+
 def save_metrics_to_db(my_id, node_id, is_alive, latency):
     """ Save metrics (downtime and latency) to database"""
     report = Report(my_id=my_id,
@@ -77,7 +86,7 @@ def save_metrics_to_db(my_id, node_id, is_alive, latency):
     report.save()
 
 
-def save_events(tx_dt, tx_hash, my_id, bounty, latency, downtime, gas):
+def save_bounty_event(tx_dt, tx_hash, my_id, bounty, latency, downtime, gas):
     """ Save bounty events data to database"""
     data = Bounty(my_id=my_id,
                   tx_dt=tx_dt,
@@ -87,6 +96,18 @@ def save_events(tx_dt, tx_hash, my_id, bounty, latency, downtime, gas):
                   gas=gas,
                   tx_hash=tx_hash)
 
+    data.save()
+
+
+def save_bounty_rcp_data(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_bal, gas_used):
+    """ Save bounty receipt data to database"""
+    data = Bounty_Rcp(tx_hash=tx_hash,
+                      eth_balance_before=eth_bal_before,
+                      skl_balance_before=skl_bal_before,
+                      eth_balance=eth_bal,
+                      skl_balance=skl_bal,
+                      gas_used=gas_used
+                      )
     data.save()
 
 

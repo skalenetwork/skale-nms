@@ -26,7 +26,7 @@ from datetime import datetime
 
 import skale.utils.helper as Helper
 
-from tools import base_agent
+from tools import base_agent, db
 from tools.helper import init_skale
 
 
@@ -39,8 +39,10 @@ class BountyCollector(base_agent.BaseAgent):
 
     def get_bounty(self):
         address = self.local_wallet['address']
-        self.logger.debug(f'ETH balance: {self.skale.web3.eth.getBalance(address)}')
-        self.logger.debug(f'SKL balance: {self.skale.token.contract.functions.balanceOf(address).call()}')
+        eth_bal_before = self.skale.web3.eth.getBalance(address)
+        skl_bal_before = self.skale.token.contract.functions.balanceOf(address).call()
+        self.logger.info(f'ETH balance: {eth_bal_before}')
+        self.logger.debug(f'SKL balance: {skl_bal_before}')
         self.logger.info('--- Getting Bounty ---')
         try:
             res = self.skale.manager.get_bounty(self.id, self.local_wallet)
@@ -56,8 +58,16 @@ class BountyCollector(base_agent.BaseAgent):
             self.logger.info('The bounty was not received - transaction failed')
             # TODO: notify Skale Admin
         self.logger.info(f'Receipt: {receipt}')
-        self.logger.debug(f'ETH balance: {self.skale.web3.eth.getBalance(address)}')
-        self.logger.debug(f'SKL balance: {self.skale.token.contract.functions.balanceOf(address).call()}')
+        tx_hash = receipt["transactionHash"].hex()
+        gas_used = receipt["gasUsed"]
+        eth_bal = self.skale.web3.eth.getBalance(address)
+        skl_bal = self.skale.token.contract.functions.balanceOf(address).call()
+        self.logger.info(f'transactionHash: {tx_hash}')
+        self.logger.info(f'ETH balance: {eth_bal}')
+        self.logger.debug(f'SKL balance: {skl_bal}')
+        self.logger.info(f'ETH diff = balance: {eth_bal - eth_bal_before}')
+
+        db.save_bounty_rcp_data(str(tx_hash), eth_bal_before, skl_bal_before, eth_bal, skl_bal, gas_used)
         self.logger.debug('Waiting for the next periodic check')
 
     def job(self) -> None:
