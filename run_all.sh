@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 cd sla/
-./build.sh "$1"
+./run.sh
 cd ../bounty/
-./build.sh "$1"
+./run.sh
 cd ../events/
-./build.sh "$1"
+./run.sh
