@@ -22,3 +22,13 @@ CREATE TABLE `bounty` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4196 DEFAULT CHARSET=utf8;
 
+CREATE TABLE `bounty_rcp` (
+  `tx_hash` CHAR(66) NOT NULL,
+  `eth_balance_before` VARCHAR(28) NULL,
+  `skl_balance_before` VARCHAR(28) NULL,
+  `eth_balance` VARCHAR(28) NULL,
+  `skl_balance` VARCHAR(28) NULL,
+  `gas_used` DECIMAL(65) NULL,
+  PRIMARY KEY (`tx_hash`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
