@@ -67,7 +67,7 @@ class BountyCollector(base_agent.BaseAgent):
         self.logger.debug(f'SKL balance: {skl_bal}')
         self.logger.info(f'ETH diff = balance: {eth_bal - eth_bal_before}')
 
-        db.save_bounty_rcp_data(str(tx_hash), eth_bal_before, skl_bal_before, eth_bal, skl_bal, gas_used)
+        db.save_bounty_rcp_data(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_bal, gas_used)
         self.logger.debug('Waiting for the next periodic check')
 
     def job(self) -> None:
