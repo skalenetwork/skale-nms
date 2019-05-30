@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ver=0.2.1
+ver=0.2.2
 
 echo "Building Skale Events collector v${ver}..."
 docker build -t skalelabshub/events-collect:${ver} .. -f ../Dockerfile.events &&

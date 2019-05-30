@@ -57,15 +57,30 @@ class Report(BaseModel):
     stamp = DateTimeField()
 
 
-class Bounty(BaseModel):
+class BountyEvent(BaseModel):
     my_id = IntegerField()
     tx_dt = DateTimeField()
-    bounty = IntegerField()
+    bounty = CharField()
     downtime = IntegerField()
     latency = IntegerField()
     gas = IntegerField()
     stamp = DateTimeField()
     tx_hash = CharField()
+
+    class Meta:
+        db_table = 'bounty_event'
+
+
+class BountyReceipt(BaseModel):
+    tx_hash = CharField()
+    eth_balance_before = CharField()
+    skl_balance_before = CharField()
+    eth_balance = CharField()
+    skl_balance = CharField()
+    gas_used = IntegerField()
+
+    class Meta:
+        db_table = 'bounty_receipt'
 
 
 def save_metrics_to_db(my_id, node_id, is_alive, latency):
@@ -77,16 +92,29 @@ def save_metrics_to_db(my_id, node_id, is_alive, latency):
     report.save()
 
 
-def save_events(tx_dt, tx_hash, my_id, bounty, latency, downtime, gas):
+def save_bounty_event(tx_dt, tx_hash, my_id, bounty, latency, downtime, gas):
     """ Save bounty events data to database"""
-    data = Bounty(my_id=my_id,
-                  tx_dt=tx_dt,
-                  bounty=bounty,
-                  downtime=downtime,
-                  latency=latency,
-                  gas=gas,
-                  tx_hash=tx_hash)
+    data = BountyEvent(my_id=my_id,
+                       tx_dt=tx_dt,
+                       bounty=bounty,
+                       downtime=downtime,
+                       latency=latency,
+                       gas=gas,
+                       tx_hash=tx_hash)
 
+    data.save()
+
+
+def save_bounty_rcp_data(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_bal, gas_used):
+    """ Save bounty receipt data to database"""
+    print(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_bal, gas_used, sep=" - ")
+    data = BountyReceipt(tx_hash=tx_hash,
+                         eth_balance_before=eth_bal_before,
+                         skl_balance_before=skl_bal_before,
+                         eth_balance=eth_bal,
+                         skl_balance=skl_bal,
+                         gas_used=gas_used
+                         )
     data.save()
 
 

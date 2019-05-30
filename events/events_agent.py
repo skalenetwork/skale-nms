@@ -83,10 +83,10 @@ class EventCollector(base_agent.BaseAgent):
             self.logger.info(f'getBounty transaction hash: {event["transactionHash"].hex()}')
             tx_dt = datetime.utcfromtimestamp(event["args"]["time"])
 
-            db.save_events(tx_dt, str(event['transactionHash'].hex()),
-                           event['args']['nodeIndex'], float(event['args']['bounty']),
-                           event['args']['averageLatency'], event['args']['averageDowntime'],
-                           event['args']['gasSpend'])
+            db.save_bounty_event(tx_dt, str(event['transactionHash'].hex()),
+                                 event['args']['nodeIndex'], event['args']['bounty'],
+                                 event['args']['averageLatency'], event['args']['averageDowntime'],
+                                 event['args']['gasSpend'])
 
     def run(self) -> None:
         """
