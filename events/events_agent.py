@@ -84,7 +84,7 @@ class EventCollector(base_agent.BaseAgent):
             tx_dt = datetime.utcfromtimestamp(event["args"]["time"])
 
             db.save_bounty_event(tx_dt, str(event['transactionHash'].hex()),
-                                 event['args']['nodeIndex'], float(event['args']['bounty']),
+                                 event['args']['nodeIndex'], event['args']['bounty'],
                                  event['args']['averageLatency'], event['args']['averageDowntime'],
                                  event['args']['gasSpend'])
 
