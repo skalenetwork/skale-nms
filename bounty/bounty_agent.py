@@ -40,7 +40,7 @@ class BountyCollector(base_agent.BaseAgent):
     def get_bounty(self):
         address = self.local_wallet['address']
         eth_bal_before = self.skale.web3.eth.getBalance(address)
-        skl_bal_before = self.skale.token.contract.functions.balanceOf(address).call()
+        skl_bal_before = self.skale.token.get_balance(address)
         self.logger.info(f'ETH balance: {eth_bal_before}')
         self.logger.debug(f'SKL balance: {skl_bal_before}')
         self.logger.info('--- Getting Bounty ---')
@@ -58,10 +58,11 @@ class BountyCollector(base_agent.BaseAgent):
             self.logger.info('The bounty was not received - transaction failed')
             # TODO: notify Skale Admin
         self.logger.info(f'Receipt: {receipt}')
+
         tx_hash = receipt["transactionHash"].hex()
         gas_used = receipt["gasUsed"]
         eth_bal = self.skale.web3.eth.getBalance(address)
-        skl_bal = self.skale.token.contract.functions.balanceOf(address).call()
+        skl_bal = self.skale.token.get_balance(address)
         self.logger.info(f'transactionHash: {tx_hash}')
         self.logger.info(f'ETH balance: {eth_bal}')
         self.logger.debug(f'SKL balance: {skl_bal}')
@@ -69,6 +70,7 @@ class BountyCollector(base_agent.BaseAgent):
 
         db.save_bounty_rcp_data(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_bal, gas_used)
         self.logger.debug('Waiting for the next periodic check')
+        return receipt['status']
 
     def job(self) -> None:
         """ Periodic job"""

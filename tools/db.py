@@ -21,7 +21,7 @@
 import os
 
 from dotenv import load_dotenv
-from peewee import BooleanField, DateTimeField, IntegerField, Model, MySQLDatabase, CharField, fn
+from peewee import BooleanField, DateTimeField, IntegerField, Model, MySQLDatabase, CharField, CompositeKey, fn
 
 from tools.helper import TEST_DATA_DIR_PATH
 
@@ -81,6 +81,7 @@ class BountyReceipt(BaseModel):
 
     class Meta:
         db_table = 'bounty_receipt'
+        primary_key = CompositeKey('tx_hash')
 
 
 def save_metrics_to_db(my_id, node_id, is_alive, latency):
@@ -107,7 +108,6 @@ def save_bounty_event(tx_dt, tx_hash, my_id, bounty, latency, downtime, gas):
 
 def save_bounty_rcp_data(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_bal, gas_used):
     """ Save bounty receipt data to database"""
-    print(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_bal, gas_used, sep=" - ")
     data = BountyReceipt(tx_hash=tx_hash,
                          eth_balance_before=eth_bal_before,
                          skl_balance_before=skl_bal_before,
@@ -134,3 +134,12 @@ def get_month_metrics_for_node(my_id, node_id, start_date, end_date) -> dict:
 def clear_all_reports():
     nrows = Report.delete().execute()
     print(f'{nrows} records deleted')
+
+
+def clear_all_bounty_receipts():
+    nrows = BountyReceipt.delete().execute()
+    print(f'{nrows} records deleted')
+
+
+def get_count_of_bounty_receipt_records():
+    return BountyReceipt.select().count()

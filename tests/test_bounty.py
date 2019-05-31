@@ -18,9 +18,9 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import os
-import pytest
 
-from sla import sla_agent as sla
+from bounty import bounty_agent as bounty
+from tools import db
 from tools.config import LOCAL_WALLET_FILENAME
 from tools.config_storage import ConfigStorage
 from tools.helper import TEST_DATA_DIR_PATH
@@ -35,31 +35,13 @@ def setup_module(module):
     prepare_wallets(2)
 
 
-@pytest.fixture(scope="module")
-def validator(request):
-    print("\nskale setup")
+def test_get_bounty():
     skale = init_skale()
-    _validator = sla.Validator(skale, ID)
-    return _validator
-
-
-def test_get_validated_nodes(validator):
-    nodes = validator.get_validated_nodes()
-    assert type(nodes) is list
-    assert len(nodes) == 2
-    assert nodes[0]['ip'] == IP_TEST
-    assert nodes[0]['id'] == 1
-    assert nodes[1]['id'] == 2
-
-
-def test_get_reported_nodes(validator):
-    nodes = validator.get_validated_nodes()
-    reported_nodes = validator.validate_and_get_reported_nodes(nodes)
-    assert type(reported_nodes) is list
-
-    err_send_verdicts_count = validator.send_verdicts(reported_nodes)
-    assert err_send_verdicts_count == 0
-    validator.job()
+    db.clear_all_bounty_receipts()
+    bounty_collector = bounty.BountyCollector(skale, ID)
+    # assert bounty_collector.get_bounty() == 1
+    bounty_collector.job()
+    assert db.get_count_of_bounty_receipt_records() == 1
 
 
 def prepare_wallets(count):
