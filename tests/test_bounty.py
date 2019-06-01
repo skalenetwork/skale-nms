@@ -18,9 +18,11 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import os
+
 import pytest
 
-from sla import sla_agent as sla
+from bounty import bounty_agent as bounty
+from tools import db
 from tools.config import LOCAL_WALLET_FILENAME
 from tools.config_storage import ConfigStorage
 from tools.helper import TEST_DATA_DIR_PATH
@@ -35,36 +37,26 @@ def setup_module(module):
     prepare_wallets(2)
 
 
-@pytest.fixture(scope="module")
-def validator(request):
-    print("\nskale setup")
-    skale = init_skale()
-    _validator = sla.Validator(skale, ID)
-    return _validator
-
-
-def test_get_validated_nodes(validator):
-    nodes = validator.get_validated_nodes()
-    assert type(nodes) is list
-    assert len(nodes) == 2
-    assert nodes[0]['ip'] == IP_TEST
-    assert nodes[0]['id'] == 1
-    assert nodes[1]['id'] == 2
-
-
-def test_get_reported_nodes(validator):
-    nodes = validator.get_validated_nodes()
-    reported_nodes = validator.validate_and_get_reported_nodes(nodes)
-    assert type(reported_nodes) is list
-
-    err_send_verdicts_count = validator.send_verdicts(reported_nodes)
-    assert err_send_verdicts_count == 0
-    validator.job()
-
-
 def prepare_wallets(count):
     account_dict = {"address": "0x0",
                     "private_key": "0x0"}
     for i in range(count):
         local_wallet_config = ConfigStorage(TEST_LOCAL_WALLET_PATH + str(i))
         local_wallet_config.update(account_dict)
+
+
+@pytest.fixture(scope="module")
+def bounty_collector(request):
+    skale = init_skale()
+    _bounty_collector = bounty.BountyCollector(skale, ID)
+    return _bounty_collector
+
+
+def test_get_bounty(bounty_collector):
+    assert bounty_collector.get_bounty() == 1
+
+
+def test_bounty_job_saves_data(bounty_collector):
+    db.clear_all_bounty_receipts()
+    bounty_collector.job()
+    assert db.get_count_of_bounty_receipt_records() == 1

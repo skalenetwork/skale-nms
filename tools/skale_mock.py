@@ -17,11 +17,15 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import secrets
 import socket
 import struct
-from datetime import datetime
+from datetime import datetime, timezone
+
+from hexbytes import HexBytes
 
 REWARD_PERIOD = 600
+MOCK_IP = '0.0.0.0'
 
 
 def node_to_bytes(node_id, date, node_ip):
@@ -39,6 +43,12 @@ def bytes_to_node(node_in_bytes):
     return {'id': node_id, 'ip': node_ip, 'rep_date': report_date}
 
 
+def generate_random_hash():
+    str_hash = secrets.token_hex(32)
+    rand_hash = HexBytes(str_hash)
+    return rand_hash
+
+
 # Set of classes for mocking sla/bounty features of skale.py for testing without real SCs
 
 
@@ -47,9 +57,8 @@ class ValidatorsData:
         now = int(datetime.utcnow().timestamp())
         rep_date0 = now
         rep_date1 = now + REWARD_PERIOD
-        mock_ip = '0.0.0.0'
-        bytes_node0 = node_to_bytes(node_id + 1, rep_date0, mock_ip)
-        bytes_node1 = node_to_bytes(node_id + 2, rep_date1, mock_ip)
+        bytes_node0 = node_to_bytes(node_id + 1, rep_date0, MOCK_IP)
+        bytes_node1 = node_to_bytes(node_id + 2, rep_date1, MOCK_IP)
         return [bytes_node0, bytes_node1]
 
     def get_reward_period(self):
@@ -60,17 +69,25 @@ class Manager:
     def send_verdict(self, my_node_id, node_id, downtime, latency, wallet):
         return {'tx': 0x0}
 
+    def get_bounty(self, id, local_wallet):
+        return {'tx': 0x0}
+
 
 class NodesData:
     def get(self, node_id=None):
         utc_now = datetime.utcnow()
-        last_reward_date = utc_now - REWARD_PERIOD
+        last_reward_date = utc_now.replace(tzinfo=timezone.utc).timestamp() - REWARD_PERIOD - 10
         return {'last_reward_date': last_reward_date}
+
+# reward_date = self.skale.nodes_data.get(self.id)['last_reward_date'] + reward_period
 
 
 class Eth:
     def getTransactionReceipt(self, tx):
-        return {'status': 1}
+        return {'status': 1, 'transactionHash': generate_random_hash(), 'gasUsed': 10000}
+
+    def getBalance(self, address):
+        return 2000000
 
 
 class Web3:
@@ -81,6 +98,11 @@ class Web3:
         return account
 
 
+class Token:
+    def get_balance(self, address):
+        return 1000000
+
+
 class Skale:
     """Mock class for testing SLA and Bounty agents"""
     def __init__(self, skale_env, ip=None, ws_port=None, abi_filepath=None):
@@ -88,6 +110,8 @@ class Skale:
         self.web3 = Web3()
         self.local_wallet = {'address': None}
         self.manager = Manager()
+        self.nodes_data = NodesData()
+        self.token = Token()
 
 
 def init_skale():
