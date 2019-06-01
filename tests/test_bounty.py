@@ -19,6 +19,8 @@
 
 import os
 
+import pytest
+
 from bounty import bounty_agent as bounty
 from tools import db
 from tools.config import LOCAL_WALLET_FILENAME
@@ -35,18 +37,26 @@ def setup_module(module):
     prepare_wallets(2)
 
 
-def test_get_bounty():
-    skale = init_skale()
-    db.clear_all_bounty_receipts()
-    bounty_collector = bounty.BountyCollector(skale, ID)
-    # assert bounty_collector.get_bounty() == 1
-    bounty_collector.job()
-    assert db.get_count_of_bounty_receipt_records() == 1
-
-
 def prepare_wallets(count):
     account_dict = {"address": "0x0",
                     "private_key": "0x0"}
     for i in range(count):
         local_wallet_config = ConfigStorage(TEST_LOCAL_WALLET_PATH + str(i))
         local_wallet_config.update(account_dict)
+
+
+@pytest.fixture(scope="module")
+def bounty_collector(request):
+    skale = init_skale()
+    _bounty_collector = bounty.BountyCollector(skale, ID)
+    return _bounty_collector
+
+
+def test_get_bounty(bounty_collector):
+    assert bounty_collector.get_bounty() == 1
+
+
+def test_bounty_job_saves_data(bounty_collector):
+    db.clear_all_bounty_receipts()
+    bounty_collector.job()
+    assert db.get_count_of_bounty_receipt_records() == 1
