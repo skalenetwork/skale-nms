@@ -31,6 +31,8 @@ from sla import ping
 from tools import base_agent, db
 from tools.helper import init_skale
 
+LONG_LINE = '----------------------------------------------------------------------------------------------------'
+
 
 class Validator(base_agent.BaseAgent):
 
@@ -65,13 +67,13 @@ class Validator(base_agent.BaseAgent):
 
     def validate_and_get_reported_nodes(self, nodes) -> list:
         """Validate nodes and returns a list of nodes to be reported"""
-
-        self.logger.info('Validating nodes:')
+        self.logger.info(LONG_LINE)
+        self.logger.info('Auditing...:')
         if len(nodes) == 0:
-            self.logger.info(f'- No nodes to validate')
+            self.logger.info(f'- No nodes to be audited on')
         else:
-            self.logger.info(f'Number of nodes for validating: {len(nodes)}')
-            self.logger.info(f'Nodes for validating: {nodes}')
+            self.logger.info(f'Number of nodes for auditing: {len(nodes)}')
+            self.logger.info(f'The nodes to be audited on : {nodes}')
 
         nodes_for_report = []
         for node in nodes:
@@ -91,38 +93,40 @@ class Validator(base_agent.BaseAgent):
                 nodes_for_report.append({'id': node['id'], 'rep_date': node['rep_date']})
         return nodes_for_report
 
-    def send_verdicts(self, nodes_for_report):
+    def send_reports(self, nodes_for_report):
         """Send verdicts for every node from nodes_for_report"""
 
-        self.logger.info('Sending Verdicts:')
+        self.logger.info('Sending reports:')
         if len(nodes_for_report) == 0:
-            self.logger.info(f'- No nodes for sending verdicts about')
+            self.logger.info(f'- No nodes to be reported on')
         else:
-            self.logger.info(f'Number of nodes for report: {len(nodes_for_report)}')
-            self.logger.info(f'Nodes for report: {nodes_for_report}')
+            self.logger.info(f'Number of nodes for reporting: {len(nodes_for_report)}')
+            self.logger.info(f'The nodes to be reported on: {nodes_for_report}')
         err_status = 0
+
         for node in nodes_for_report:
             reward_period = self.skale.validators_data.get_reward_period()
             start_date = node['rep_date'] - reward_period
             try:
-                metrics = db.get_month_metrics_for_node(self.id, node['id'], datetime.utcfromtimestamp(start_date), datetime.utcfromtimestamp(node['rep_date']))
+                metrics = db.get_month_metrics_for_node(self.id, node['id'], datetime.utcfromtimestamp(start_date),
+                                                        datetime.utcfromtimestamp(node['rep_date']))
             except Exception as err:
                 self.logger.exception(f'Failed getting month metrics from db: {err}')
-            self.logger.info(f'metrics: {metrics}')
-            self.logger.info(f'Sending verdict for node #{node["id"]}')
+            self.logger.info(f'Epoch metrics: {metrics}')
+            self.logger.info(f'Sending report for node #{node["id"]}')
             self.logger.debug(f'wallet = {self.local_wallet["address"]}    {self.local_wallet["private_key"]}')
             try:
                 res = self.skale.manager.send_verdict(self.id, node['id'], metrics['downtime'],
                                                       metrics['latency'], self.local_wallet)
             except Exception as err:
-                self.logger.error(f'Failed send verdict for the node #{node["id"]}. Error: {str(err)}', exc_info=True)
+                self.logger.error(f'Failed send report on the node #{node["id"]}. Error: {str(err)}', exc_info=True)
                 break
 
             receipt = await_receipt(self.skale.web3, res['tx'])
             if receipt['status'] == 1:
-                self.logger.info('The verdict was successfully sent')
+                self.logger.info('The report was successfully sent')
             if receipt['status'] == 0:
-                self.logger.info('The verdict was not sent - transaction failed')
+                self.logger.info('The report was not sent - transaction failed')
                 err_status += err_status
             self.logger.info(f'Receipt: {receipt}')
         return err_status
@@ -136,12 +140,14 @@ class Validator(base_agent.BaseAgent):
         try:
             nodes = self.get_validated_nodes()
         except Exception as err:
-            self.logger.error(f'Failed to get list of validated nodes {str(err)}')
+            self.logger.error(f'Failed to get list of audited nodes {str(err)}')
             nodes = []
 
         nodes_for_report = self.validate_and_get_reported_nodes(nodes)
 
-        self.send_verdicts(nodes_for_report)
+        if len(nodes_for_report) > 0:
+            self.send_reports(nodes_for_report)
+
         self.logger.debug('Periodic job finished...')
 
 

@@ -57,7 +57,7 @@ def test_get_reported_nodes(validator):
     reported_nodes = validator.validate_and_get_reported_nodes(nodes)
     assert type(reported_nodes) is list
 
-    err_send_verdicts_count = validator.send_verdicts(reported_nodes)
+    err_send_verdicts_count = validator.send_reports(reported_nodes)
     assert err_send_verdicts_count == 0
     validator.job()
 
