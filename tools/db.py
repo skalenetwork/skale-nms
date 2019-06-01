@@ -21,7 +21,7 @@
 import os
 
 from dotenv import load_dotenv
-from peewee import BooleanField, DateTimeField, IntegerField, Model, MySQLDatabase, CharField, CompositeKey, fn
+from peewee import BooleanField, CharField, CompositeKey, DateTimeField, IntegerField, Model, MySQLDatabase, fn
 
 from tools.helper import TEST_DATA_DIR_PATH
 
@@ -115,7 +115,7 @@ def save_bounty_rcp_data(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_b
                          skl_balance=skl_bal,
                          gas_used=gas_used
                          )
-    data.save()
+    data.save(force_insert=True)
 
 
 def get_month_metrics_for_node(my_id, node_id, start_date, end_date) -> dict:
