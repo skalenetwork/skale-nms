@@ -34,7 +34,7 @@ from tools.helper import init_skale
 LONG_LINE = '----------------------------------------------------------------------------------------------------'
 
 
-class Validator(base_agent.BaseAgent):
+class Monitor(base_agent.BaseAgent):
 
     def __init__(self, skale, node_id=None):
         super().__init__(skale, node_id)
@@ -68,12 +68,11 @@ class Validator(base_agent.BaseAgent):
     def validate_and_get_reported_nodes(self, nodes) -> list:
         """Validate nodes and returns a list of nodes to be reported"""
         self.logger.info(LONG_LINE)
-        self.logger.info('Auditing...:')
         if len(nodes) == 0:
-            self.logger.info(f'- No nodes to be audited on')
+            self.logger.info(f'No nodes to be monitored')
         else:
-            self.logger.info(f'Number of nodes for auditing: {len(nodes)}')
-            self.logger.info(f'The nodes to be audited on : {nodes}')
+            self.logger.info(f'Number of nodes for monitoring: {len(nodes)}')
+            self.logger.info(f'The nodes to be monitored : {nodes}')
 
         nodes_for_report = []
         for node in nodes:
@@ -142,7 +141,7 @@ class Validator(base_agent.BaseAgent):
         try:
             nodes = self.get_validated_nodes()
         except Exception as err:
-            self.logger.error(f'Failed to get list of audited nodes {str(err)}')
+            self.logger.error(f'Failed to get list of monitored nodes {str(err)}')
             nodes = []
 
         nodes_for_report = self.validate_and_get_reported_nodes(nodes)
@@ -161,5 +160,5 @@ if __name__ == '__main__':
         node_id = None
 
     skale = init_skale()
-    validator = Validator(skale, node_id)
-    validator.run()
+    monitor = Monitor(skale, node_id)
+    monitor.run()

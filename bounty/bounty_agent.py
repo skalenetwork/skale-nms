@@ -57,7 +57,7 @@ class BountyCollector(base_agent.BaseAgent):
         if receipt['status'] == 0:
             self.logger.info('The bounty was not received - transaction failed')
             # TODO: notify Skale Admin
-        self.logger.info(f'Receipt: {receipt}')
+        self.logger.debug(f'Receipt: {receipt}')
 
         tx_hash = receipt["transactionHash"].hex()
         gas_used = receipt["gasUsed"]
