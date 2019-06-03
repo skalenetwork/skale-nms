@@ -80,6 +80,8 @@ class Validator(base_agent.BaseAgent):
             test_ip = '8.8.8.8'
             host = test_ip if self.is_test_mode else node['ip']
             metrics = ping.get_node_metrics(host)
+            if metrics['latency'] == -1:
+                metrics['latency'] == 10000000
             # metrics = sim.generate_node_metrics()  # use to simulate metrics for some tests
             db.save_metrics_to_db(self.id, node['id'], metrics['is_alive'], metrics['latency'])
 
