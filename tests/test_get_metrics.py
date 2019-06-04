@@ -29,7 +29,7 @@ def test_get_node_metrics_pos():
     ip = IP_GOOD
     metrics_ok = ping.get_node_metrics(ip)
     latency = metrics_ok['latency']
-    downtime = metrics_ok['is_alive']
+    downtime = metrics_ok['is_dead']
     print(metrics_ok)
 
     assert type(latency) is float
@@ -41,7 +41,7 @@ def test_get_node_metrics_neg():
     ip = IP_BAD
     metrics_ok = ping.get_node_metrics(ip)
     latency = metrics_ok['latency']
-    downtime = metrics_ok['is_alive']
+    downtime = metrics_ok['is_dead']
     print(metrics_ok)
 
     assert latency == -1
@@ -51,7 +51,7 @@ def test_get_node_metrics_neg():
 def test_generate_node_metrics():
     metrics = sim.generate_node_metrics()
     latency = metrics['latency']
-    downtime = metrics['is_alive']
+    downtime = metrics['is_dead']
     print(metrics)
 
     assert latency >= 20

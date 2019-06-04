@@ -3,8 +3,8 @@ CREATE TABLE `report` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `my_id` int unsigned NULL,
   `node_id` int unsigned NULL,
-  `is_alive` tinyint(1) unsigned NULL,
-  `latency` int unsigned NULL,
+  `is_dead` tinyint(1) unsigned NULL,
+  `latency` int NULL,
   `stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=25158 DEFAULT CHARSET=utf8;
