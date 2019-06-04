@@ -52,7 +52,7 @@ class BaseModel(Model):
 class Report(BaseModel):
     my_id = IntegerField()
     node_id = IntegerField()
-    is_alive = BooleanField()
+    is_dead = BooleanField()
     latency = IntegerField()
     stamp = DateTimeField()
 
@@ -84,11 +84,11 @@ class BountyReceipt(BaseModel):
         primary_key = CompositeKey('tx_hash')
 
 
-def save_metrics_to_db(my_id, node_id, is_alive, latency):
+def save_metrics_to_db(my_id, node_id, is_dead, latency):
     """ Save metrics (downtime and latency) to database"""
     report = Report(my_id=my_id,
                     node_id=node_id,
-                    is_alive=is_alive,
+                    is_dead=is_dead,
                     latency=latency)
     report.save()
 
@@ -121,13 +121,23 @@ def save_bounty_rcp_data(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_b
 def get_month_metrics_for_node(my_id, node_id, start_date, end_date) -> dict:
     """ Returns a dict with aggregated month metrics - downtime and latency"""
 
-    results = Report.select(fn.SUM(Report.is_alive).alias('sum'),
-                            fn.AVG(Report.latency).alias('avg')).where((
+    # results = Report.select(fn.SUM(Report.is_dead).alias('sum'),
+    #                         fn.AVG(Report.latency).alias('avg')).where((
+    #                             Report.my_id == my_id) & (Report.node_id == node_id) & (
+    #                             Report.stamp >= start_date) & (Report.stamp <= end_date))
+    # downtime = int(results[0].sum) if results[0].sum is not None else 0
+    # latency = results[0].avg if results[0].avg is not None else 0
+
+    downtime_results = Report.select(fn.SUM(Report.is_dead).alias('sum')).where((
                                 Report.my_id == my_id) & (Report.node_id == node_id) & (
                                 Report.stamp >= start_date) & (Report.stamp <= end_date))
 
-    downtime = int(results[0].sum) if results[0].sum is not None else 0
-    latency = results[0].avg if results[0].avg is not None else 0
+    latency_results = Report.select(fn.AVG(Report.latency).alias('avg')).where((
+                                Report.my_id == my_id) & (Report.node_id == node_id) & (
+                                Report.stamp >= start_date) & (Report.stamp <= end_date) & (Report.latency >= 0))
+
+    downtime = int(downtime_results[0].sum) if downtime_results[0].sum is not None else 0
+    latency = latency_results[0].avg if latency_results[0].avg is not None else 0
     return {'downtime': downtime, 'latency': latency}
 
 

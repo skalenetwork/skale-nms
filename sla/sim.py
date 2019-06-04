@@ -23,9 +23,9 @@ import random
 def generate_node_metrics(false_downtime_coeff=0.015, min_latency=20, max_latency=210) -> dict:
     """Generates random node metrics (downtime and latency)"""
 
-    is_alive = random.random() > false_downtime_coeff
+    is_dead = random.random() > false_downtime_coeff
     latency = float(random.randint(min_latency, max_latency))
-    return {'is_alive': is_alive, 'latency': latency}
+    return {'is_dead': is_dead, 'latency': latency}
 
 
 if __name__ == '__main__':
