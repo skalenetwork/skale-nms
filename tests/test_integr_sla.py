@@ -48,8 +48,8 @@ def test_get_validated_nodes():
     cur_nodes_count = nodes_count_before + nodes_count_to_add
     cur_node_id = cur_nodes_count - 2
     print(f'cur_node = {cur_node_id}')
-    validator = sla.Validator(skale, cur_node_id)
-    nodes = validator.get_validated_nodes()
+    monitor = sla.Monitor(skale, cur_node_id)
+    nodes = monitor.get_validated_nodes()
     print(f'nodes = {nodes}')
     assert type(nodes) is list
     assert any(node.get('id') == cur_nodes_count - 1 for node in nodes)

@@ -56,7 +56,7 @@ class BaseAgent:
 
         self.logger.debug(f"Node ID = {self.id}")
         self.logger.debug(f"Account = {self.local_wallet['address']}")
-        self.logger.info(f"Initialization of {self.agent_name} (id = {self.id}) is completed")
+        self.logger.info(f"Initialization of {self.agent_name} (node id = {self.id}) is completed")
 
     @tenacity.retry(
         wait=tenacity.wait_fixed(10),
@@ -70,12 +70,12 @@ class BaseAgent:
             return data["node_id"]
         except KeyError as err:
             self.logger.warning(
-                f"Cannot read a node id (KeyError) - is the node already installed?"
+                f"Cannot read a node id (KeyError) - is the node already registered?"
             )
             raise err
         except FileNotFoundError as err:
             self.logger.warning(
-                f"Cannot read a node id (FileNotFoundError) - is the node already installed?"
+                f"Cannot read a node id (config file is not found) - is the node already registered?"
             )
             raise err
         except Exception as err:
@@ -88,7 +88,7 @@ class BaseAgent:
 
     def run(self) -> None:
         """Starts agent"""
-        self.logger.info(f"{self.agent_name} started")
+        self.logger.debug(f"{self.agent_name} started")
         self.job()
         schedule.every(CHECK_PERIOD).minutes.do(self.job)
         while True:

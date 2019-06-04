@@ -36,15 +36,15 @@ def setup_module(module):
 
 
 @pytest.fixture(scope="module")
-def validator(request):
+def monitor(request):
     print("\nskale setup")
     skale = init_skale()
-    _validator = sla.Validator(skale, ID)
+    _validator = sla.Monitor(skale, ID)
     return _validator
 
 
-def test_get_validated_nodes(validator):
-    nodes = validator.get_validated_nodes()
+def test_get_validated_nodes(monitor):
+    nodes = monitor.get_validated_nodes()
     assert type(nodes) is list
     assert len(nodes) == 2
     assert nodes[0]['ip'] == IP_TEST
@@ -52,14 +52,14 @@ def test_get_validated_nodes(validator):
     assert nodes[1]['id'] == 2
 
 
-def test_get_reported_nodes(validator):
-    nodes = validator.get_validated_nodes()
-    reported_nodes = validator.validate_and_get_reported_nodes(nodes)
+def test_get_reported_nodes(monitor):
+    nodes = monitor.get_validated_nodes()
+    reported_nodes = monitor.validate_and_get_reported_nodes(nodes)
     assert type(reported_nodes) is list
 
-    err_send_verdicts_count = validator.send_verdicts(reported_nodes)
+    err_send_verdicts_count = monitor.send_reports(reported_nodes)
     assert err_send_verdicts_count == 0
-    validator.job()
+    monitor.job()
 
 
 def prepare_wallets(count):
