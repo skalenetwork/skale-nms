@@ -113,8 +113,8 @@ cd bounty
 sh ./install.sh
 ```
 
-## Build and publish all containers
-To build docker containers both for SLA agent and Bounty collector and push them to Docker Hub use:
+## Build all containers
+To build docker containers both for SLA agent and Bounty collector use:
 
 ```bash
 sh ./build_all.sh
