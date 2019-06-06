@@ -32,7 +32,7 @@ def test_get_node_metrics_pos():
     downtime = metrics_ok['is_dead']
     print(metrics_ok)
 
-    assert type(latency) is float
+    assert type(latency) is int
     assert latency >= 0
     assert type(downtime) is bool
 
@@ -45,7 +45,7 @@ def test_get_node_metrics_neg():
     print(metrics_ok)
 
     assert latency == -1
-    assert downtime is False
+    assert downtime is True
 
 
 def test_generate_node_metrics():
