@@ -22,14 +22,14 @@ import os
 import pytest
 
 from sla import sla_agent as sla
+from tools import db
 from tools.config import LOCAL_WALLET_FILENAME
 from tools.config_storage import ConfigStorage
 from tools.helper import TEST_DATA_DIR_PATH
-from tools.skale_mock import init_skale
+from tools.skale_mock import init_skale, MOCK_IP
 
 TEST_LOCAL_WALLET_PATH = os.path.join(TEST_DATA_DIR_PATH, LOCAL_WALLET_FILENAME)
 ID = 0
-IP_TEST = '0.0.0.0'
 
 
 def setup_module(module):
@@ -46,9 +46,11 @@ def monitor(request):
 
 def test_get_validated_nodes(monitor):
     nodes = monitor.get_validated_nodes()
+    print(f'nodes = {nodes}')
     assert type(nodes) is list
     assert len(nodes) == 2
-    assert nodes[0]['ip'] == IP_TEST
+    assert nodes[0]['ip'] == MOCK_IP
+    assert nodes[1]['ip'] == MOCK_IP
     assert nodes[0]['id'] == 1
     assert nodes[1]['id'] == 2
 
@@ -57,10 +59,19 @@ def test_get_reported_nodes(monitor):
     nodes = monitor.get_validated_nodes()
     reported_nodes = monitor.validate_and_get_reported_nodes(nodes)
     assert type(reported_nodes) is list
+    print(f'rep nodes = {reported_nodes}')
+    assert len(reported_nodes) == 1
+    assert reported_nodes[0]['id'] == 1
 
     err_send_verdicts_count = monitor.send_reports(reported_nodes)
     assert err_send_verdicts_count == 0
+
+
+def test_report_saved_to_db(monitor):
+    db.clear_all_reports()
+    assert db.get_count_of_report_records() == 0
     monitor.job()
+    assert db.get_count_of_report_records() == 2
 
 
 def prepare_wallets(count):
