@@ -18,7 +18,7 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from sla import sla_agent as sla
-from tests import preparation
+from tests.integration import preparation
 from tools.helper import init_skale
 
 

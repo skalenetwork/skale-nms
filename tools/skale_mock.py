@@ -54,7 +54,8 @@ def generate_random_hash():
 
 class ValidatorsData:
     def get_validated_array(self, node_id=None, account=None):
-        now = int(datetime.utcnow().timestamp())
+        # now = datetime.utcnow().timestamp()
+        now = int(datetime.utcnow().replace(tzinfo=timezone.utc).timestamp())
         rep_date0 = now
         rep_date1 = now + REWARD_PERIOD
         bytes_node0 = node_to_bytes(node_id + 1, rep_date0, MOCK_IP)

@@ -106,7 +106,13 @@ def save_bounty_event(tx_dt, tx_hash, my_id, bounty, latency, downtime, gas):
     data.save()
 
 
-def save_bounty_rcp_data(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_bal, gas_used):
+def save_bounty_rcp_data(
+        tx_hash,
+        eth_bal_before,
+        skl_bal_before,
+        eth_bal,
+        skl_bal,
+        gas_used):
     """ Save bounty receipt data to database"""
     data = BountyReceipt(tx_hash=tx_hash,
                          eth_balance_before=eth_bal_before,
@@ -128,15 +134,25 @@ def get_month_metrics_for_node(my_id, node_id, start_date, end_date) -> dict:
     # downtime = int(results[0].sum) if results[0].sum is not None else 0
     # latency = results[0].avg if results[0].avg is not None else 0
 
-    downtime_results = Report.select(fn.SUM(Report.is_dead).alias('sum')).where((
-                                Report.my_id == my_id) & (Report.node_id == node_id) & (
-                                Report.stamp >= start_date) & (Report.stamp <= end_date))
+    downtime_results = Report.select(
+        fn.SUM(
+            Report.is_dead).alias('sum')).where(
+        (Report.my_id == my_id) & (
+            Report.node_id == node_id) & (
+            Report.stamp >= start_date) & (
+            Report.stamp <= end_date))
 
-    latency_results = Report.select(fn.AVG(Report.latency).alias('avg')).where((
-                                Report.my_id == my_id) & (Report.node_id == node_id) & (
-                                Report.stamp >= start_date) & (Report.stamp <= end_date) & (Report.latency >= 0))
+    latency_results = Report.select(
+        fn.AVG(
+            Report.latency).alias('avg')).where(
+        (Report.my_id == my_id) & (
+            Report.node_id == node_id) & (
+            Report.stamp >= start_date) & (
+            Report.stamp <= end_date) & (
+            Report.latency >= 0))
 
-    downtime = int(downtime_results[0].sum) if downtime_results[0].sum is not None else 0
+    downtime = int(
+        downtime_results[0].sum) if downtime_results[0].sum is not None else 0
     latency = latency_results[0].avg if latency_results[0].avg is not None else 0
     return {'downtime': downtime, 'latency': latency}
 
@@ -153,3 +169,8 @@ def clear_all_bounty_receipts():
 
 def get_count_of_bounty_receipt_records():
     return BountyReceipt.select().count()
+
+
+def get_count_of_report_records():
+    return Report.select().count()
+
