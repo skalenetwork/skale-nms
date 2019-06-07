@@ -169,3 +169,8 @@ def clear_all_bounty_receipts():
 
 def get_count_of_bounty_receipt_records():
     return BountyReceipt.select().count()
+
+
+def get_count_of_report_records():
+    return Report.select().count()
+
