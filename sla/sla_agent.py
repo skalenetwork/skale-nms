@@ -32,6 +32,7 @@ from tools import base_agent, db
 from tools.helper import init_skale
 
 LONG_LINE = '----------------------------------------------------------------------------------------------------'
+LONG_DOUBLE_LINE = '===================================================================================================='
 
 
 class Monitor(base_agent.BaseAgent):
@@ -80,7 +81,7 @@ class Monitor(base_agent.BaseAgent):
             host = test_ip if self.is_test_mode else node['ip']
             metrics = ping.get_node_metrics(host)
             # metrics = sim.generate_node_metrics()  # use to simulate metrics for some tests
-            self.logger.info(f'Received metrics: {metrics}')
+            self.logger.info(f'Received metrics for node ID = {node["id"]}: {metrics}')
             db.save_metrics_to_db(self.id, node['id'], metrics['is_dead'], metrics['latency'])
 
             # Check report date of current validated node
@@ -94,9 +95,9 @@ class Monitor(base_agent.BaseAgent):
         return nodes_for_report
 
     def send_reports(self, nodes_for_report):
-        """Send verdicts for every node from nodes_for_report"""
+        """Send reports for every node from nodes_for_report"""
 
-        self.logger.info('Sending reports:')
+        self.logger.info(LONG_DOUBLE_LINE)
         if len(nodes_for_report) == 0:
             self.logger.info(f'- No nodes to be reported on')
         else:
