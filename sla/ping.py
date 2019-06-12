@@ -41,7 +41,7 @@ def get_node_metrics(host) -> dict:
         print('No connection to host!')
     else:
         is_dead = False
-        latency = int(ping_parser.parse(result).as_dict()['rtt_avg'])
+        latency = int((ping_parser.parse(result).as_dict()['rtt_avg']) * 1000)
         # print('Ping ok!')
 
     return {'is_dead': is_dead, 'latency': latency}
