@@ -51,7 +51,7 @@ class BountyCollector(base_agent.BaseAgent):
             # TODO: notify Skale Admin
             raise
         self.logger.debug('Waiting for receipt of tx...')
-        receipt = Helper.await_receipt(self.skale.web3, res['tx'])
+        receipt = Helper.await_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
         if receipt['status'] == 1:
             self.logger.info('The bounty was successfully received')
         if receipt['status'] == 0:

@@ -123,7 +123,7 @@ class Monitor(base_agent.BaseAgent):
                 self.logger.error(f'Failed send report on the node #{node["id"]}. Error: {str(err)}', exc_info=True)
                 break
 
-            receipt = await_receipt(self.skale.web3, res['tx'])
+            receipt = await_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
             if receipt['status'] == 1:
                 self.logger.info('The report was successfully sent')
             if receipt['status'] == 0:
