@@ -13,7 +13,7 @@ CREATE TABLE `bounty_event` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `my_id` int unsigned NULL,
   `tx_dt` DATETIME NULL,
-  `tx_hash` CHAR(66) NULL,
+  `tx_hash` CHAR(66) UNIQUE NULL,
   `bounty` VARCHAR(28) NULL,
   `latency` int unsigned NULL,
   `downtime` int unsigned NULL,
