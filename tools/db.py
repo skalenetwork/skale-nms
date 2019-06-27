@@ -32,7 +32,7 @@ load_dotenv(DOTENV_PATH)
 
 user = os.environ.get("DB_USER")
 password = os.environ.get("DB_PASSWORD")
-port = os.environ.get("DB_PORT")
+port = int(os.environ.get("DB_PORT"))
 db_name = 'db_skale'
 host = '127.0.0.1'
 
