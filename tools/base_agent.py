@@ -32,7 +32,7 @@ from tools.config import NODE_CONFIG_FILEPATH
 from tools.config_storage import ConfigStorage
 from tools.logger import init_agent_logger
 
-CHECK_PERIOD = 1  # in min
+CHECK_PERIOD = 2  # in min
 
 
 class BaseAgent:
