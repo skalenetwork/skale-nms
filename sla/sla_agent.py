@@ -21,6 +21,7 @@ SLA agent runs on every node of Skale network, periodically gets a list of nodes
 checks its health metrics and sends transactions with average metrics to CS when it's time to send it
 """
 
+import os
 import socket
 import sys
 from datetime import datetime
@@ -31,8 +32,9 @@ from sla import ping
 from tools import base_agent, db
 from tools.helper import init_skale
 
-LONG_LINE = '----------------------------------------------------------------------------------------------------'
-LONG_DOUBLE_LINE = '===================================================================================================='
+WORKING_IP = '8.8.8.8'
+LONG_LINE = '---------------------------------------------------------------------------------------------------'
+LONG_DOUBLE_LINE = '==================================================================================================='
 
 
 class Monitor(base_agent.BaseAgent):
@@ -77,12 +79,12 @@ class Monitor(base_agent.BaseAgent):
 
         nodes_for_report = []
         for node in nodes:
-            test_ip = '8.8.8.8'
-            host = test_ip if self.is_test_mode else node['ip']
-            metrics = ping.get_node_metrics(host)
-            # metrics = sim.generate_node_metrics()  # use to simulate metrics for some tests
-            self.logger.info(f'Received metrics for node ID = {node["id"]}: {metrics}')
-            db.save_metrics_to_db(self.id, node['id'], metrics['is_dead'], metrics['latency'])
+            host = WORKING_IP if self.is_test_mode else node['ip']
+            if os.system("ping -c 1 " + WORKING_IP) == 0:
+                metrics = ping.get_node_metrics(host)
+                # metrics = sim.generate_node_metrics()  # use to simulate metrics for some tests
+                self.logger.info(f'Received metrics for node ID = {node["id"]}: {metrics}')
+                db.save_metrics_to_db(self.id, node['id'], metrics['is_dead'], metrics['latency'])
 
             # Check report date of current validated node
             rep_date = datetime.utcfromtimestamp(node['rep_date'])
