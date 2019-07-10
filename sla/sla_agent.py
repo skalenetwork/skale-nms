@@ -80,7 +80,7 @@ class Monitor(base_agent.BaseAgent):
         nodes_for_report = []
         for node in nodes:
             host = WORKING_IP if self.is_test_mode else node['ip']
-            if os.system("ping -c 1 " + WORKING_IP):
+            if os.system("ping -c 1 " + WORKING_IP) == 0:
                 metrics = ping.get_node_metrics(host)
                 # metrics = sim.generate_node_metrics()  # use to simulate metrics for some tests
                 self.logger.info(f'Received metrics for node ID = {node["id"]}: {metrics}')
