@@ -29,6 +29,8 @@ import skale.utils.helper as Helper
 from tools import base_agent, db
 from tools.helper import init_skale
 
+LONG_LINE = '---------------------------------------------------------------------------------------------------'
+
 
 class BountyCollector(base_agent.BaseAgent):
 
@@ -41,7 +43,7 @@ class BountyCollector(base_agent.BaseAgent):
         address = self.local_wallet['address']
         eth_bal_before = self.skale.web3.eth.getBalance(address)
         skl_bal_before = self.skale.token.get_balance(address)
-        self.logger.info(f'ETH balance: {eth_bal_before}')
+        self.logger.debug(f'ETH balance: {eth_bal_before}')
         self.logger.debug(f'SKL balance: {skl_bal_before}')
         self.logger.info('--- Getting Bounty ---')
         try:
@@ -52,21 +54,31 @@ class BountyCollector(base_agent.BaseAgent):
             raise
         self.logger.debug('Waiting for receipt of tx...')
         receipt = Helper.await_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
+        tx_hash = receipt["transactionHash"].hex()
+
         if receipt['status'] == 1:
             self.logger.info('The bounty was successfully received')
+            h_receipt = self.skale.manager.contract.events.BountyGot().processReceipt(receipt)
+            self.logger.info(LONG_LINE)
+            self.logger.info(h_receipt)
+            self.logger.info(LONG_LINE)
+            args = h_receipt[0]['args']
+            db.save_bounty_event(datetime.utcfromtimestamp(args['time']), str(tx_hash),
+                                 args['nodeIndex'], args['bounty'],
+                                 args['averageLatency'], args['averageDowntime'],
+                                 args['gasSpend'])
         if receipt['status'] == 0:
             self.logger.info('The bounty was not received - transaction failed')
             # TODO: notify Skale Admin
         self.logger.debug(f'Receipt: {receipt}')
 
-        tx_hash = receipt["transactionHash"].hex()
         gas_used = receipt["gasUsed"]
         eth_bal = self.skale.web3.eth.getBalance(address)
         skl_bal = self.skale.token.get_balance(address)
-        self.logger.info(f'transactionHash: {tx_hash}')
+        self.logger.debug(f'transactionHash: {tx_hash}')
         self.logger.info(f'ETH balance: {eth_bal}')
-        self.logger.debug(f'SKL balance: {skl_bal}')
-        self.logger.info(f'ETH diff = balance: {eth_bal - eth_bal_before}')
+        self.logger.info(f'SKL balance: {skl_bal}')
+        self.logger.debug(f'ETH difference: {eth_bal - eth_bal_before}')
 
         db.save_bounty_rcp_data(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_bal, gas_used)
         self.logger.debug('Waiting for the next periodic check')

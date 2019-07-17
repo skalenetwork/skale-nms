@@ -66,7 +66,35 @@ class ValidatorsData:
         return REWARD_PERIOD
 
 
+class BountyEvent:
+    def processReceipt(self, receipt):
+        h_receipt = []
+        args = {}
+        args['time'] = 11111111
+        args['nodeIndex'] = 0
+        args['bounty'] = 222222
+        args['averageLatency'] = 100
+        args['averageDowntime'] = 0
+        args['gasSpend'] = 33333
+        h_receipt.append({'args': args})
+        return tuple(h_receipt)
+
+
+class Events:
+    def BountyGot(self):
+        receipt = BountyEvent()
+        return receipt
+
+
+class Contract:
+    def __init__(self):
+        self.events = Events()
+
+
 class Manager:
+    def __init__(self):
+        self.contract = Contract()
+
     def send_verdict(self, my_node_id, node_id, downtime, latency, wallet):
         return {'tx': 0x0}
 
