@@ -58,7 +58,7 @@ class BountyCollector(base_agent.BaseAgent):
 
         if receipt['status'] == 1:
             self.logger.info('The bounty was successfully received')
-            h_receipt = skale.manager.contract.events.BountyGot().processReceipt(receipt)
+            h_receipt = self.skale.manager.contract.events.BountyGot().processReceipt(receipt)
             self.logger.info(LONG_LINE)
             self.logger.info(h_receipt)
             self.logger.info(LONG_LINE)
