@@ -2,7 +2,7 @@
 
 ver=0.2.3
 
-echo "Building Skale Events collector v${ver}..."
+echo "Building SKALE Events collector v${ver}..."
 docker build -t skalelabshub/events-collect:${ver} .. -f ../Dockerfile.events &&
 echo "Events collector v${ver} was built successfully" &&
 if [ "$1" == "p" ]

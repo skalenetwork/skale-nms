@@ -2,7 +2,7 @@
 
 ver=0.2.4
 
-echo "Building Skale SLA manager v${ver}..."
+echo "Building SKALE SLA manager v${ver}..."
 docker build -t skalelabshub/sla-manager:${ver} .. -f ../Dockerfile.sla &&
 echo "SLA manager v${ver} was built successfully" &&
 if [ "$1" == "p" ]
