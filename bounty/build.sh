@@ -2,7 +2,7 @@
 
 ver=0.2.4
 
-echo "Building Skale Bounty agent v${ver}..."
+echo "Building SKALE Bounty agent v${ver}..."
 docker build -t skalelabshub/bounty-agent:${ver} .. -f ../Dockerfile.bounty &&
 echo "Bounty agent v${ver} was built successfully" &&
 if [ "$1" == "p" ]
