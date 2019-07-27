@@ -13,6 +13,14 @@ before_install:
   - sudo apt-get install -y libmysqlclient-dev
   - docker run -d --restart=always --name skale-mysql -e MYSQL_ROOT_PASSWORD=$DB_ROOT_PASSWORD -e MYSQL_DATABASE=db_skale -e MYSQL_USER=$DB_USER -e MYSQL_PASSWORD=$DB_PASSWORD -v $TRAVIS_BUILD_DIR/test_data/init.sql:/docker-entrypoint-initdb.d/init.sql -p 3307:3306  mysql/mysql-server:5.7
   - docker -v
+  - cat .bashrc
+  - cd test_data
+  - bash ./run_geth.sh
+  - cd $TRAVIS_BUILD_DI/test_data
+  - bash ./deploy_cs.sh
+  - yes |cp $TRAVIS_BUILD_DI/skale-manager/data/unique.json $TRAVIS_BUILD/test_data/data.json
+  - cd $TRAVIS_BUILD_DI
+
 install:
 - pip install -r tests/requirements.txt
 script:
