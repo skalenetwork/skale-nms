@@ -18,7 +18,7 @@ before_install:
   - cd test_data
   - bash ./run_geth.sh
   - cd $TRAVIS_BUILD_DIR/test_data
-  - bash ./deploy_cs.sh
+  - bash ./deploy_sc.sh
   - yes |cp $TRAVIS_BUILD_DIR/skale-manager/data/unique.json $TRAVIS_BUILD_DIR/test_data/data.json
   - cd $TRAVIS_BUILD_DIR
 
