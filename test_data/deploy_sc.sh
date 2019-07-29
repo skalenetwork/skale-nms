@@ -9,4 +9,7 @@ git clone -b feature/alpine-team https://$GITHUB_TOKEN\@github.com/skalenetwork/
 cd skale-manager &&
 npm install &&
 PRIVATE_KEY=$ETH_PRIVATE_KEY ENDPOINT="http://127.0.0.1:1919"  ./node_modules/.bin/truffle migrate --network unique
+pwd
+ls -la
+ls -la data
 
