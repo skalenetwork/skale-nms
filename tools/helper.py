@@ -26,8 +26,8 @@ from skale import BlockchainEnv, Skale
 
 from tools.config import CUSTOM_CONTRACTS_PATH, LOCAL_WALLET_FILENAME, LOCAL_WALLET_FILEPATH, LOG_FOLDER, PROJECT_DIR
 
-# NETWORK = 'aws_test'
-NETWORK = 'do'
+NETWORK = 'local'
+# NETWORK = 'do'
 ENV_FILE = "envs.yml"
 ABI_FILE = "data.json"
 TEST_DATA_DIR = "test_data"

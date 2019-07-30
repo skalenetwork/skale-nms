@@ -1,5 +1,5 @@
 {
-  "skale_token_address": "0x99dFeB4a2b6ED092CAc81aa1ff9C1c6292569ca0",
+  "skale_token_address": "0xcC5942A035B00134Ea39911Bbdc28081A0c5E3d8",
   "skale_token_abi": [
     {
       "constant": true,
@@ -13,7 +13,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x06fdde03"
     },
     {
       "constant": false,
@@ -36,7 +37,8 @@
       ],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0x095ea7b3"
     },
     {
       "constant": true,
@@ -50,7 +52,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x18160ddd"
     },
     {
       "constant": false,
@@ -77,7 +80,23 @@
       ],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0x23b872dd"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "DECIMALS",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x2e0f2625"
     },
     {
       "constant": true,
@@ -86,49 +105,13 @@
       "outputs": [
         {
           "name": "",
-          "type": "uint256"
+          "type": "uint8"
         }
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "cap",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "to",
-          "type": "address"
-        },
-        {
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "mint",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0x313ce567"
     },
     {
       "constant": true,
@@ -147,7 +130,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x70a08231"
     },
     {
       "constant": true,
@@ -161,7 +145,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x8da5cb5b"
     },
     {
       "constant": true,
@@ -175,30 +160,23 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x95d89b41"
     },
     {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "burn",
+      "constant": true,
+      "inputs": [],
+      "name": "NAME",
       "outputs": [
         {
           "name": "",
-          "type": "bool"
+          "type": "string"
         }
       ],
       "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xa3f4df7e"
     },
     {
       "constant": false,
@@ -221,7 +199,8 @@
       ],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xa9059cbb"
     },
     {
       "constant": false,
@@ -248,7 +227,8 @@
       ],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xbe45fd62"
     },
     {
       "constant": true,
@@ -271,7 +251,23 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0xdd62ed3e"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "CAP",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xec81b483"
     },
     {
       "constant": false,
@@ -285,7 +281,23 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xf2fde38b"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "SYMBOL",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xf76f8d78"
     },
     {
       "inputs": [
@@ -296,7 +308,8 @@
       ],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "constructor"
+      "type": "constructor",
+      "signature": "constructor"
     },
     {
       "anonymous": false,
@@ -323,7 +336,8 @@
         }
       ],
       "name": "Mint",
-      "type": "event"
+      "type": "event",
+      "signature": "0x0722dd60d05485994047fdb065d2d7c2d82dfbea39b98bfdc0f42a37a38d07f7"
     },
     {
       "anonymous": false,
@@ -350,7 +364,8 @@
         }
       ],
       "name": "Burn",
-      "type": "event"
+      "type": "event",
+      "signature": "0x090168baed3ded59c18cd7337469f01581c995817adc8a3b46750ffdd0dfcbfa"
     },
     {
       "anonymous": false,
@@ -387,7 +402,8 @@
         }
       ],
       "name": "Transfer",
-      "type": "event"
+      "type": "event",
+      "signature": "0xfb5669bab4c7afd2867c38609f57c6053999ed0f4cb8d21a8b9af721510433aa"
     },
     {
       "anonymous": false,
@@ -419,30 +435,88 @@
         }
       ],
       "name": "Approval",
-      "type": "event"
-    }
-  ],
-  "nodes_data_address": "0x2c093BF0C67145564b6473ceAdCb87576F3d3bb0",
-  "nodes_data_abi": [
+      "type": "event",
+      "signature": "0x4962252862401c3995d312f59685ddb8eb12e88e0581cd69baf055a747e8bae4"
+    },
     {
-      "constant": true,
+      "constant": false,
       "inputs": [
         {
-          "name": "nodeIndex",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "amount",
           "type": "uint256"
         }
       ],
-      "name": "getNodeIP",
+      "name": "mint",
       "outputs": [
         {
           "name": "",
-          "type": "bytes4"
+          "type": "bool"
         }
       ],
       "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x40c10f19"
     },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "burn",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x9dc29fac"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_to",
+          "type": "address"
+        },
+        {
+          "name": "_value",
+          "type": "uint256"
+        },
+        {
+          "name": "_data",
+          "type": "bytes"
+        }
+      ],
+      "name": "transferWithData",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x2535f762"
+    }
+  ],
+  "nodes_data_address": "0x2C824B995232089EE05dd4673961aBb6f5409765",
+  "nodes_data_abi": [
     {
       "constant": true,
       "inputs": [],
@@ -455,7 +529,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x08e85aab"
     },
     {
       "constant": true,
@@ -474,64 +549,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "subarrayLink",
-          "type": "uint256"
-        },
-        {
-          "name": "space",
-          "type": "uint256"
-        }
-      ],
-      "name": "addSpaceToFullNode",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "name": "ip",
-          "type": "bytes4"
-        },
-        {
-          "name": "publicIP",
-          "type": "bytes4"
-        },
-        {
-          "name": "port",
-          "type": "uint16"
-        },
-        {
-          "name": "publicKey",
-          "type": "bytes"
-        }
-      ],
-      "name": "addNode",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0x0bdeab23"
     },
     {
       "constant": true,
@@ -582,91 +601,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "getNodePort",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint16"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "getActiveNodeIds",
-      "outputs": [
-        {
-          "name": "activeNodeIds",
-          "type": "uint256[]"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "subarrayLink",
-          "type": "uint256"
-        },
-        {
-          "name": "space",
-          "type": "uint256"
-        }
-      ],
-      "name": "removeSpaceFromFractionalNode",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "getNumberOfFullNodes",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "addFullNode",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0x1c53c280"
     },
     {
       "constant": true,
@@ -685,21 +621,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "getNumberOfFreeFullNodes",
-      "outputs": [
-        {
-          "name": "numberOfFreeFullNodes",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x36186464"
     },
     {
       "constant": true,
@@ -722,119 +645,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "isLeavingPeriodExpired",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "subarrayIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "removeFractionalNode",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "isNodeLeaving",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "subarrayLink",
-          "type": "uint256"
-        },
-        {
-          "name": "space",
-          "type": "uint256"
-        }
-      ],
-      "name": "removeSpaceFromFullNode",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "subarrayLink",
-          "type": "uint256"
-        },
-        {
-          "name": "space",
-          "type": "uint256"
-        }
-      ],
-      "name": "addSpaceToFractionalNode",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "isNodeActive",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x3e0f1c6b"
     },
     {
       "constant": true,
@@ -848,21 +660,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "changeNodeLastRewardDate",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0x89f10228"
     },
     {
       "constant": true,
@@ -876,26 +675,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "getNodeNextRewardDate",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint32"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x8da5cb5b"
     },
     {
       "constant": true,
@@ -914,7 +695,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x90a98a89"
     },
     {
       "constant": true,
@@ -933,190 +715,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "isNodeLeft",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "addFractionalNode",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "getNumberOfNodes",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "space",
-          "type": "uint256"
-        }
-      ],
-      "name": "getNumberOfFreeFractionalNodes",
-      "outputs": [
-        {
-          "name": "numberOfFreeFractionalNodes",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "subarrayIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "removeFullNode",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "isNodeExist",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "getNodeLastRewardDate",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint32"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "getActiveNodesByAddress",
-      "outputs": [
-        {
-          "name": "activeNodesByAddress",
-          "type": "uint256[]"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "setNodeLeaving",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "isTimeForReward",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "getActiveNodeIPs",
-      "outputs": [
-        {
-          "name": "activeNodeIPs",
-          "type": "bytes4[]"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x96a0be4f"
     },
     {
       "constant": true,
@@ -1139,21 +739,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "setNodeLeft",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xe4e50e76"
     },
     {
       "constant": true,
@@ -1176,7 +763,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0xf12266a1"
     },
     {
       "constant": false,
@@ -1190,7 +778,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xf2fde38b"
     },
     {
       "constant": true,
@@ -1204,21 +793,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "getNumberOfFractionalNodes",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0xf5dc5442"
     },
     {
       "inputs": [
@@ -1233,33 +809,8 @@
       ],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "constructor"
-    }
-  ],
-  "nodes_functionality_address": "0x015367f47eC7D3f3140B36318E4a8bB0bef3d594",
-  "nodes_functionality_abi": [
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "completeWithdrawDeposit",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "constructor",
+      "signature": "constructor"
     },
     {
       "constant": false,
@@ -1269,11 +820,141 @@
           "type": "address"
         },
         {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "ip",
+          "type": "bytes4"
+        },
+        {
+          "name": "publicIP",
+          "type": "bytes4"
+        },
+        {
+          "name": "port",
+          "type": "uint16"
+        },
+        {
+          "name": "publicKey",
+          "type": "bytes"
+        }
+      ],
+      "name": "addNode",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x143b2374"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
           "name": "nodeIndex",
           "type": "uint256"
         }
       ],
-      "name": "initWithdrawDeposit",
+      "name": "addFractionalNode",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xa496fd92"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "addFullNode",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x358e9e4a"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "setNodeLeaving",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xd40c5543"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "setNodeLeft",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xe7f47508"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "subarrayIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "removeFractionalNode",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x4e4ed455"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "subarrayIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "removeFullNode",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xbd93d272"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "subarrayLink",
+          "type": "uint256"
+        },
+        {
+          "name": "space",
+          "type": "uint256"
+        }
+      ],
+      "name": "removeSpaceFromFractionalNode",
       "outputs": [
         {
           "name": "",
@@ -1282,10 +963,88 @@
       ],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0x26489f28"
     },
     {
       "constant": false,
+      "inputs": [
+        {
+          "name": "subarrayLink",
+          "type": "uint256"
+        },
+        {
+          "name": "space",
+          "type": "uint256"
+        }
+      ],
+      "name": "removeSpaceFromFullNode",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x606ab8c1"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "subarrayLink",
+          "type": "uint256"
+        },
+        {
+          "name": "space",
+          "type": "uint256"
+        }
+      ],
+      "name": "addSpaceToFractionalNode",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x69ac2d9c"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "subarrayLink",
+          "type": "uint256"
+        },
+        {
+          "name": "space",
+          "type": "uint256"
+        }
+      ],
+      "name": "addSpaceToFullNode",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x11f683c6"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "changeNodeLastRewardDate",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x8d3a0f19"
+    },
+    {
+      "constant": true,
       "inputs": [
         {
           "name": "from",
@@ -1296,12 +1055,326 @@
           "type": "uint256"
         }
       ],
-      "name": "removeNode",
-      "outputs": [],
+      "name": "isNodeExist",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
       "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xc34da524"
     },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "isLeavingPeriodExpired",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x451f314c"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "isTimeForReward",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xdcbaac60"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "getNodeIP",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes4"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x03dd6c27"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "getNodePort",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint16"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x21c74e24"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "isNodeActive",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x79fe6308"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "isNodeLeaving",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x5b6b4185"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "isNodeLeft",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x9bcd9521"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "getNodeLastRewardDate",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xc921ba68"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "getNodeNextRewardDate",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x8e001b7c"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getNumberOfNodes",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xb81c806a"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getNumberOfFractionalNodes",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xfcbe8af5"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getNumberOfFullNodes",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x28692872"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "space",
+          "type": "uint256"
+        }
+      ],
+      "name": "getNumberOfFreeFractionalNodes",
+      "outputs": [
+        {
+          "name": "numberOfFreeFractionalNodes",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xbccedb8e"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getNumberOfFreeFullNodes",
+      "outputs": [
+        {
+          "name": "numberOfFreeFullNodes",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x3a01b25f"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getActiveNodeIPs",
+      "outputs": [
+        {
+          "name": "activeNodeIPs",
+          "type": "bytes4[]"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xdcd3744d"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getActiveNodeIds",
+      "outputs": [
+        {
+          "name": "activeNodeIds",
+          "type": "uint256[]"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x22ef64fe"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getActiveNodesByAddress",
+      "outputs": [
+        {
+          "name": "activeNodesByAddress",
+          "type": "uint256[]"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xd12fa445"
+    }
+  ],
+  "nodes_functionality_address": "0xc47af109D566f1FFDA7313BB85e374d28F160Df4",
+  "nodes_functionality_abi": [
     {
       "constant": true,
       "inputs": [],
@@ -1314,7 +1387,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x8da5cb5b"
     },
     {
       "constant": false,
@@ -1328,34 +1402,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "name": "value",
-          "type": "uint256"
-        },
-        {
-          "name": "data",
-          "type": "bytes"
-        }
-      ],
-      "name": "createNode",
-      "outputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xf2fde38b"
     },
     {
       "inputs": [
@@ -1366,7 +1414,8 @@
       ],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "constructor"
+      "type": "constructor",
+      "signature": "constructor"
     },
     {
       "anonymous": false,
@@ -1418,7 +1467,8 @@
         }
       ],
       "name": "NodeCreated",
-      "type": "event"
+      "type": "event",
+      "signature": "0x0249b5f4fbad267d7d85673cc1c22bdbd84fc00aac1208299d785e1d9c680572"
     },
     {
       "anonymous": false,
@@ -1450,7 +1500,8 @@
         }
       ],
       "name": "WithdrawDepositFromNodeComplete",
-      "type": "event"
+      "type": "event",
+      "signature": "0x5cd58e54392a275ac645564a5d01e5a6ff26cdb8842bc31442e5be9575e08070"
     },
     {
       "anonymous": false,
@@ -1482,10 +1533,121 @@
         }
       ],
       "name": "WithdrawDepositFromNodeInit",
-      "type": "event"
+      "type": "event",
+      "signature": "0xe473c67f279789c85d7a3bd79b2b74cebf968309470a58aef3c6fcccd9ba7a2c"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "value",
+          "type": "uint256"
+        },
+        {
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "createNode",
+      "outputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xf826b129"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "removeNode",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x3c1b79d5"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "removeNodeByRoot",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x85b4669b"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "initWithdrawDeposit",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x33118b9a"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "completeWithdrawDeposit",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x104f2f3f"
     }
   ],
-  "validators_data_address": "0x3a31FD28997cFBaEC4e704fC4f2fB6D9C83Fb6e6",
+  "validators_data_address": "0xc0cADc9a0426edd2b065f69D4E2D9cAE2df0BF2d",
   "validators_data_abi": [
     {
       "constant": true,
@@ -1508,7 +1670,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x2c3dc971"
     },
     {
       "constant": false,
@@ -1522,7 +1685,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0x43273213"
     },
     {
       "constant": true,
@@ -1541,7 +1705,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x43a6febf"
     },
     {
       "constant": true,
@@ -1564,26 +1729,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "validatorIndex",
-          "type": "bytes32"
-        }
-      ],
-      "name": "getValidatedArray",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bytes32[]"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x4466549f"
     },
     {
       "constant": false,
@@ -1601,21 +1748,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "validatorIndex",
-          "type": "bytes32"
-        }
-      ],
-      "name": "removeAllVerdicts",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0x6938a7a6"
     },
     {
       "constant": true,
@@ -1642,7 +1776,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x8ad6f13a"
     },
     {
       "constant": true,
@@ -1661,7 +1796,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x8c4d0f84"
     },
     {
       "constant": true,
@@ -1675,29 +1811,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "validatorIndex",
-          "type": "bytes32"
-        },
-        {
-          "name": "downtime",
-          "type": "uint32"
-        },
-        {
-          "name": "latency",
-          "type": "uint32"
-        }
-      ],
-      "name": "addVerdict",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0x8da5cb5b"
     },
     {
       "constant": false,
@@ -1715,7 +1830,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0x992dcd04"
     },
     {
       "constant": false,
@@ -1737,7 +1853,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xa0cfcd2a"
     },
     {
       "constant": true,
@@ -1768,44 +1885,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "validatorIndex",
-          "type": "bytes32"
-        },
-        {
-          "name": "indexOfValidatedNode",
-          "type": "uint256"
-        }
-      ],
-      "name": "removeValidatedNode",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "validatorIndex",
-          "type": "bytes32"
-        }
-      ],
-      "name": "getLengthOfMetrics",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0xa1460314"
     },
     {
       "constant": false,
@@ -1819,25 +1900,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "validatorIndex",
-          "type": "bytes32"
-        },
-        {
-          "name": "data",
-          "type": "bytes32"
-        }
-      ],
-      "name": "addValidatedNode",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xb039c8eb"
     },
     {
       "constant": false,
@@ -1855,7 +1919,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xb48b759a"
     },
     {
       "constant": true,
@@ -1874,7 +1939,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0xb70a4223"
     },
     {
       "constant": true,
@@ -1893,7 +1959,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0xdc8d734f"
     },
     {
       "constant": false,
@@ -1923,7 +1990,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xdd3fccca"
     },
     {
       "constant": true,
@@ -1942,7 +2010,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0xe83741c9"
     },
     {
       "constant": false,
@@ -1960,7 +2029,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xeceabad2"
     },
     {
       "constant": true,
@@ -1987,7 +2057,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0xef161bcb"
     },
     {
       "constant": false,
@@ -2005,7 +2076,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xf1445989"
     },
     {
       "constant": false,
@@ -2023,7 +2095,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xf19cc3f7"
     },
     {
       "constant": false,
@@ -2037,7 +2110,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xf2fde38b"
     },
     {
       "inputs": [
@@ -2052,10 +2126,142 @@
       ],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "constructor"
+      "type": "constructor",
+      "signature": "constructor"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "validatorIndex",
+          "type": "bytes32"
+        },
+        {
+          "name": "data",
+          "type": "bytes32"
+        }
+      ],
+      "name": "addValidatedNode",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xb213e437"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "validatorIndex",
+          "type": "bytes32"
+        },
+        {
+          "name": "downtime",
+          "type": "uint32"
+        },
+        {
+          "name": "latency",
+          "type": "uint32"
+        }
+      ],
+      "name": "addVerdict",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x9270b6d1"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "validatorIndex",
+          "type": "bytes32"
+        },
+        {
+          "name": "indexOfValidatedNode",
+          "type": "uint256"
+        }
+      ],
+      "name": "removeValidatedNode",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xaaac1992"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "validatorIndex",
+          "type": "bytes32"
+        }
+      ],
+      "name": "removeAllValidatedNodes",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x04b3b8f1"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "validatorIndex",
+          "type": "bytes32"
+        }
+      ],
+      "name": "removeAllVerdicts",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x82543de8"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "validatorIndex",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getValidatedArray",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes32[]"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x48b2ea3a"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "validatorIndex",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getLengthOfMetrics",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xacad7a4b"
     }
   ],
-  "validators_functionality_address": "0xe869BEEE8d733eD66296531628eD0a93F4A99Cf5",
+  "validators_functionality_address": "0xE35f00c6BB64C021E52a9D22268d1e0645B7E0c8",
   "validators_functionality_abi": [
     {
       "constant": false,
@@ -2077,7 +2283,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0x67d28b87"
     },
     {
       "constant": true,
@@ -2091,7 +2298,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x8da5cb5b"
     },
     {
       "constant": false,
@@ -2113,84 +2321,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "addValidator",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "upgradeValidator",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "calculateMetrics",
-      "outputs": [
-        {
-          "name": "averageDowntime",
-          "type": "uint32"
-        },
-        {
-          "name": "averageLatency",
-          "type": "uint32"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "fromValidatorIndex",
-          "type": "uint256"
-        },
-        {
-          "name": "toNodeIndex",
-          "type": "uint256"
-        },
-        {
-          "name": "downtime",
-          "type": "uint32"
-        },
-        {
-          "name": "latency",
-          "type": "uint32"
-        }
-      ],
-      "name": "sendVerdict",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xa0cfcd2a"
     },
     {
       "constant": true,
@@ -2225,7 +2357,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0xdd3ee290"
     },
     {
       "constant": false,
@@ -2239,7 +2372,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xe57097c9"
     },
     {
       "constant": false,
@@ -2253,7 +2387,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xf2fde38b"
     },
     {
       "inputs": [
@@ -2272,7 +2407,8 @@
       ],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "constructor"
+      "type": "constructor",
+      "signature": "constructor"
     },
     {
       "anonymous": false,
@@ -2304,7 +2440,8 @@
         }
       ],
       "name": "ValidatorCreated",
-      "type": "event"
+      "type": "event",
+      "signature": "0xfb65d1a8aba4deecb5785e7a3b091cdcc2b87566647abf26270417d8d339e2b7"
     },
     {
       "anonymous": false,
@@ -2336,7 +2473,8 @@
         }
       ],
       "name": "ValidatorUpgraded",
-      "type": "event"
+      "type": "event",
+      "signature": "0x237b0066cfb721c8e31bab1b0dda8d83026556ab115684b78f518a0be0b30456"
     },
     {
       "anonymous": false,
@@ -2368,18 +2506,19 @@
         }
       ],
       "name": "ValidatorsArray",
-      "type": "event"
+      "type": "event",
+      "signature": "0x94a853d95be70d8ae7d42d7acc3fec418fb90762c6aca9c9d1ca483a30ff57bc"
     },
     {
       "anonymous": false,
       "inputs": [
         {
-          "indexed": false,
+          "indexed": true,
           "name": "fromValidatorIndex",
           "type": "uint256"
         },
         {
-          "indexed": false,
+          "indexed": true,
           "name": "toNodeIndex",
           "type": "uint256"
         },
@@ -2410,7 +2549,8 @@
         }
       ],
       "name": "VerdictWasSent",
-      "type": "event"
+      "type": "event",
+      "signature": "0xba7b3fb08f5922e1ffec57bbe2d451508a5d8bbb664a6fccaec0c46031e0a59c"
     },
     {
       "anonymous": false,
@@ -2442,7 +2582,8 @@
         }
       ],
       "name": "MetricsWereCalculated",
-      "type": "event"
+      "type": "event",
+      "signature": "0xc37ba8a455d3051fe306a13d6cda239c1e6e31425a99d61f6f10588f4e1ad4ee"
     },
     {
       "anonymous": false,
@@ -2469,7 +2610,8 @@
         }
       ],
       "name": "PeriodsWereSet",
-      "type": "event"
+      "type": "event",
+      "signature": "0x19831d4c75be450205960b511da6d33ca7884f34ac0e1f95ad2c68470c368cee"
     },
     {
       "anonymous": false,
@@ -2496,7 +2638,8 @@
         }
       ],
       "name": "GroupAdded",
-      "type": "event"
+      "type": "event",
+      "signature": "0x19871d534b771550184a97cbaf5076dcbf2f748743f120440c7c06ff6b708386"
     },
     {
       "anonymous": false,
@@ -2523,7 +2666,8 @@
         }
       ],
       "name": "ExceptionSet",
-      "type": "event"
+      "type": "event",
+      "signature": "0x878e5710ab740c9e29ee500219bf9007f0ff84ad1140f15308e2a3bb60a9c728"
     },
     {
       "anonymous": false,
@@ -2545,7 +2689,8 @@
         }
       ],
       "name": "GroupDeleted",
-      "type": "event"
+      "type": "event",
+      "signature": "0x5f71c6bde2d5432f4857cf9e29793a7d20f4b943c4764623fb54c3662a422434"
     },
     {
       "anonymous": false,
@@ -2572,7 +2717,8 @@
         }
       ],
       "name": "GroupUpgraded",
-      "type": "event"
+      "type": "event",
+      "signature": "0x8aa94b942941083ee8a6f03ecbd2d977d3544ce861a9ae086108439652e1fa22"
     },
     {
       "anonymous": false,
@@ -2599,47 +2745,108 @@
         }
       ],
       "name": "GroupGenerated",
-      "type": "event"
-    }
-  ],
-  "schains_data_address": "0x36611F68e6E92A241f567bF27400BEBB262E8e83",
-  "schains_data_abi": [
+      "type": "event",
+      "signature": "0x01c0ed26efe041f30f638b02766641bab93259197e0b97683d473d583d60a51f"
+    },
     {
       "constant": false,
       "inputs": [
         {
           "name": "nodeIndex",
           "type": "uint256"
-        },
-        {
-          "name": "schainId",
-          "type": "bytes32"
         }
       ],
-      "name": "addSchainForNode",
+      "name": "addValidator",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xafd008ce"
     },
     {
       "constant": false,
       "inputs": [
         {
-          "name": "schainId",
-          "type": "bytes32"
-        },
-        {
-          "name": "partOfNode",
+          "name": "nodeIndex",
           "type": "uint256"
         }
       ],
-      "name": "setSchainPartOfNode",
+      "name": "upgradeValidator",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xc3262d4e"
     },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "deleteValidatorByRoot",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xeb20ab2e"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "fromValidatorIndex",
+          "type": "uint256"
+        },
+        {
+          "name": "toNodeIndex",
+          "type": "uint256"
+        },
+        {
+          "name": "downtime",
+          "type": "uint32"
+        },
+        {
+          "name": "latency",
+          "type": "uint32"
+        }
+      ],
+      "name": "sendVerdict",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xd77de31c"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "calculateMetrics",
+      "outputs": [
+        {
+          "name": "averageDowntime",
+          "type": "uint32"
+        },
+        {
+          "name": "averageLatency",
+          "type": "uint32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xc978f668"
+    }
+  ],
+  "schains_data_address": "0x2B44bF4665A4FE00BE83a00E4d375D7E6b740A96",
+  "schains_data_abi": [
     {
       "constant": true,
       "inputs": [],
@@ -2652,55 +2859,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "name": "lifetime",
-          "type": "uint256"
-        },
-        {
-          "name": "deposit",
-          "type": "uint256"
-        }
-      ],
-      "name": "initializeSchain",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "schainId",
-          "type": "bytes32"
-        },
-        {
-          "name": "lifetime",
-          "type": "uint256"
-        },
-        {
-          "name": "deposit",
-          "type": "uint256"
-        }
-      ],
-      "name": "changeLifetime",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0x136cfbdf"
     },
     {
       "constant": false,
@@ -2714,7 +2874,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0x43273213"
     },
     {
       "constant": true,
@@ -2733,7 +2894,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x43a6febf"
     },
     {
       "constant": true,
@@ -2756,64 +2918,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "schainId",
-          "type": "bytes32"
-        }
-      ],
-      "name": "getSchainsPartOfNode",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "schainId",
-          "type": "bytes32"
-        }
-      ],
-      "name": "isTimeExpired",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "getLengthOfSchainsForNode",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x4466549f"
     },
     {
       "constant": false,
@@ -2831,7 +2937,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0x6938a7a6"
     },
     {
       "constant": true,
@@ -2845,63 +2952,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "from",
-          "type": "address"
-        }
-      ],
-      "name": "getSchainIdsByAddress",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bytes32[]"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "schainId",
-          "type": "bytes32"
-        },
-        {
-          "name": "from",
-          "type": "address"
-        }
-      ],
-      "name": "removeSchain",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "from",
-          "type": "address"
-        }
-      ],
-      "name": "getSchainListSize",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x77ad87c1"
     },
     {
       "constant": true,
@@ -2920,7 +2972,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x8c4d0f84"
     },
     {
       "constant": true,
@@ -2934,49 +2987,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "name": "schainId",
-          "type": "bytes32"
-        }
-      ],
-      "name": "isOwnerAddress",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "schainName",
-          "type": "string"
-        }
-      ],
-      "name": "getSchainIdFromSchainName",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bytes32"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "pure",
-      "type": "function"
+      "type": "function",
+      "signature": "0x8da5cb5b"
     },
     {
       "constant": false,
@@ -2994,26 +3006,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "name",
-          "type": "string"
-        }
-      ],
-      "name": "isSchainNameAvailable",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x992dcd04"
     },
     {
       "constant": false,
@@ -3035,7 +3029,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xa0cfcd2a"
     },
     {
       "constant": true,
@@ -3066,7 +3061,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0xa1460314"
     },
     {
       "constant": false,
@@ -3080,7 +3076,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xb039c8eb"
     },
     {
       "constant": true,
@@ -3127,7 +3124,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0xb340c4b3"
     },
     {
       "constant": true,
@@ -3150,7 +3148,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0xb39a808e"
     },
     {
       "constant": false,
@@ -3168,7 +3167,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xb48b759a"
     },
     {
       "constant": true,
@@ -3187,25 +3187,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "schainId",
-          "type": "bytes32"
-        },
-        {
-          "name": "from",
-          "type": "address"
-        }
-      ],
-      "name": "setSchainIndex",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xb70a4223"
     },
     {
       "constant": true,
@@ -3228,7 +3211,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0xc2d13474"
     },
     {
       "constant": true,
@@ -3247,7 +3231,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0xdc8d734f"
     },
     {
       "constant": false,
@@ -3277,44 +3262,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        },
-        {
-          "name": "schainIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "removeSchainForNode",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "getSchainIdsForNode",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bytes32[]"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0xdd3fccca"
     },
     {
       "constant": true,
@@ -3333,7 +3282,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0xe83741c9"
     },
     {
       "constant": false,
@@ -3351,21 +3301,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "getSchains",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bytes32[]"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0xeceabad2"
     },
     {
       "constant": true,
@@ -3392,7 +3329,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0xef161bcb"
     },
     {
       "constant": false,
@@ -3410,7 +3348,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xf1445989"
     },
     {
       "constant": false,
@@ -3428,7 +3367,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xf19cc3f7"
     },
     {
       "constant": false,
@@ -3442,7 +3382,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xf2fde38b"
     },
     {
       "inputs": [
@@ -3457,55 +3398,376 @@
       ],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "constructor"
-    }
-  ],
-  "schains_functionality_address": "0xa17f70700E2492187e67eFF1F2fa78Df7331FBd0",
-  "schains_functionality_abi": [
+      "type": "constructor",
+      "signature": "constructor"
+    },
     {
       "constant": false,
+      "inputs": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "lifetime",
+          "type": "uint256"
+        },
+        {
+          "name": "deposit",
+          "type": "uint256"
+        }
+      ],
+      "name": "initializeSchain",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x2faceb1d"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "schainId",
+          "type": "bytes32"
+        },
+        {
+          "name": "from",
+          "type": "address"
+        }
+      ],
+      "name": "setSchainIndex",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xc01c7061"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        },
+        {
+          "name": "schainId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "addSchainForNode",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x083863f9"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "schainId",
+          "type": "bytes32"
+        },
+        {
+          "name": "partOfNode",
+          "type": "uint256"
+        }
+      ],
+      "name": "setSchainPartOfNode",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x109d2ee2"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "schainId",
+          "type": "bytes32"
+        },
+        {
+          "name": "lifetime",
+          "type": "uint256"
+        },
+        {
+          "name": "deposit",
+          "type": "uint256"
+        }
+      ],
+      "name": "changeLifetime",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x3b949661"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "schainId",
+          "type": "bytes32"
+        },
+        {
+          "name": "from",
+          "type": "address"
+        }
+      ],
+      "name": "removeSchain",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x7efc2248"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        },
+        {
+          "name": "schainIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "removeSchainForNode",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xe56bc4f4"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getSchains",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes32[]"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xee465781"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "schainId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getSchainsPartOfNode",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x4a58ba07"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        }
+      ],
+      "name": "getSchainListSize",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x8b0b2e0b"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        }
+      ],
+      "name": "getSchainIdsByAddress",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes32[]"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x7ed0b3fa"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "getSchainIdsForNode",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes32[]"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xe6695e68"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "getLengthOfSchainsForNode",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x646bc0df"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "schainName",
+          "type": "string"
+        }
+      ],
+      "name": "getSchainIdFromSchainName",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "pure",
+      "type": "function",
+      "signature": "0x92f12065"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "schainId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getSchainOwner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x4a8913a6"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "name": "isSchainNameAvailable",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x9dc254db"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "schainId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "isTimeExpired",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x57f897ad"
+    },
+    {
+      "constant": true,
       "inputs": [
         {
           "name": "from",
           "type": "address"
         },
         {
-          "name": "deposit",
-          "type": "uint256"
-        },
-        {
-          "name": "data",
-          "type": "bytes"
-        }
-      ],
-      "name": "addSchain",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "groupIndex",
-          "type": "bytes32"
-        },
-        {
-          "name": "newRecommendedNumberOfNodes",
-          "type": "uint256"
-        },
-        {
-          "name": "data",
+          "name": "schainId",
           "type": "bytes32"
         }
       ],
-      "name": "upgradeGroup",
-      "outputs": [],
+      "name": "isOwnerAddress",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
       "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x8f7e500a"
+    }
+  ],
+  "schains_functionality_address": "0x1E36aD99b4b22968aEf0123Bf420376a591C0F24",
+  "schains_functionality_abi": [
     {
       "constant": true,
       "inputs": [],
@@ -3518,119 +3780,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "groupIndex",
-          "type": "bytes32"
-        },
-        {
-          "name": "newRecommendedNumberOfNodes",
-          "type": "uint256"
-        },
-        {
-          "name": "data",
-          "type": "bytes32"
-        }
-      ],
-      "name": "addGroup",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "typeOfSchain",
-          "type": "uint256"
-        },
-        {
-          "name": "lifetime",
-          "type": "uint256"
-        }
-      ],
-      "name": "getSchainPrice",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "groupIndex",
-          "type": "bytes32"
-        },
-        {
-          "name": "signatureX",
-          "type": "uint256"
-        },
-        {
-          "name": "signatureY",
-          "type": "uint256"
-        },
-        {
-          "name": "hashX",
-          "type": "uint256"
-        },
-        {
-          "name": "hashY",
-          "type": "uint256"
-        }
-      ],
-      "name": "verifySignature",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "groupIndex",
-          "type": "bytes32"
-        }
-      ],
-      "name": "deleteGroup",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "name": "schainId",
-          "type": "bytes32"
-        }
-      ],
-      "name": "deleteSchain",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0x8da5cb5b"
     },
     {
       "constant": false,
@@ -3644,7 +3795,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xf2fde38b"
     },
     {
       "inputs": [
@@ -3663,7 +3815,8 @@
       ],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "constructor"
+      "type": "constructor",
+      "signature": "constructor"
     },
     {
       "anonymous": false,
@@ -3720,209 +3873,92 @@
         }
       ],
       "name": "SchainCreated",
-      "type": "event"
+      "type": "event",
+      "signature": "0xfc2675d6964309452701d6b787a5873206bef18ba47f675902db7e07d2ebdade"
     },
     {
-      "anonymous": false,
+      "constant": false,
       "inputs": [
         {
-          "indexed": false,
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "indexed": false,
-          "name": "groupIndex",
-          "type": "bytes32"
-        },
-        {
-          "indexed": false,
-          "name": "nodesInGroup",
-          "type": "uint256[]"
-        },
-        {
-          "indexed": false,
-          "name": "time",
-          "type": "uint32"
-        },
-        {
-          "indexed": false,
-          "name": "gasSpend",
-          "type": "uint256"
-        }
-      ],
-      "name": "SchainNodes",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "indexed": false,
-          "name": "owner",
+          "name": "from",
           "type": "address"
         },
         {
-          "indexed": false,
           "name": "deposit",
           "type": "uint256"
         },
         {
-          "indexed": false,
-          "name": "groupIndex",
-          "type": "bytes32"
-        },
-        {
-          "indexed": false,
-          "name": "time",
-          "type": "uint32"
-        },
-        {
-          "indexed": false,
-          "name": "gasSpend",
-          "type": "uint256"
+          "name": "data",
+          "type": "bytes"
         }
       ],
-      "name": "WithdrawFromSchain",
-      "type": "event"
+      "name": "addSchain",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x1ad01e20"
     },
     {
-      "anonymous": false,
+      "constant": true,
       "inputs": [
         {
-          "indexed": false,
-          "name": "groupIndex",
-          "type": "bytes32"
+          "name": "typeOfSchain",
+          "type": "uint256"
         },
         {
-          "indexed": false,
-          "name": "groupData",
-          "type": "bytes32"
-        },
-        {
-          "indexed": false,
-          "name": "time",
-          "type": "uint32"
-        },
-        {
-          "indexed": false,
-          "name": "gasSpend",
+          "name": "lifetime",
           "type": "uint256"
         }
       ],
-      "name": "GroupAdded",
-      "type": "event"
+      "name": "getSchainPrice",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xab9131c7"
     },
     {
-      "anonymous": false,
+      "constant": false,
       "inputs": [
         {
-          "indexed": false,
-          "name": "groupIndex",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "schainId",
           "type": "bytes32"
-        },
-        {
-          "indexed": false,
-          "name": "exceptionNodeIndex",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "name": "time",
-          "type": "uint32"
-        },
-        {
-          "indexed": false,
-          "name": "gasSpend",
-          "type": "uint256"
         }
       ],
-      "name": "ExceptionSet",
-      "type": "event"
+      "name": "deleteSchain",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xe675e4da"
     },
     {
-      "anonymous": false,
+      "constant": false,
       "inputs": [
         {
-          "indexed": false,
-          "name": "groupIndex",
+          "name": "schainId",
           "type": "bytes32"
-        },
-        {
-          "indexed": false,
-          "name": "time",
-          "type": "uint32"
-        },
-        {
-          "indexed": false,
-          "name": "gasSpend",
-          "type": "uint256"
         }
       ],
-      "name": "GroupDeleted",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "name": "groupIndex",
-          "type": "bytes32"
-        },
-        {
-          "indexed": false,
-          "name": "groupData",
-          "type": "bytes32"
-        },
-        {
-          "indexed": false,
-          "name": "time",
-          "type": "uint32"
-        },
-        {
-          "indexed": false,
-          "name": "gasSpend",
-          "type": "uint256"
-        }
-      ],
-      "name": "GroupUpgraded",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "name": "groupIndex",
-          "type": "bytes32"
-        },
-        {
-          "indexed": false,
-          "name": "nodesInGroup",
-          "type": "uint256[]"
-        },
-        {
-          "indexed": false,
-          "name": "time",
-          "type": "uint32"
-        },
-        {
-          "indexed": false,
-          "name": "gasSpend",
-          "type": "uint256"
-        }
-      ],
-      "name": "GroupGenerated",
-      "type": "event"
+      "name": "deleteSchainByRoot",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xf49d4d7c"
     }
   ],
-  "manager_data_address": "0x69281011EefFF75fD06fA12F5AbdA8Cea7A73c84",
+  "manager_data_address": "0x6d7f0C031D24101569122147034b696Ac80Ed801",
   "manager_data_abi": [
     {
       "constant": true,
@@ -3936,21 +3972,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "newStageNodes",
-          "type": "uint256"
-        }
-      ],
-      "name": "setStageTimeAndStageNodes",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0x29942ed4"
     },
     {
       "constant": true,
@@ -3964,21 +3987,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "newMinersCap",
-          "type": "uint256"
-        }
-      ],
-      "name": "setMinersCap",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0x3b05fca9"
     },
     {
       "constant": true,
@@ -3992,7 +4002,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x78e97925"
     },
     {
       "constant": true,
@@ -4006,7 +4017,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x8da5cb5b"
     },
     {
       "constant": true,
@@ -4020,7 +4032,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0xdd2d96ed"
     },
     {
       "constant": false,
@@ -4034,7 +4047,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xf2fde38b"
     },
     {
       "inputs": [
@@ -4049,53 +4063,42 @@
       ],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "constructor"
+      "type": "constructor",
+      "signature": "constructor"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "newMinersCap",
+          "type": "uint256"
+        }
+      ],
+      "name": "setMinersCap",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x68d5d69e"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "newStageNodes",
+          "type": "uint256"
+        }
+      ],
+      "name": "setStageTimeAndStageNodes",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x3689f3d7"
     }
   ],
-  "skale_manager_address": "0x77E30FF2e599E3777CF80D7e7Cd9D11490650928",
+  "skale_manager_address": "0xbEaA08E8978217355F4d95B8220D7dAb97B88bC7",
   "skale_manager_abi": [
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "deleteNode",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "completeWithdrawdeposit",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "name",
-          "type": "string"
-        }
-      ],
-      "name": "deleteSchain",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
     {
       "constant": true,
       "inputs": [],
@@ -4108,83 +4111,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "initWithdrawDeposit",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "from",
-          "type": "address"
-        },
-        {
-          "name": "value",
-          "type": "uint256"
-        },
-        {
-          "name": "data",
-          "type": "bytes"
-        }
-      ],
-      "name": "tokenFallback",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "fromValidatorIndex",
-          "type": "uint256"
-        },
-        {
-          "name": "toNodeIndex",
-          "type": "uint256"
-        },
-        {
-          "name": "downtime",
-          "type": "uint32"
-        },
-        {
-          "name": "latency",
-          "type": "uint32"
-        }
-      ],
-      "name": "sendVerdict",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "nodeIndex",
-          "type": "uint256"
-        }
-      ],
-      "name": "getBounty",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0x8da5cb5b"
     },
     {
       "constant": false,
@@ -4198,7 +4126,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "signature": "0xf2fde38b"
     },
     {
       "inputs": [
@@ -4209,13 +4138,14 @@
       ],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "constructor"
+      "type": "constructor",
+      "signature": "constructor"
     },
     {
       "anonymous": false,
       "inputs": [
         {
-          "indexed": false,
+          "indexed": true,
           "name": "nodeIndex",
           "type": "uint256"
         },
@@ -4251,10 +4181,166 @@
         }
       ],
       "name": "BountyGot",
-      "type": "event"
+      "type": "event",
+      "signature": "0x9938f98c0c577b15858a354e3cffc9d52b4d6f7942206297d1571502f138a48d"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "value",
+          "type": "uint256"
+        },
+        {
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "tokenFallback",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xc0ee0b8a"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "initWithdrawDeposit",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xa832cca4"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "completeWithdrawdeposit",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x7303616e"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "deleteNode",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x41d2a256"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "deleteNodeByRoot",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x621ccdc7"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "name": "deleteSchain",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x82dc27d7"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "name": "deleteSchainByRoot",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xbe07f57c"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "fromValidatorIndex",
+          "type": "uint256"
+        },
+        {
+          "name": "toNodeIndex",
+          "type": "uint256"
+        },
+        {
+          "name": "downtime",
+          "type": "uint32"
+        },
+        {
+          "name": "latency",
+          "type": "uint32"
+        }
+      ],
+      "name": "sendVerdict",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xd77de31c"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "nodeIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "getBounty",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xee8c4bbf"
     }
   ],
-  "constants_address": "0x4107B231C4658386cF75EdD5cEC6f03701eBf2d3",
+  "constants_address": "0x943Fc186B8605af6E716168d683E32A1D8389665",
   "constants_abi": [
     {
       "constant": true,
@@ -4268,7 +4354,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x0b0d2173"
     },
     {
       "constant": true,
@@ -4282,7 +4369,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x10b846c0"
     },
     {
       "constant": true,
@@ -4296,7 +4384,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x12b24220"
     },
     {
       "constant": true,
@@ -4310,7 +4399,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x2bdf4f2b"
     },
     {
       "constant": true,
@@ -4324,7 +4414,23 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x2db79ed9"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "NUMBER_OF_NODES_FOR_MEDIUM_TEST_SCHAIN",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x3dcbe1f9"
     },
     {
       "constant": true,
@@ -4338,7 +4444,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x42161013"
     },
     {
       "constant": true,
@@ -4352,7 +4459,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x5d266a54"
     },
     {
       "constant": true,
@@ -4366,7 +4474,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x786a46eb"
     },
     {
       "constant": true,
@@ -4380,7 +4489,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x88ee3810"
     },
     {
       "constant": true,
@@ -4394,7 +4504,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x8906e86b"
     },
     {
       "constant": true,
@@ -4408,7 +4519,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x8bbc9e83"
     },
     {
       "constant": true,
@@ -4422,7 +4534,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x8c4ff5fc"
     },
     {
       "constant": true,
@@ -4436,7 +4549,8 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x8da5cb5b"
     },
     {
       "constant": true,
@@ -4450,7 +4564,110 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x93abbbb2"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "MEDIUM_TEST_DIVISOR",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xabceb19c"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "FRACTIONAL_FACTOR",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xb3076ec5"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "NUMBER_OF_NODES_FOR_TEST_SCHAIN",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xd7adbc08"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "NUMBER_OF_VALIDATORS",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xdb731777"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "rewardPeriod",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xe88dc5b7"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xf2fde38b"
+    },
+    {
+      "inputs": [
+        {
+          "name": "contractsAddress",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "constructor",
+      "signature": "constructor"
     },
     {
       "constant": false,
@@ -4468,21 +4685,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "FRACTIONAL_FACTOR",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0x94450e34"
     },
     {
       "constant": false,
@@ -4491,35 +4695,8 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "NUMBER_OF_NODES_FOR_TEST_SCHAIN",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "NUMBER_OF_VALIDATORS",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "signature": "0xb81df240"
     },
     {
       "constant": false,
@@ -4528,49 +4705,11 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "rewardPeriod",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint32"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "newOwner",
-          "type": "address"
-        }
-      ],
-      "name": "transferOwnership",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "name": "contractsAddress",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "constructor"
+      "type": "function",
+      "signature": "0xe5b6d8f6"
     }
   ],
-  "contract_manager_address": "0xC1F927A97B442a8bFf4d3e308519D0252F5cF0BB",
+  "contract_manager_address": "0xAD695926A125fb1d0657C76cFCF3B956cf311462",
   "contract_manager_abi": [
     {
       "constant": true,
@@ -4586,25 +4725,6 @@
       "stateMutability": "view",
       "type": "function",
       "signature": "0x8da5cb5b"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "contractsName",
-          "type": "string"
-        },
-        {
-          "name": "newContractsAddress",
-          "type": "address"
-        }
-      ],
-      "name": "setContractsAddress",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function",
-      "signature": "0xdd9e2940"
     },
     {
       "constant": true,
@@ -4658,6 +4778,25 @@
       "name": "ContractUpgraded",
       "type": "event",
       "signature": "0x2b51ff7c4cc8e6fe1c72e9d9685b7d2a88a5d82ad3a644afbdceb0272c89c1c3"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "contractsName",
+          "type": "string"
+        },
+        {
+          "name": "newContractsAddress",
+          "type": "address"
+        }
+      ],
+      "name": "setContractsAddress",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xdd9e2940"
     }
   ]
 }

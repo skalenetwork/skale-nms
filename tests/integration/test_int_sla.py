@@ -37,7 +37,7 @@ def setup_module(module):
 def test_nodes_are_created():
 
     nodes_count_after = len(preparation.get_active_ids())
-    print(f'wait nodes_number = {nodes_count_before + nodes_count_to_add}')
+    print(f'\nwait nodes_number = {nodes_count_before + nodes_count_to_add}')
     print(f'got nodes_number = {nodes_count_after}')
 
     assert nodes_count_after == nodes_count_before + nodes_count_to_add
@@ -45,11 +45,10 @@ def test_nodes_are_created():
 
 def test_get_validated_nodes():
     skale = init_skale()
-    cur_nodes_count = nodes_count_before + nodes_count_to_add
-    cur_node_id = cur_nodes_count - 2
-    print(f'cur_node = {cur_node_id}')
+    cur_node_id = 0
+    print(f'\ncur_node = {cur_node_id}')
     monitor = sla.Monitor(skale, cur_node_id)
     nodes = monitor.get_validated_nodes()
     print(f'nodes = {nodes}')
     assert type(nodes) is list
-    assert any(node.get('id') == cur_nodes_count - 1 for node in nodes)
+    assert any(node.get('id') == cur_node_id + 1 for node in nodes)
