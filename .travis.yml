@@ -10,10 +10,9 @@ addons:
       - docker-ce
 env:
   - NODE_VERSION="10.16.0"
-  - DOCKER_COMPOSE_VERSION="1.23.2"
 before_install:
   - nvm install $NODE_VERSION
-  - sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  - sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
   - sudo chmod +x /usr/local/bin/docker-compose
   - sudo apt-get update
   - sudo apt-get install -y libmysqlclient-dev
