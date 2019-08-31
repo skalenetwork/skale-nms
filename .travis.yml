@@ -30,7 +30,7 @@ install:
 script:
 - export IS_TEST=true
 - export PYTHONPATH=$PYTHONPATH:.
-- py.test -v -s --cov=./ tests/unit/
+- py.test -v -s --cov=./ tests/
 
 after_success:
 - codecov -t $CODECOV_TOKEN
