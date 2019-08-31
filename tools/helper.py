@@ -21,17 +21,20 @@ import logging
 import os
 from distutils import util
 
-import yaml
-from skale import BlockchainEnv, Skale
-
+from skale import Skale
+from dotenv import load_dotenv
 from tools.config import CUSTOM_CONTRACTS_PATH, LOCAL_WALLET_FILENAME, LOCAL_WALLET_FILEPATH, LOG_FOLDER, PROJECT_DIR
 
 NETWORK = 'local'
 # NETWORK = 'do'
-ENV_FILE = "envs.yml"
+ENV_FILE = ".env"
 ABI_FILE = "data.json"
 TEST_DATA_DIR = "test_data"
 TEST_DATA_DIR_PATH = os.path.join(PROJECT_DIR, TEST_DATA_DIR)
+DOTENV_PATH = os.path.join(TEST_DATA_DIR_PATH, ENV_FILE)
+
+load_dotenv(DOTENV_PATH)
+ENDPOINT = os.environ['ENDPOINT']
 
 logger = logging.getLogger(__name__)
 
@@ -62,24 +65,12 @@ def get_local_wallet_filepath(node_id):
 
 def init_skale():
 
-    rpc_ip = os.environ.get("RPC_IP")
-    rpc_port = os.environ.get("RPC_PORT")
-
-    if rpc_ip is None:
-        env_file_path = os.path.join(TEST_DATA_DIR_PATH, ENV_FILE)
-        with open(env_file_path, 'r') as stream:
-            try:
-                envs = yaml.load(stream)
-            except yaml.YAMLError as err:
-                print(err)
-            rpc_ip = envs[NETWORK]['ip']
-            rpc_port = envs[NETWORK]['ws_port']
-
-    rpc_port = int(rpc_port)
-
     is_test = os.environ.get("IS_TEST", "False")
     is_test = bool(util.strtobool(is_test))
     abi_filepath = os.path.join(TEST_DATA_DIR_PATH, ABI_FILE) if is_test else CUSTOM_CONTRACTS_PATH
-    skale = Skale(BlockchainEnv.CUSTOM, rpc_ip, rpc_port, abi_filepath)
-
+    print('\n++++++++++++++++++++++++++++++++++++++++++')
+    print(f' PATH = {abi_filepath}')
+    print(f' endpoint = {ENDPOINT}')
+    skale = Skale(ENDPOINT, abi_filepath)
+    print(f'init completed')
     return skale
