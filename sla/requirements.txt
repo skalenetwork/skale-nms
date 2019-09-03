@@ -1,7 +1,7 @@
 docker==3.2.1
 pyjwt==1.4.2
 simple-crypt==4.1.7
-skale-py==0.84.0
+skale-py==0.82.0
 pingparsing==0.13.2
 schedule==0.6.0
 tenacity==5.0.3
