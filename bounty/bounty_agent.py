@@ -25,9 +25,10 @@ import sys
 from datetime import datetime
 
 import skale.utils.helper as Helper
+from filelock import FileLock, Timeout
 
 from tools import base_agent, db
-from tools.helper import init_skale
+from tools.helper import get_lock_filepath, init_skale
 
 LONG_LINE = '---------------------------------------------------------------------------------------------------'
 
@@ -46,8 +47,13 @@ class BountyCollector(base_agent.BaseAgent):
         self.logger.debug(f'ETH balance: {eth_bal_before}')
         self.logger.debug(f'SKL balance: {skl_bal_before}')
         self.logger.info('--- Getting Bounty ---')
+        lock = FileLock(get_lock_filepath(), timeout=15)
+        self.logger.debug('Acquiring lock')
         try:
-            res = self.skale.manager.get_bounty(self.id, self.local_wallet)
+            with lock.acquire(timeout=30):
+                res = self.skale.manager.get_bounty(self.id, self.local_wallet)
+        except Timeout:
+            self.logger.info('Another agent currently holds the lock')
         except Exception as err:
             self.logger.error(f'Failed getting bounty tx: {err}')
             # TODO: notify Skale Admin
