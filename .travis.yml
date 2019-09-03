@@ -24,13 +24,14 @@ before_install:
   - bash ./deploy_sc.sh
   - yes |cp $TRAVIS_BUILD_DIR/test_data/skale-manager/data/unique.json $TRAVIS_BUILD_DIR/test_data/data.json
   - cd $TRAVIS_BUILD_DIR
+  - head $TRAVIS_BUILD_DIR/test_data/data.json
 
 install:
 - pip install -r tests/requirements.txt
 script:
 - export IS_TEST=true
 - export PYTHONPATH=$PYTHONPATH:.
-- py.test -v -s --cov=./ tests/unit/
+- py.test -v -s --cov=./ tests/
 
 after_success:
 - codecov -t $CODECOV_TOKEN
