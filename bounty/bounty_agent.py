@@ -47,19 +47,21 @@ class BountyCollector(base_agent.BaseAgent):
         self.logger.debug(f'ETH balance: {eth_bal_before}')
         self.logger.debug(f'SKL balance: {skl_bal_before}')
         self.logger.info('--- Getting Bounty ---')
-        lock = FileLock(get_lock_filepath(), timeout=15)
+        lock = FileLock(get_lock_filepath(), timeout=1)
         self.logger.debug('Acquiring lock')
         try:
-            with lock.acquire(timeout=30):
+            with lock.acquire():
                 res = self.skale.manager.get_bounty(self.id, self.local_wallet)
+                receipt = Helper.await_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
         except Timeout:
             self.logger.info('Another agent currently holds the lock')
+            return 2
         except Exception as err:
             self.logger.error(f'Failed getting bounty tx: {err}')
             # TODO: notify Skale Admin
             raise
         self.logger.debug('Waiting for receipt of tx...')
-        receipt = Helper.await_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
+
         tx_hash = receipt["transactionHash"].hex()
 
         if receipt['status'] == 1:

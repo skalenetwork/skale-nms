@@ -120,19 +120,20 @@ class Monitor(base_agent.BaseAgent):
             self.logger.info(f'Sending report for node #{node["id"]}')
             self.logger.info(f'Epoch metrics: {metrics}')
             self.logger.debug(f'wallet = {self.local_wallet["address"]}    {self.local_wallet["private_key"]}')
-            lock = FileLock(get_lock_filepath(), timeout=15)
+            lock = FileLock(get_lock_filepath(), timeout=1)
             self.logger.debug('Acquiring lock')
             try:
-                with lock.acquire(timeout=30):
+                with lock.acquire():
                     res = self.skale.manager.send_verdict(self.id, node['id'], metrics['downtime'],
                                                           metrics['latency'], self.local_wallet)
+                    receipt = await_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
             except Timeout:
                 self.logger.info('Another agent currently holds the lock')
+                break
             except Exception as err:
                 self.logger.error(f'Failed send report on the node #{node["id"]}. Error: {str(err)}', exc_info=True)
                 break
 
-            receipt = await_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
             if receipt['status'] == 1:
                 self.logger.info('The report was successfully sent')
             if receipt['status'] == 0:
