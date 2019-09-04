@@ -21,22 +21,33 @@ import logging
 import os
 from distutils import util
 
-from skale import Skale
 from dotenv import load_dotenv
-from tools.config import CUSTOM_CONTRACTS_PATH, LOCAL_WALLET_FILENAME, LOCAL_WALLET_FILEPATH, LOG_FOLDER, PROJECT_DIR
+from skale import Skale
+
+from tools.config import (
+    CUSTOM_CONTRACTS_PATH, LOCAL_WALLET_FILENAME, LOCAL_WALLET_FILEPATH, LOG_FOLDER, NODE_DATA_PATH, PROJECT_DIR)
 
 NETWORK = 'local'
 # NETWORK = 'do'
 ENV_FILE = ".env"
 ABI_FILE = "data.json"
+LOCK_FILE = "tx.lock"
 TEST_DATA_DIR = "test_data"
 TEST_DATA_DIR_PATH = os.path.join(PROJECT_DIR, TEST_DATA_DIR)
 DOTENV_PATH = os.path.join(TEST_DATA_DIR_PATH, ENV_FILE)
+
 
 load_dotenv(DOTENV_PATH)
 ENDPOINT = os.environ['ENDPOINT']
 
 logger = logging.getLogger(__name__)
+
+
+def get_lock_filepath():
+    is_test = os.environ.get("IS_TEST", "False")
+    is_test = bool(util.strtobool(is_test))
+    lock_path = os.path.join(TEST_DATA_DIR_PATH, LOCK_FILE) if is_test else os.path.join(NODE_DATA_PATH, LOCK_FILE)
+    return lock_path
 
 
 def get_log_filepath(agent_name, node_id):

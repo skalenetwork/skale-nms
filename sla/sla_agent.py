@@ -27,11 +27,12 @@ import socket
 import sys
 from datetime import datetime
 
+from filelock import FileLock, Timeout
 from skale.utils.helper import await_receipt
 
 from sla import ping
 from tools import base_agent, db
-from tools.helper import init_skale
+from tools.helper import get_lock_filepath, init_skale
 
 WORKING_IP = '8.8.8.8'
 LONG_LINE = '---------------------------------------------------------------------------------------------------'
@@ -119,14 +120,20 @@ class Monitor(base_agent.BaseAgent):
             self.logger.info(f'Sending report for node #{node["id"]}')
             self.logger.info(f'Epoch metrics: {metrics}')
             self.logger.debug(f'wallet = {self.local_wallet["address"]}    {self.local_wallet["private_key"]}')
+            lock = FileLock(get_lock_filepath(), timeout=1)
+            self.logger.debug('Acquiring lock')
             try:
-                res = self.skale.manager.send_verdict(self.id, node['id'], metrics['downtime'],
-                                                      metrics['latency'], self.local_wallet)
+                with lock.acquire():
+                    res = self.skale.manager.send_verdict(self.id, node['id'], metrics['downtime'],
+                                                          metrics['latency'], self.local_wallet)
+                    receipt = await_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
+            except Timeout:
+                self.logger.info('Another agent currently holds the lock')
+                break
             except Exception as err:
                 self.logger.error(f'Failed send report on the node #{node["id"]}. Error: {str(err)}', exc_info=True)
                 break
 
-            receipt = await_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
             if receipt['status'] == 1:
                 self.logger.info('The report was successfully sent')
             if receipt['status'] == 0:

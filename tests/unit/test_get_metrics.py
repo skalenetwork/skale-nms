@@ -18,7 +18,7 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from sla import ping, sim
+from sla import ping
 
 ID = 0
 IP_GOOD = '8.8.8.8'
@@ -46,14 +46,3 @@ def test_get_node_metrics_neg():
 
     assert latency == -1
     assert downtime is True
-
-
-def test_generate_node_metrics():
-    metrics = sim.generate_node_metrics()
-    latency = metrics['latency']
-    downtime = metrics['is_dead']
-    print(metrics)
-
-    assert latency >= 20
-    assert latency <= 210
-    assert type(downtime) is bool
