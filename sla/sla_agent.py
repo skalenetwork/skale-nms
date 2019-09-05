@@ -138,7 +138,7 @@ class Monitor(base_agent.BaseAgent):
                 self.logger.info('The report was successfully sent')
             if receipt['status'] == 0:
                 self.logger.info('The report was not sent - transaction failed')
-                err_status += err_status
+                err_status += 1
             self.logger.info(f'Receipt: {receipt}')
         return err_status
 
