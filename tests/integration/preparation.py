@@ -104,14 +104,12 @@ def create_node(node_id):
         gas = 90000
         tx_skl = sign_and_send(skale, op, gas, sender_wallet)
         receipt = Helper.await_receipt(skale.web3, tx_skl)
-        print('receipt SKL transfer')
-        print(receipt)
+        # print(f'receipt of SKL transfer: {receipt}')
 
         # transfer ETH
         tx = Helper.send_eth(skale.web3, address, eth_amount, sender_wallet)
         receipt = Helper.await_receipt(skale.web3, tx)
-
-        print(f'receipt of ETH transfer: {receipt}')
+        # print(f'receipt of ETH transfer: {receipt}')
 
         print(f'ETH balance after: {skale.web3.eth.getBalance(address)}')
         print(f'SKL balance after: {skale.token.contract.functions.balanceOf(address).call()}')
