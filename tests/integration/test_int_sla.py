@@ -101,6 +101,12 @@ def test_validate_and_get_reported_nodes_neg(monitor):
     print(f'rep nodes = {reported_nodes}')
     assert len(reported_nodes) == 0
 
+    print('\n+++++++++++++++++++++++++++++')
+    print('report date:')
+    print(datetime.utcfromtimestamp(nodes[0]['rep_date']))
+    print('now:')
+    print(datetime.utcnow())
+
     fake_nodes = [{'id': 1, 'ip': '10.1.0.1', 'rep_date': 1567690544}]
     err_send_verdicts_count = monitor.send_reports(fake_nodes)
     assert err_send_verdicts_count == 1
@@ -111,9 +117,14 @@ def test_validate_and_get_reported_nodes_neg(monitor):
 
 
 def test_validate_and_get_reported_nodes_pos(monitor):
-    print(f'Sleep for {TEST_EPOCH - TEST_DELTA} min')
+    print(f'Sleep for {TEST_EPOCH - TEST_DELTA} sec')
     time.sleep(TEST_EPOCH - TEST_DELTA)
     nodes = monitor.get_validated_nodes()
+    print('\n+++++++++++++++++++++++++++++')
+    print('report date:')
+    print(datetime.utcfromtimestamp(nodes[0]['rep_date']))
+    print('now:')
+    print(datetime.utcnow())
     reported_nodes = monitor.validate_and_get_reported_nodes(nodes)
     assert type(reported_nodes) is list
     print(f'rep nodes = {reported_nodes}')
