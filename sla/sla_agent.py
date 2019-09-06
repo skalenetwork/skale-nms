@@ -156,8 +156,8 @@ class Monitor(base_agent.BaseAgent):
         except Exception as err:
             self.logger.error(f'Failed to get list of monitored nodes {str(err)}')
             nodes = []
-
-        nodes_for_report = self.validate_and_get_reported_nodes(nodes)
+        self.validate_nodes(nodes)
+        nodes_for_report = self.get_reported_nodes(nodes)
 
         if len(nodes_for_report) > 0:
             self.send_reports(nodes_for_report)

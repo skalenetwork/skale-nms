@@ -76,10 +76,10 @@ def test_get_validated_nodes(monitor):
     assert any(node.get('id') == cur_node_id + 1 for node in nodes)
 
 
-def test_validate_and_get_reported_nodes_neg(monitor):
+def test_get_reported_nodes_neg(monitor):
 
     nodes = monitor.get_validated_nodes()
-    reported_nodes = monitor.validate_and_get_reported_nodes(nodes)
+    reported_nodes = monitor.get_reported_nodes(nodes)
     assert type(reported_nodes) is list
     print(f'rep nodes = {reported_nodes}')
     assert len(reported_nodes) == 0
@@ -99,7 +99,7 @@ def test_validate_and_get_reported_nodes_neg(monitor):
     assert err_send_verdicts_count == 1
 
 
-def test_validate_and_get_reported_nodes_pos(monitor):
+def test_get_reported_nodes_pos(monitor):
     print(f'Sleep for {TEST_EPOCH - TEST_DELTA} sec')
     time.sleep(TEST_EPOCH - TEST_DELTA)
     nodes = monitor.get_validated_nodes()
@@ -108,7 +108,7 @@ def test_validate_and_get_reported_nodes_pos(monitor):
     print(datetime.utcfromtimestamp(nodes[0]['rep_date']))
     print('now:')
     print(datetime.utcnow())
-    reported_nodes = monitor.validate_and_get_reported_nodes(nodes)
+    reported_nodes = monitor.get_reported_nodes(nodes)
     assert type(reported_nodes) is list
     print(f'rep nodes = {reported_nodes}')
 
