@@ -25,6 +25,7 @@ import pytest
 
 
 from sla import sla_agent as sla
+from bounty import bounty_agent
 # from tests.integration import preparation
 from tools.helper import init_skale
 from tests.integration.preparation import TEST_EPOCH, TEST_DELTA, get_active_ids, accelerate_skale_manager, \
@@ -56,6 +57,16 @@ def monitor(request):
     _monitor = sla.Monitor(skale, cur_node_id)
 
     return _monitor
+
+
+@pytest.fixture(scope="module")
+def bounty_collector(request):
+    print("\nskale setup")
+    skale = init_skale()
+    print(f'\ncur_node = {cur_node_id}')
+    _bounty_collector = bounty_agent.BountyCollector(skale, cur_node_id)
+
+    return _bounty_collector
 
 
 def test_nodes_are_created():
@@ -98,6 +109,10 @@ def test_get_reported_nodes_neg(monitor):
     err_send_verdicts_count = monitor.send_reports(fake_nodes)
     assert err_send_verdicts_count == 1
 
+def test_get_bounty_neg(bounty_collector):
+    status = bounty_collector.get_bounty()
+    assert status == 0
+
 
 def test_get_reported_nodes_pos(monitor):
     print(f'Sleep for {TEST_EPOCH - TEST_DELTA} sec')
@@ -117,3 +132,10 @@ def test_get_reported_nodes_pos(monitor):
 
     err_send_verdicts_count = monitor.send_reports(reported_nodes)
     assert err_send_verdicts_count == 0
+
+
+def test_get_bounty_pos(bounty_collector):
+    print(f'Sleep for {TEST_DELTA} sec')
+    time.sleep(TEST_DELTA)
+    status = bounty_collector.get_bounty()
+    assert status == 1
