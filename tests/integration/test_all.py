@@ -17,19 +17,20 @@
 #   You should have received a copy of the GNU Affero General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import os
 import time
 from datetime import datetime
 
 import pytest
 
-
-from sla import sla_agent as sla
 from bounty import bounty_agent
+from sla import sla_agent as sla
+from tests.integration.preparation import TEST_DELTA, TEST_EPOCH, accelerate_skale_manager, create_set_of_nodes, get_active_ids
+from tools.config_storage import ConfigStorage
 # from tests.integration import preparation
 from tools.helper import init_skale
-from tests.integration.preparation import TEST_EPOCH, TEST_DELTA, get_active_ids, accelerate_skale_manager, \
-    create_set_of_nodes
+
+FAKE_IP = '10.1.0.1'
+FAKE_REPORT_DATE = 1567690544
 
 
 def setup_module(module):
@@ -101,13 +102,14 @@ def test_get_reported_nodes_neg(monitor):
     print('now:')
     print(datetime.utcnow())
 
-    fake_nodes = [{'id': 1, 'ip': '10.1.0.1', 'rep_date': 1567690544}]
+    fake_nodes = [{'id': 1, 'ip': FAKE_IP, 'rep_date': FAKE_REPORT_DATE}]
     err_send_verdicts_count = monitor.send_reports(fake_nodes)
     assert err_send_verdicts_count == 1
 
-    fake_nodes = [{'id': 2, 'ip': '10.1.0.1', 'rep_date': 1567690544}]
+    fake_nodes = [{'id': 2, 'ip': FAKE_IP, 'rep_date': FAKE_REPORT_DATE}]
     err_send_verdicts_count = monitor.send_reports(fake_nodes)
     assert err_send_verdicts_count == 1
+
 
 def test_get_bounty_neg(bounty_collector):
     status = bounty_collector.get_bounty()
@@ -139,3 +141,12 @@ def test_get_bounty_pos(bounty_collector):
     time.sleep(TEST_DELTA)
     status = bounty_collector.get_bounty()
     assert status == 1
+
+
+def test_get_id_from_config(monitor):
+    config_file_name = 'test_node_config'
+    node_index = 1
+    config_node = ConfigStorage(config_file_name)
+    config_node.update({'node_id': node_index})
+    node_id = monitor.get_id_from_config(config_file_name)
+    assert node_id == node_index
