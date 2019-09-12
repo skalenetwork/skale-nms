@@ -20,12 +20,15 @@
 import os
 
 import skale.utils.helper as Helper
+from skale.utils.helper import await_receipt, private_key_to_address
 
 from tools.config import LOCAL_WALLET_FILENAME
 from tools.config_storage import ConfigStorage
 from tools.helper import TEST_DATA_DIR_PATH, init_skale
 
 TEST_LOCAL_WALLET_PATH = os.path.join(TEST_DATA_DIR_PATH, LOCAL_WALLET_FILENAME)
+TEST_EPOCH = 200
+TEST_DELTA = 100
 
 skale = init_skale()
 
@@ -104,14 +107,12 @@ def create_node(node_id):
         gas = 90000
         tx_skl = sign_and_send(skale, op, gas, sender_wallet)
         receipt = Helper.await_receipt(skale.web3, tx_skl)
-        print('receipt SKL transfer')
-        print(receipt)
+        # print(f'receipt of SKL transfer: {receipt}')
 
         # transfer ETH
         tx = Helper.send_eth(skale.web3, address, eth_amount, sender_wallet)
         receipt = Helper.await_receipt(skale.web3, tx)
-
-        print(f'receipt of ETH transfer: {receipt}')
+        # print(f'receipt of ETH transfer: {receipt}')
 
         print(f'ETH balance after: {skale.web3.eth.getBalance(address)}')
         print(f'SKL balance after: {skale.token.contract.functions.balanceOf(address).call()}')
@@ -147,3 +148,21 @@ def create_set_of_nodes(first_node_id, nodes_number):
             create_node(node_id)
     else:
         print(f'Node with id = {first_node_id} is already exists! Try another start id...')
+
+
+def accelerate_skale_manager():
+    pr_key = os.environ.get('ETH_PRIVATE_KEY')
+    account = skale.web3.toChecksumAddress(private_key_to_address(pr_key))
+
+    reward_period = skale.validators_data.get_reward_period()
+    delta_period = skale.validators_data.get_delta_period()
+    print(reward_period, delta_period)
+
+    wallet = {'address': account, 'private_key': pr_key}
+    res = skale.constants.set_periods(TEST_EPOCH, TEST_DELTA, wallet)
+    receipt = await_receipt(skale.web3, res['tx'], retries=30, timeout=6)
+    print(receipt)
+    print("-------------------------")
+    reward_period = skale.validators_data.get_reward_period()
+    delta_period = skale.validators_data.get_delta_period()
+    print(reward_period, delta_period)

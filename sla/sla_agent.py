@@ -70,7 +70,7 @@ class Monitor(base_agent.BaseAgent):
         for node in nodes:
             self.logger.debug(f'id: {node["id"]}, ip: {node["ip"]}')
 
-    def validate_and_get_reported_nodes(self, nodes) -> list:
+    def validate_nodes(self, nodes):
         """Validate nodes and returns a list of nodes to be reported"""
         self.logger.info(LONG_LINE)
         if len(nodes) == 0:
@@ -79,7 +79,6 @@ class Monitor(base_agent.BaseAgent):
             self.logger.info(f'Number of nodes for monitoring: {len(nodes)}')
             self.logger.info(f'The nodes to be monitored : {nodes}')
 
-        nodes_for_report = []
         for node in nodes:
             host = WORKING_IP if self.is_test_mode else node['ip']
             if os.system("ping -c 1 " + WORKING_IP) == 0:
@@ -88,6 +87,10 @@ class Monitor(base_agent.BaseAgent):
                 self.logger.info(f'Received metrics for node ID = {node["id"]}: {metrics}')
                 db.save_metrics_to_db(self.id, node['id'], metrics['is_dead'], metrics['latency'])
 
+    def get_reported_nodes(self, nodes) -> list:
+        """Returns a list of nodes to be reported"""
+        nodes_for_report = []
+        for node in nodes:
             # Check report date of current validated node
             rep_date = datetime.utcfromtimestamp(node['rep_date'])
             now = datetime.utcnow()
@@ -138,7 +141,7 @@ class Monitor(base_agent.BaseAgent):
                 self.logger.info('The report was successfully sent')
             if receipt['status'] == 0:
                 self.logger.info('The report was not sent - transaction failed')
-                err_status += err_status
+                err_status += 1
             self.logger.info(f'Receipt: {receipt}')
         return err_status
 
@@ -153,8 +156,8 @@ class Monitor(base_agent.BaseAgent):
         except Exception as err:
             self.logger.error(f'Failed to get list of monitored nodes {str(err)}')
             nodes = []
-
-        nodes_for_report = self.validate_and_get_reported_nodes(nodes)
+        self.validate_nodes(nodes)
+        nodes_for_report = self.get_reported_nodes(nodes)
 
         if len(nodes_for_report) > 0:
             self.send_reports(nodes_for_report)

@@ -46,7 +46,7 @@ class BaseAgent:
         self.logger.info(f"Initialization of {self.agent_name} ...")
         local_wallet_filepath = helper.get_local_wallet_filepath(node_id)
         if node_id is None:
-            self.id = self.get_id_from_config()
+            self.id = self.get_id_from_config(NODE_CONFIG_FILEPATH)
             self.is_test_mode = False
         else:
             self.id = node_id
@@ -60,11 +60,11 @@ class BaseAgent:
     @tenacity.retry(
         wait=tenacity.wait_fixed(10),
         retry=tenacity.retry_if_exception_type(KeyError) | tenacity.retry_if_exception_type(FileNotFoundError))
-    def get_id_from_config(self) -> int:
+    def get_id_from_config(self, node_config_filepath) -> int:
         """Gets node ID from config file for agent initialization"""
         try:
             self.logger.debug("Reading node id from config file...")
-            with open(NODE_CONFIG_FILEPATH) as json_file:
+            with open(node_config_filepath) as json_file:
                 data = json.load(json_file)
             return data["node_id"]
         except KeyError as err:

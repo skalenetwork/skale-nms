@@ -57,7 +57,7 @@ def test_get_validated_nodes(monitor):
 
 def test_get_reported_nodes(monitor):
     nodes = monitor.get_validated_nodes()
-    reported_nodes = monitor.validate_and_get_reported_nodes(nodes)
+    reported_nodes = monitor.get_reported_nodes(nodes)
     assert type(reported_nodes) is list
     print(f'rep nodes = {reported_nodes}')
     assert len(reported_nodes) == 1
