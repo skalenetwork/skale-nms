@@ -9,7 +9,7 @@ pytest-cov==2.6.1
 codecov==2.0.15
 pyyaml==3.13
 filelock==3.0.12
-
+CMRESHandler==1.0.0
 
 
 

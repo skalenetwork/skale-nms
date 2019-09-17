@@ -108,7 +108,11 @@ class BountyCollector(base_agent.BaseAgent):
         self.logger.debug(f'Next reward date: {reward_date}')
 
         if utc_now >= reward_date:
-            self.get_bounty()
+            try:
+                self.get_bounty()
+            except Exception as err:
+                self.logger.error(f'Cannot get bounty: {err}')
+                raise
 
 
 if __name__ == '__main__':

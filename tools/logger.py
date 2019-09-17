@@ -23,11 +23,12 @@ import os
 import sys
 from logging import Formatter, StreamHandler
 
+from cmreslogging.handlers import CMRESHandler
 from tools.config import LOG_BACKUP_COUNT, LOG_FILE_SIZE_BYTES, LOG_FOLDER, LOG_FORMAT
 from tools.helper import TEST_DATA_DIR_PATH
 
 
-def init_logger(log_file_path):
+def init_logger(log_file_path, agent_name):
     handlers = []
 
     formatter = Formatter(LOG_FORMAT)
@@ -43,12 +44,20 @@ def init_logger(log_file_path):
     stream_handler.setLevel(logging.INFO)
     handlers.append(stream_handler)
 
+    elastic_handler = CMRESHandler(hosts=[{'host': '138.197.195.58', 'port': 9200}],
+
+                           auth_type=CMRESHandler.AuthType.NO_AUTH,
+                           es_index_name="skale_index",
+                           es_additional_fields={'App': 'SLA', 'Container': agent_name})
+
+    handlers.append(elastic_handler)
+
     logging.basicConfig(level=logging.DEBUG, handlers=handlers)
 
 
 def init_agent_logger(agent_name, node_id):
     log_path = get_log_filepath(agent_name, node_id)
-    init_logger(log_path)
+    init_logger(log_path, agent_name)
 
 
 def get_log_filepath(agent_name, node_id):

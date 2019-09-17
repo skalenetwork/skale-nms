@@ -6,3 +6,4 @@ mysqlclient==1.4.2.post1
 peewee==3.7.1
 pyyaml==3.13
 python-dotenv==0.10.1
+CMRESHandler==1.0.0
