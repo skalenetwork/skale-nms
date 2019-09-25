@@ -121,10 +121,11 @@ def create_node(node_id):
         # create node
         ip_base = '10.1.0.'
         test_port = 56
-        res = skale.manager.create_node(ip_base + str(node_id), test_port, 'node_' + str(node_id), wallet)
+        res = skale.manager.create_node(ip_base + str(node_id), test_port,
+                                        'node_' + str(node_id), wallet)
         print(f'create_node res: {res}')
 
-        receipt = Helper.await_receipt(skale.web3, res['tx'])  # todo: return tx and wait for the receipt in async mode
+        receipt = Helper.await_receipt(skale.web3, res['tx'])
         print(f'create_node receipt: {receipt}')
 
     else:

@@ -21,7 +21,8 @@
 import os
 
 from dotenv import load_dotenv
-from peewee import BooleanField, CharField, CompositeKey, DateTimeField, IntegerField, Model, MySQLDatabase, fn
+from peewee import BooleanField, CharField, CompositeKey, DateTimeField, IntegerField, Model, \
+    MySQLDatabase, fn
 
 from tools.helper import TEST_DATA_DIR_PATH
 
@@ -173,4 +174,3 @@ def get_count_of_bounty_receipt_records():
 
 def get_count_of_report_records():
     return Report.select().count()
-

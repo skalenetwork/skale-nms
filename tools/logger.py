@@ -32,7 +32,9 @@ def init_logger(log_file_path, agent_name):
     handlers = []
 
     formatter = Formatter(LOG_FORMAT)
-    f_handler = py_handlers.RotatingFileHandler(log_file_path, maxBytes=LOG_FILE_SIZE_BYTES, backupCount=LOG_BACKUP_COUNT)
+    f_handler = py_handlers.RotatingFileHandler(log_file_path,
+                                                maxBytes=LOG_FILE_SIZE_BYTES,
+                                                backupCount=LOG_BACKUP_COUNT)
 
     f_handler.setFormatter(formatter)
     f_handler.setLevel(logging.INFO)
