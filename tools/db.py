@@ -173,4 +173,3 @@ def get_count_of_bounty_receipt_records():
 
 def get_count_of_report_records():
     return Report.select().count()
-

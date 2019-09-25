@@ -32,11 +32,8 @@ from skale.utils.helper import await_receipt
 
 from sla import ping
 from tools import base_agent, db
+from tools.config import GOOD_IP, LONG_DOUBLE_LINE, LONG_LINE
 from tools.helper import get_lock_filepath, init_skale
-
-WORKING_IP = '8.8.8.8'
-LONG_LINE = '---------------------------------------------------------------------------------------------------'
-LONG_DOUBLE_LINE = '==================================================================================================='
 
 
 class Monitor(base_agent.BaseAgent):
@@ -65,11 +62,6 @@ class Monitor(base_agent.BaseAgent):
             nodes.append({'id': node_id, 'ip': node_ip, 'rep_date': report_date})
         return nodes
 
-    def show_validated_nodes(self, nodes):
-        self.logger.info(f'Number of nodes to validate: {len(nodes)}')
-        for node in nodes:
-            self.logger.debug(f'id: {node["id"]}, ip: {node["ip"]}')
-
     def validate_nodes(self, nodes):
         """Validate nodes and returns a list of nodes to be reported"""
         self.logger.info(LONG_LINE)
@@ -80,8 +72,8 @@ class Monitor(base_agent.BaseAgent):
             self.logger.info(f'The nodes to be monitored : {nodes}')
 
         for node in nodes:
-            host = WORKING_IP if self.is_test_mode else node['ip']
-            if os.system("ping -c 1 " + WORKING_IP) == 0:
+            host = GOOD_IP if self.is_test_mode else node['ip']
+            if os.system("ping -c 1 " + GOOD_IP) == 0:
                 metrics = ping.get_node_metrics(host)
                 # metrics = sim.generate_node_metrics()  # use to simulate metrics for some tests
                 self.logger.info(f'Received metrics for node ID = {node["id"]}: {metrics}')

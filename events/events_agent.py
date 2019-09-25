@@ -89,7 +89,7 @@ class EventCollector(base_agent.BaseAgent):
                                      event['args']['averageLatency'], event['args']['averageDowntime'],
                                      event['args']['gasSpend'])
             except IntegrityError as err:
-                self.logger.info('Trying to save an existing event')
+                self.logger.info(f'Trying to save an existing event: {err}')
 
     def run(self) -> None:
         """

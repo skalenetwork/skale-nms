@@ -28,9 +28,8 @@ import skale.utils.helper as Helper
 from filelock import FileLock, Timeout
 
 from tools import base_agent, db
+from tools.config import LONG_LINE
 from tools.helper import get_lock_filepath, init_skale
-
-LONG_LINE = '---------------------------------------------------------------------------------------------------'
 
 
 class BountyCollector(base_agent.BaseAgent):

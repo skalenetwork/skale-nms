@@ -19,6 +19,10 @@
 
 import os
 
+GOOD_IP = '8.8.8.8'
+LONG_LINE = '-' * 100
+LONG_DOUBLE_LINE = '=' * 100
+
 SKALE_VOLUME_PATH = '/skale_vol'
 NODE_DATA_PATH = '/skale_node_data'
 
@@ -73,6 +77,7 @@ DATA_DIR_NAME = 'data_dir'
 HEALTHCHECK_FILENAME = 'HEALTH_CHECK'
 HEALTHCHECK_STATUSES = {'-1': 'not inited', '-2': 'wrong value', '0': 'fail', '1': 'passing', '2': 'passed'}
 
+
 # other
 
 LOCAL_WALLET_FILENAME = 'local_wallet.json'
@@ -95,8 +100,9 @@ NODE_CONFIG_FILEPATH = os.path.join(NODE_DATA_PATH, NODE_CONFIG_FILENAME)
 
 CONFIG_FOLDER = os.path.join(SKALE_VOLUME_PATH, CONFIG_FOLDER_NAME)
 
+
 # CUSTOM_CONTRACTS_PATH = os.path.join(NODE_DATA_PATH, CUSTOM_CONTRACTS_FILENAME)
-CUSTOM_CONTRACTS_PATH = os.path.join(CONFIG_FOLDER, CUSTOM_CONTRACTS_FILENAME) # todo: tmp - store contracts data in skale_vol
+CUSTOM_CONTRACTS_PATH = os.path.join(CONFIG_FOLDER, CUSTOM_CONTRACTS_FILENAME)
 DKG_CONTRACT_DATA_PATH = os.path.join(NODE_DATA_PATH, DKG_CONTRACT_DATA_FILENAME)
 
 BASE_SCHAIN_CONFIG_FILENAME = 'schain_base_config.json'
