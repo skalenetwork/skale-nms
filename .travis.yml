@@ -25,9 +25,10 @@ before_install:
   - yes |cp $TRAVIS_BUILD_DIR/test_data/skale-manager/data/unique.json $TRAVIS_BUILD_DIR/test_data/data.json
   - cd $TRAVIS_BUILD_DIR
   - head $TRAVIS_BUILD_DIR/test_data/data.json
-
 install:
 - pip install -r tests/requirements.txt
+before_script:
+  - "flake8 ."
 script:
 - export IS_TEST=true
 - export PYTHONPATH=$PYTHONPATH:.
