@@ -18,8 +18,9 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
-SLA agent runs on every node of SKALE network, periodically gets a list of nodes to validate from SC,
-checks its health metrics and sends transactions with average metrics to CS when it's time to send it
+SLA agent runs on every node of SKALE network, periodically gets a list of nodes to validate
+from SC, checks its health metrics and sends transactions with average metrics to CS when it's time
+to send it
 """
 
 import os
@@ -50,7 +51,8 @@ class Monitor(base_agent.BaseAgent):
         try:
             nodes_in_bytes_array = self.skale.validators_data.get_validated_array(self.id, account)
         except Exception as err:
-            self.logger.error(f'Cannot get a list of nodes for validating: {str(err)}', exc_info=True)
+            self.logger.error(f'Cannot get a list of nodes for validating: {str(err)}',
+                              exc_info=True)
             raise
         # extract  node id, report date and ip from binary
         nodes = []
@@ -108,13 +110,15 @@ class Monitor(base_agent.BaseAgent):
             reward_period = self.skale.validators_data.get_reward_period()
             start_date = node['rep_date'] - reward_period
             try:
-                metrics = db.get_month_metrics_for_node(self.id, node['id'], datetime.utcfromtimestamp(start_date),
+                metrics = db.get_month_metrics_for_node(self.id, node['id'],
+                                                        datetime.utcfromtimestamp(start_date),
                                                         datetime.utcfromtimestamp(node['rep_date']))
             except Exception as err:
                 self.logger.exception(f'Failed getting month metrics from db: {err}')
             self.logger.info(f'Sending report for node #{node["id"]}')
             self.logger.info(f'Epoch metrics: {metrics}')
-            self.logger.debug(f'wallet = {self.local_wallet["address"]}    {self.local_wallet["private_key"]}')
+            self.logger.debug(f'wallet = {self.local_wallet["address"]}    '
+                              f'{self.local_wallet["private_key"]}')
             lock = FileLock(get_lock_filepath(), timeout=1)
             self.logger.debug('Acquiring lock')
             try:
@@ -126,7 +130,8 @@ class Monitor(base_agent.BaseAgent):
                 self.logger.info('Another agent currently holds the lock')
                 break
             except Exception as err:
-                self.logger.error(f'Failed send report on the node #{node["id"]}. Error: {str(err)}', exc_info=True)
+                self.logger.error(f'Failed send report on the node #{node["id"]}. Error: '
+                                  f'{str(err)}', exc_info=True)
                 break
 
             if receipt['status'] == 1:

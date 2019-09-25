@@ -25,7 +25,8 @@ from dotenv import load_dotenv
 from skale import Skale
 
 from tools.config import (
-    CUSTOM_CONTRACTS_PATH, LOCAL_WALLET_FILENAME, LOCAL_WALLET_FILEPATH, LOG_FOLDER, NODE_DATA_PATH, PROJECT_DIR)
+    CUSTOM_CONTRACTS_PATH, LOCAL_WALLET_FILENAME, LOCAL_WALLET_FILEPATH, LOG_FOLDER,
+    NODE_DATA_PATH, PROJECT_DIR)
 
 NETWORK = 'local'
 # NETWORK = 'do'
@@ -46,7 +47,8 @@ logger = logging.getLogger(__name__)
 def get_lock_filepath():
     is_test = os.environ.get("IS_TEST", "False")
     is_test = bool(util.strtobool(is_test))
-    lock_path = os.path.join(TEST_DATA_DIR_PATH, LOCK_FILE) if is_test else os.path.join(NODE_DATA_PATH, LOCK_FILE)
+    lock_path = os.path.join(TEST_DATA_DIR_PATH, LOCK_FILE) if is_test \
+        else os.path.join(NODE_DATA_PATH, LOCK_FILE)
     return lock_path
 
 
@@ -68,7 +70,8 @@ def get_local_wallet_filepath(node_id):
     if node_id is None:
         local_wallet_filepath = LOCAL_WALLET_FILEPATH
     else:
-        local_wallet_filepath = os.path.join(TEST_DATA_DIR_PATH, LOCAL_WALLET_FILENAME) + str(node_id)
+        local_wallet_filepath = os.path.join(TEST_DATA_DIR_PATH, LOCAL_WALLET_FILENAME) + \
+                                str(node_id)
     print(local_wallet_filepath)
 
     return local_wallet_filepath

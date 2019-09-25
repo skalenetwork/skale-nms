@@ -24,8 +24,8 @@ import pytest
 
 from bounty import bounty_agent
 from sla import sla_agent as sla
-from tests.integration.preparation import TEST_DELTA, TEST_EPOCH, accelerate_skale_manager, create_set_of_nodes, \
-    get_active_ids
+from tests.integration.preparation import TEST_DELTA, TEST_EPOCH, accelerate_skale_manager, \
+    create_set_of_nodes, get_active_ids
 from tools.config_storage import ConfigStorage
 # from tests.integration import preparation
 from tools.helper import init_skale

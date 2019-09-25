@@ -43,7 +43,7 @@ class BaseAgent:
         init_agent_logger(self.agent_name, node_id)
         self.logger = logging.getLogger(__name__)
 
-        self.logger.info(f"Initialization of {self.agent_name} ...")
+        self.logger.info(f'Initialization of {self.agent_name} ...')
         local_wallet_filepath = helper.get_local_wallet_filepath(node_id)
         if node_id is None:
             self.id = self.get_id_from_config(NODE_CONFIG_FILEPATH)
@@ -51,34 +51,35 @@ class BaseAgent:
         else:
             self.id = node_id
             self.is_test_mode = True
-        self.logger.info(f"Node ID = {self.id}")
+        self.logger.info(f'Node ID = {self.id}')
         self.local_wallet = ConfigStorage(local_wallet_filepath)
         self.skale = skale
         self.logger.debug(f"Account = {self.local_wallet['address']}")
-        self.logger.info(f"Initialization of {self.agent_name} is completed")
+        self.logger.info(f'Initialization of {self.agent_name} is completed')
 
     @tenacity.retry(
         wait=tenacity.wait_fixed(10),
-        retry=tenacity.retry_if_exception_type(KeyError) | tenacity.retry_if_exception_type(FileNotFoundError))
+        retry=tenacity.retry_if_exception_type(KeyError) | tenacity.retry_if_exception_type(
+            FileNotFoundError))
     def get_id_from_config(self, node_config_filepath) -> int:
         """Gets node ID from config file for agent initialization"""
         try:
-            self.logger.debug("Reading node id from config file...")
+            self.logger.debug('Reading node id from config file...')
             with open(node_config_filepath) as json_file:
                 data = json.load(json_file)
-            return data["node_id"]
+            return data['node_id']
         except KeyError as err:
             self.logger.warning(
-                f"Cannot read a node id (KeyError) - is the node already registered?"
+                f'Cannot read a node id (KeyError) - is the node already registered?'
             )
             raise err
         except FileNotFoundError as err:
             self.logger.warning(
-                f"Cannot read a node id (config file is not found) - is the node already registered?"
+                f'Cannot read a node id - config file is not found'
             )
             raise err
         except Exception as err:
-            self.logger.exception(f"Cannot read config from the file: {err}")
+            self.logger.exception(f'Cannot read config from the file: {err}')
             raise err
 
     def job(self) -> None:
@@ -87,7 +88,7 @@ class BaseAgent:
 
     def run(self) -> None:
         """Starts agent"""
-        self.logger.debug(f"{self.agent_name} started")
+        self.logger.debug(f'{self.agent_name} started')
         self.job()
         schedule.every(CHECK_PERIOD).minutes.do(self.job)
         while True:

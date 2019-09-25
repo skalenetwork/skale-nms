@@ -75,7 +75,8 @@ SCHAINS_DIR_PATH = os.path.join(NODE_DATA_PATH, SCHAINS_DIR_NAME)
 DATA_DIR_NAME = 'data_dir'
 
 HEALTHCHECK_FILENAME = 'HEALTH_CHECK'
-HEALTHCHECK_STATUSES = {'-1': 'not inited', '-2': 'wrong value', '0': 'fail', '1': 'passing', '2': 'passed'}
+HEALTHCHECK_STATUSES = {'-1': 'not inited', '-2': 'wrong value', '0': 'fail', '1': 'passing',
+                        '2': 'passed'}
 
 
 # other
