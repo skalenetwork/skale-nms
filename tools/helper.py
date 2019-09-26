@@ -72,8 +72,6 @@ def get_local_wallet_filepath(node_id):
     else:
         local_wallet_filepath = os.path.join(TEST_DATA_DIR_PATH, LOCAL_WALLET_FILENAME) + \
                                 str(node_id)
-    print(local_wallet_filepath)
-
     return local_wallet_filepath
 
 
@@ -82,9 +80,5 @@ def init_skale():
     is_test = os.environ.get("IS_TEST", "False")
     is_test = bool(util.strtobool(is_test))
     abi_filepath = os.path.join(TEST_DATA_DIR_PATH, ABI_FILE) if is_test else CUSTOM_CONTRACTS_PATH
-    print('\n++++++++++++++++++++++++++++++++++++++++++')
-    print(f' PATH = {abi_filepath}')
-    print(f' endpoint = {ENDPOINT}')
     skale = Skale(ENDPOINT, abi_filepath)
-    print(f'init completed')
     return skale
