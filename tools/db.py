@@ -59,12 +59,11 @@ class Report(BaseModel):
 
 
 class BountyEvent(BaseModel):
-    my_id = IntegerField()
     tx_dt = DateTimeField()
     bounty = CharField()
     downtime = IntegerField()
     latency = IntegerField()
-    gas = IntegerField()
+    gas_used = IntegerField()
     stamp = DateTimeField()
     tx_hash = CharField()
 
@@ -72,16 +71,15 @@ class BountyEvent(BaseModel):
         db_table = 'bounty_event'
 
 
-class BountyReceipt(BaseModel):
+class BountyStats(BaseModel):
     tx_hash = CharField()
     eth_balance_before = CharField()
-    skl_balance_before = CharField()
     eth_balance = CharField()
+    skl_balance_before = CharField()
     skl_balance = CharField()
-    gas_used = IntegerField()
 
     class Meta:
-        db_table = 'bounty_receipt'
+        db_table = 'bounty_stats'
         primary_key = CompositeKey('tx_hash')
 
 
@@ -94,34 +92,32 @@ def save_metrics_to_db(my_id, node_id, is_dead, latency):
     report.save()
 
 
-def save_bounty_event(tx_dt, tx_hash, my_id, bounty, latency, downtime, gas):
+def save_bounty_event(tx_dt, tx_hash, my_id, bounty, latency, downtime, gas_used):
     """ Save bounty events data to database"""
     data = BountyEvent(my_id=my_id,
                        tx_dt=tx_dt,
                        bounty=bounty,
                        downtime=downtime,
                        latency=latency,
-                       gas=gas,
+                       gas_used=gas_used,
                        tx_hash=tx_hash)
 
     data.save()
 
 
-def save_bounty_rcp_data(
+def save_bounty_stats(
         tx_hash,
         eth_bal_before,
         skl_bal_before,
         eth_bal,
-        skl_bal,
-        gas_used):
+        skl_bal):
     """ Save bounty receipt data to database"""
-    data = BountyReceipt(tx_hash=tx_hash,
-                         eth_balance_before=eth_bal_before,
-                         skl_balance_before=skl_bal_before,
-                         eth_balance=eth_bal,
-                         skl_balance=skl_bal,
-                         gas_used=gas_used
-                         )
+    data = BountyStats(tx_hash=tx_hash,
+                       eth_balance_before=eth_bal_before,
+                       skl_balance_before=skl_bal_before,
+                       eth_balance=eth_bal,
+                       skl_balance=skl_bal
+                       )
     data.save(force_insert=True)
 
 
@@ -164,12 +160,12 @@ def clear_all_reports():
 
 
 def clear_all_bounty_receipts():
-    nrows = BountyReceipt.delete().execute()
+    nrows = BountyStats.delete().execute()
     print(f'{nrows} records deleted')
 
 
 def get_count_of_bounty_receipt_records():
-    return BountyReceipt.select().count()
+    return BountyStats.select().count()
 
 
 def get_count_of_report_records():
