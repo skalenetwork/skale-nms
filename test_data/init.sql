@@ -9,6 +9,19 @@ CREATE TABLE `report` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=25158 DEFAULT CHARSET=utf8;
 
+CREATE TABLE `report_event` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `my_id` int unsigned NULL,
+  `other_id` int unsigned NULL,
+  `tx_dt` DATETIME NULL,
+  `tx_hash` CHAR(66) UNIQUE NULL,
+  `latency` int unsigned NULL,
+  `downtime` int unsigned NULL,
+  `gas_used` DECIMAL(65) NULL,
+  `stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4196 DEFAULT CHARSET=utf8;
+
 CREATE TABLE `bounty_event` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `my_id` int unsigned NULL,
