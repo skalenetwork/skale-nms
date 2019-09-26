@@ -73,13 +73,12 @@ class BountyCollector(base_agent.BaseAgent):
             db.save_bounty_event(datetime.utcfromtimestamp(args['time']), str(tx_hash),
                                  args['nodeIndex'], args['bounty'],
                                  args['averageLatency'], args['averageDowntime'],
-                                 args['gasSpend'])
+                                 receipt["gasUsed"])
         if receipt['status'] == 0:
             self.logger.info('The bounty was not received - transaction failed')
             # TODO: notify Skale Admin
         self.logger.debug(f'Receipt: {receipt}')
 
-        gas_used = receipt["gasUsed"]
         eth_bal = self.skale.web3.eth.getBalance(address)
         skl_bal = self.skale.token.get_balance(address)
         self.logger.debug(f'transactionHash: {tx_hash}')
@@ -87,7 +86,7 @@ class BountyCollector(base_agent.BaseAgent):
         self.logger.info(f'SKL balance: {skl_bal}')
         self.logger.debug(f'ETH difference: {eth_bal - eth_bal_before}')
 
-        db.save_bounty_rcp_data(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_bal, gas_used)
+        db.save_bounty_stats(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_bal)
         self.logger.debug('Waiting for the next periodic check')
         return receipt['status']
 
