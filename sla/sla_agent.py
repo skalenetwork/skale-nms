@@ -106,6 +106,10 @@ class Monitor(base_agent.BaseAgent):
             self.logger.info(f'The nodes to be reported on: {nodes_for_report}')
         err_status = 0
 
+        ids = []
+        latencies = []
+        downtimes = []
+
         for node in nodes_for_report:
             reward_period = self.skale.validators_data.get_reward_period()
             start_date = node['rep_date'] - reward_period
@@ -113,40 +117,38 @@ class Monitor(base_agent.BaseAgent):
                 metrics = db.get_month_metrics_for_node(self.id, node['id'],
                                                         datetime.utcfromtimestamp(start_date),
                                                         datetime.utcfromtimestamp(node['rep_date']))
+                self.logger.info(f'Epoch metrics: {metrics}')
+                ids.append(node['id'])
+                downtimes.append(metrics['downtime'])
+                latencies.append(metrics['latency'])
             except Exception as err:
                 self.logger.exception(f'Failed getting month metrics from db: {err}')
-            self.logger.info(f'Sending report for node #{node["id"]}')
-            self.logger.info(f'Epoch metrics: {metrics}')
-            self.logger.debug(f'wallet = {self.local_wallet["address"]}    '
-                              f'{self.local_wallet["private_key"]}')
-            lock = FileLock(get_lock_filepath(), timeout=1)
-            self.logger.debug('Acquiring lock')
-            try:
-                with lock.acquire():
-                    res = self.skale.manager.send_verdict(self.id, node['id'], metrics['downtime'],
-                                                          metrics['latency'], self.local_wallet)
-                    receipt = await_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
-            except Timeout:
-                self.logger.info('Another agent currently holds the lock')
-                break
-            except Exception as err:
-                self.logger.error(f'Failed send report on the node #{node["id"]}. Error: '
-                                  f'{str(err)}', exc_info=True)
-                break
 
-            if receipt['status'] == 1:
-                self.logger.info('The report was successfully sent')
-            if receipt['status'] == 0:
-                self.logger.info('The report was not sent - transaction failed')
-                err_status += 1
-            self.logger.info(f'Receipt: {receipt}')
+        lock = FileLock(get_lock_filepath(), timeout=1)
+        self.logger.debug('Acquiring lock')
+        try:
+            with lock.acquire():
+                res = self.skale.manager.send_verdicts(self.id, ids, downtimes,
+                                                       latencies, self.local_wallet)
+                receipt = await_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
+                if receipt['status'] == 1:
+                    self.logger.info('The report was successfully sent')
+                if receipt['status'] == 0:
+                    self.logger.info('The report was not sent - transaction failed')
+                    err_status = 1
+                self.logger.info(f'Receipt: {receipt}')
+        except Timeout:
+            self.logger.info('Another agent currently holds the lock')
+        except Exception as err:
+            self.logger.error(f'Failed send report on the node #{node["id"]}. Error: '
+                              f'{str(err)}', exc_info=True)
+
         return err_status
 
     def job(self) -> None:
         """
         Periodic job
         """
-        self.logger.debug('___________________________')
         self.logger.debug('New periodic job started...')
         try:
             nodes = self.get_validated_nodes()

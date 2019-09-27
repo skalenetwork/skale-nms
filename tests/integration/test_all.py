@@ -133,8 +133,8 @@ def test_get_reported_nodes_pos(monitor):
     # assert len(reported_nodes) == 1
     assert reported_nodes[0]['id'] == 1
 
-    err_send_verdicts_count = monitor.send_reports(reported_nodes)
-    assert err_send_verdicts_count == 0
+    err_send_verdicts_status = monitor.send_reports(reported_nodes)
+    assert err_send_verdicts_status == 0
 
 
 def test_get_bounty_pos(bounty_collector):
