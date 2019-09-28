@@ -134,6 +134,16 @@ class Monitor(base_agent.BaseAgent):
                 receipt = await_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
                 if receipt['status'] == 1:
                     self.logger.info('The report was successfully sent')
+                    h_receipt = self.skale.manager.contract.events.VerdictWasSent().processReceipt(
+                        receipt)
+                    self.logger.info(LONG_LINE)
+                    self.logger.info(h_receipt)
+                    self.logger.info(LONG_LINE)
+                    args = h_receipt[0]['args']
+                    db.save_report_event(datetime.utcfromtimestamp(args['time']), str(res['tx']),
+                                         args['fromValidatorIndex'], args['toNodeIndex'],
+                                         args['downtime'], args['latency'],
+                                         receipt["gasUsed"])
                 if receipt['status'] == 0:
                     self.logger.info('The report was not sent - transaction failed')
                     err_status = 1
