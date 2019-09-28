@@ -52,20 +52,35 @@ class BaseModel(Model):
 
 class Report(BaseModel):
     my_id = IntegerField()
-    node_id = IntegerField()
-    is_dead = BooleanField()
+    target_id = IntegerField()
+    is_offline = BooleanField()
     latency = IntegerField()
     stamp = DateTimeField()
 
 
 class BountyEvent(BaseModel):
+    my_id = IntegerField()
     tx_dt = DateTimeField()
+    tx_hash = CharField()
     bounty = CharField()
     downtime = IntegerField()
     latency = IntegerField()
     gas_used = IntegerField()
-    stamp = DateTimeField()
+    # stamp = DateTimeField()
+
+    class Meta:
+        db_table = 'bounty_event'
+
+
+class ReportEvent(BaseModel):
+    my_id = IntegerField()
+    target_id = IntegerField()
+    tx_dt = DateTimeField()
     tx_hash = CharField()
+    downtime = IntegerField()
+    latency = IntegerField()
+    gas_used = IntegerField()
+    # stamp = DateTimeField()
 
     class Meta:
         db_table = 'bounty_event'
@@ -83,20 +98,33 @@ class BountyStats(BaseModel):
         primary_key = CompositeKey('tx_hash')
 
 
-def save_metrics_to_db(my_id, node_id, is_dead, latency):
+def save_metrics_to_db(my_id, target_id, is_offline, latency):
     """ Save metrics (downtime and latency) to database"""
     report = Report(my_id=my_id,
-                    node_id=node_id,
-                    is_dead=is_dead,
+                    target_id=target_id,
+                    is_offline=is_offline,
                     latency=latency)
     report.save()
 
 
-def save_bounty_event(tx_dt, tx_hash, my_id, bounty, latency, downtime, gas_used):
+def save_bounty_event(tx_dt, tx_hash, my_id, bounty, downtime, latency, gas_used):
     """ Save bounty events data to database"""
     data = BountyEvent(my_id=my_id,
                        tx_dt=tx_dt,
                        bounty=bounty,
+                       downtime=downtime,
+                       latency=latency,
+                       gas_used=gas_used,
+                       tx_hash=tx_hash)
+
+    data.save()
+
+
+def save_report_event(tx_dt, tx_hash, my_id, target_id, downtime, latency, gas_used):
+    """ Save bounty events data to database"""
+    data = BountyEvent(my_id=my_id,
+                       target_id=target_id,
+                       tx_dt=tx_dt,
                        downtime=downtime,
                        latency=latency,
                        gas_used=gas_used,
@@ -121,21 +149,21 @@ def save_bounty_stats(
     data.save(force_insert=True)
 
 
-def get_month_metrics_for_node(my_id, node_id, start_date, end_date) -> dict:
+def get_month_metrics_for_node(my_id, target_id, start_date, end_date) -> dict:
     """ Returns a dict with aggregated month metrics - downtime and latency"""
 
-    # results = Report.select(fn.SUM(Report.is_dead).alias('sum'),
+    # results = Report.select(fn.SUM(Report.is_offline).alias('sum'),
     #                         fn.AVG(Report.latency).alias('avg')).where((
-    #                             Report.my_id == my_id) & (Report.node_id == node_id) & (
+    #                             Report.my_id == my_id) & (Report.target_id == target_id) & (
     #                             Report.stamp >= start_date) & (Report.stamp <= end_date))
     # downtime = int(results[0].sum) if results[0].sum is not None else 0
     # latency = results[0].avg if results[0].avg is not None else 0
 
     downtime_results = Report.select(
         fn.SUM(
-            Report.is_dead).alias('sum')).where(
+            Report.is_offline).alias('sum')).where(
         (Report.my_id == my_id) & (
-            Report.node_id == node_id) & (
+                Report.target_id == target_id) & (
             Report.stamp >= start_date) & (
             Report.stamp <= end_date))
 
@@ -143,7 +171,7 @@ def get_month_metrics_for_node(my_id, node_id, start_date, end_date) -> dict:
         fn.AVG(
             Report.latency).alias('avg')).where(
         (Report.my_id == my_id) & (
-            Report.node_id == node_id) & (
+                Report.target_id == target_id) & (
             Report.stamp >= start_date) & (
             Report.stamp <= end_date) & (
             Report.latency >= 0))

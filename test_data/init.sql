@@ -2,8 +2,8 @@ USE db_skale;
 CREATE TABLE `report` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `my_id` int unsigned NULL,
-  `node_id` int unsigned NULL,
-  `is_dead` tinyint(1) unsigned NULL,
+  `target_id` int unsigned NULL,
+  `is_offline` tinyint(1) unsigned NULL,
   `latency` int NULL,
   `stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -12,11 +12,11 @@ CREATE TABLE `report` (
 CREATE TABLE `report_event` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `my_id` int unsigned NULL,
-  `other_id` int unsigned NULL,
+  `target_id` int unsigned NULL,
   `tx_dt` DATETIME NULL,
   `tx_hash` CHAR(66) UNIQUE NULL,
-  `latency` int unsigned NULL,
   `downtime` int unsigned NULL,
+  `latency` int unsigned NULL,
   `gas_used` DECIMAL(65) NULL,
   `stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -28,8 +28,8 @@ CREATE TABLE `bounty_event` (
   `tx_dt` DATETIME NULL,
   `tx_hash` CHAR(66) UNIQUE NULL,
   `bounty` VARCHAR(28) NULL,
-  `latency` int unsigned NULL,
   `downtime` int unsigned NULL,
+  `latency` int unsigned NULL,
   `gas_used` DECIMAL(65) NULL,
   `stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)

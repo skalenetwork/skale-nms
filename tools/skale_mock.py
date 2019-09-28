@@ -95,7 +95,7 @@ class Manager:
     def __init__(self):
         self.contract = Contract()
 
-    def send_verdict(self, my_node_id, node_id, downtime, latency, wallet):
+    def send_verdict(self, my_node_id, target_node_id, downtime, latency, wallet):
         return {'tx': 0x0}
 
     def get_bounty(self, id, local_wallet):

@@ -29,7 +29,7 @@ def test_get_node_metrics_pos():
     ip = IP_GOOD
     metrics_ok = ping.get_node_metrics(ip)
     latency = metrics_ok['latency']
-    downtime = metrics_ok['is_dead']
+    downtime = metrics_ok['is_offline']
     print(metrics_ok)
 
     assert type(latency) is int
@@ -41,7 +41,7 @@ def test_get_node_metrics_neg():
     ip = IP_BAD
     metrics_ok = ping.get_node_metrics(ip)
     latency = metrics_ok['latency']
-    downtime = metrics_ok['is_dead']
+    downtime = metrics_ok['is_offline']
     print(metrics_ok)
 
     assert latency == -1

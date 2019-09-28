@@ -72,7 +72,7 @@ class BountyCollector(base_agent.BaseAgent):
             args = h_receipt[0]['args']
             db.save_bounty_event(datetime.utcfromtimestamp(args['time']), str(tx_hash),
                                  args['nodeIndex'], args['bounty'],
-                                 args['averageLatency'], args['averageDowntime'],
+                                 args['averageDowntime'], args['averageLatency'],
                                  receipt["gasUsed"])
         if receipt['status'] == 0:
             self.logger.info('The bounty was not received - transaction failed')

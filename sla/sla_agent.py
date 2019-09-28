@@ -79,7 +79,8 @@ class Monitor(base_agent.BaseAgent):
                 metrics = ping.get_node_metrics(host)
                 # metrics = sim.generate_node_metrics()  # use to simulate metrics for some tests
                 self.logger.info(f'Received metrics for node ID = {node["id"]}: {metrics}')
-                db.save_metrics_to_db(self.id, node['id'], metrics['is_dead'], metrics['latency'])
+                db.save_metrics_to_db(self.id, node['id'],
+                                      metrics['is_offline'], metrics['latency'])
 
     def get_reported_nodes(self, nodes) -> list:
         """Returns a list of nodes to be reported"""
