@@ -75,12 +75,14 @@ class Monitor(base_agent.BaseAgent):
 
         for node in nodes:
             host = GOOD_IP if self.is_test_mode else node['ip']
-            if os.system("ping -c 1 " + GOOD_IP) == 0:
+            if os.system("ping -c 1 " + GOOD_IP + " > /dev/null") == 0:
                 metrics = ping.get_node_metrics(host)
                 # metrics = sim.generate_node_metrics()  # use to simulate metrics for some tests
-                self.logger.info(f'Received metrics for node ID = {node["id"]}: {metrics}')
+                self.logger.info(f'Received metrics from node ID = {node["id"]}: {metrics}')
                 db.save_metrics_to_db(self.id, node['id'],
                                       metrics['is_offline'], metrics['latency'])
+            else:
+                self.logger.error(f'Couldn\'t ping 8.8.8.8 - skipping monitoring node {node["id"]}')
 
     def get_reported_nodes(self, nodes) -> list:
         """Returns a list of nodes to be reported"""
@@ -99,7 +101,7 @@ class Monitor(base_agent.BaseAgent):
     def send_reports(self, nodes_for_report):
         """Send reports for every node from nodes_for_report"""
 
-        self.logger.info(LONG_DOUBLE_LINE)
+        self.logger.info(LONG_LINE)
         if len(nodes_for_report) == 0:
             self.logger.info(f'- No nodes to be reported on')
         else:
@@ -138,7 +140,6 @@ class Monitor(base_agent.BaseAgent):
                     ).processReceipt(receipt)
                     self.logger.info(LONG_LINE)
                     self.logger.info(h_receipt)
-                    self.logger.info(LONG_LINE)
                     args = h_receipt[0]['args']
                     db.save_report_event(datetime.utcfromtimestamp(args['time']),
                                          str(res['tx'].hex()), args['fromValidatorIndex'],
@@ -147,7 +148,8 @@ class Monitor(base_agent.BaseAgent):
                 if receipt['status'] == 0:
                     self.logger.info('The report was not sent - transaction failed')
                     err_status = 1
-                self.logger.info(f'Receipt: {receipt}')
+                self.logger.debug(f'Receipt: {receipt}')
+                self.logger.info(LONG_DOUBLE_LINE)
         except Timeout:
             self.logger.info('Another agent currently holds the lock')
         except Exception as err:
