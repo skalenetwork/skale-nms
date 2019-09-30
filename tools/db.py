@@ -83,7 +83,7 @@ class ReportEvent(BaseModel):
     # stamp = DateTimeField()
 
     class Meta:
-        db_table = 'bounty_event'
+        db_table = 'report_event'
 
 
 class BountyStats(BaseModel):
@@ -122,7 +122,7 @@ def save_bounty_event(tx_dt, tx_hash, my_id, bounty, downtime, latency, gas_used
 
 def save_report_event(tx_dt, tx_hash, my_id, target_id, downtime, latency, gas_used):
     """ Save bounty events data to database"""
-    data = BountyEvent(my_id=my_id,
+    data = ReportEvent(my_id=my_id,
                        target_id=target_id,
                        tx_dt=tx_dt,
                        downtime=downtime,
