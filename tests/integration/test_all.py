@@ -37,16 +37,14 @@ FAKE_REPORT_DATE = 1567690544
 def setup_module(module):
     accelerate_skale_manager()
     global cur_node_id
-    cur_node_id = 0
     global nodes_count_before, nodes_count_to_add
     ids = get_active_ids()
     print(f'ids = {ids}')
     nodes_count_before = len(ids)
-    max_id = max(ids) if len(ids) else -1
-    print(f'max_id = {max_id}')
-    print(f'nodes count before = {nodes_count_before}')
+    cur_node_id = max(ids) + 1 if nodes_count_before else 0
+    # cur_node_id = 0
     nodes_count_to_add = 2
-    create_set_of_nodes(max_id + 1, nodes_count_to_add)
+    create_set_of_nodes(cur_node_id, nodes_count_to_add)
     print('now after nodes creation:')
     print(datetime.utcnow())
 
@@ -131,7 +129,8 @@ def test_get_reported_nodes_pos(monitor):
     print(f'rep nodes = {reported_nodes}')
 
     # assert len(reported_nodes) == 1
-    assert reported_nodes[0]['id'] == 1
+    # assert reported_nodes[0]['id'] == 1
+    assert any(node.get('id') == cur_node_id + 1 for node in reported_nodes)
 
     err_send_verdicts_status = monitor.send_reports(reported_nodes)
     assert err_send_verdicts_status == 0

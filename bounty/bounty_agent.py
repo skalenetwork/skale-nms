@@ -28,7 +28,7 @@ import skale.utils.helper as Helper
 from filelock import FileLock, Timeout
 
 from tools import base_agent, db
-from tools.config import LONG_LINE
+from tools.config import LONG_LINE, LONG_DOUBLE_LINE
 from tools.helper import get_lock_filepath, init_skale
 
 
@@ -43,8 +43,8 @@ class BountyCollector(base_agent.BaseAgent):
         address = self.local_wallet['address']
         eth_bal_before = self.skale.web3.eth.getBalance(address)
         skl_bal_before = self.skale.token.get_balance(address)
-        self.logger.debug(f'ETH balance: {eth_bal_before}')
-        self.logger.debug(f'SKL balance: {skl_bal_before}')
+        self.logger.info(f'ETH balance: {eth_bal_before}')
+        self.logger.info(f'SKL balance: {skl_bal_before}')
         self.logger.info('--- Getting Bounty ---')
         lock = FileLock(get_lock_filepath(), timeout=1)
         self.logger.debug('Acquiring lock')
@@ -68,11 +68,11 @@ class BountyCollector(base_agent.BaseAgent):
             h_receipt = self.skale.manager.contract.events.BountyGot().processReceipt(receipt)
             self.logger.info(LONG_LINE)
             self.logger.info(h_receipt)
-            self.logger.info(LONG_LINE)
+            # self.logger.info(LONG_LINE)
             args = h_receipt[0]['args']
             db.save_bounty_event(datetime.utcfromtimestamp(args['time']), str(tx_hash),
                                  args['nodeIndex'], args['bounty'],
-                                 args['averageLatency'], args['averageDowntime'],
+                                 args['averageDowntime'], args['averageLatency'],
                                  receipt["gasUsed"])
         if receipt['status'] == 0:
             self.logger.info('The bounty was not received - transaction failed')
@@ -88,6 +88,7 @@ class BountyCollector(base_agent.BaseAgent):
 
         db.save_bounty_stats(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_bal)
         self.logger.debug('Waiting for the next periodic check')
+        self.logger.info(LONG_DOUBLE_LINE)
         return receipt['status']
 
     def job(self) -> None:

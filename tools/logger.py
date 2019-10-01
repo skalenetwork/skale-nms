@@ -60,6 +60,8 @@ def init_logger(log_file_path, agent_name):
 def init_agent_logger(agent_name, node_id):
     log_path = get_log_filepath(agent_name, node_id)
     init_logger(log_path, agent_name)
+    flock_logger = logging.getLogger('filelock')
+    flock_logger.setLevel(logging.WARNING)
 
 
 def get_log_filepath(agent_name, node_id):
