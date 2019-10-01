@@ -200,3 +200,7 @@ def get_count_of_bounty_receipt_records():
 
 def get_count_of_report_records():
     return Report.select().count()
+
+
+def get_bounty_max_block_number():
+    return BountyEvent.select(fn.MAX(BountyEvent.block_number)).scalar()

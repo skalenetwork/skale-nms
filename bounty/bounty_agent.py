@@ -31,13 +31,61 @@ from tools import base_agent, db
 from tools.config import LONG_LINE, LONG_DOUBLE_LINE
 from tools.helper import get_lock_filepath, init_skale
 
+BLOCK_STEP = 5000
+
 
 class BountyCollector(base_agent.BaseAgent):
+
+    def __init__(self, skale, node_id=None):
+        super().__init__(skale, node_id)
+        self.collect_last_bounty_logs()
 
     def get_reward_date(self):
         reward_period = self.skale.validators_data.get_reward_period()
         reward_date = self.skale.nodes_data.get(self.id)['last_reward_date'] + reward_period
         return datetime.utcfromtimestamp(reward_date)
+
+    def collect_last_bounty_logs(self):
+
+        last_block_number_in_db = db.get_bounty_max_block_number()
+        start_block_number = 380000 if last_block_number_in_db is None else \
+            last_block_number_in_db + 1
+
+        while True:
+
+            block_number = skale.web3.eth.blockNumber
+            # print(f'last block = {block_number}')
+            end_block_number = start_block_number + BLOCK_STEP - 1
+            if end_block_number > block_number:
+                end_block_number = block_number
+
+            event_filter = skale.manager.contract.events.BountyGot().createFilter(
+                argument_filters={'nodeIndex': self.id},
+                fromBlock=hex(start_block_number))
+            logs = event_filter.get_all_entries()
+
+            print('----------')
+            # print(logs)
+            for log in logs:
+                args = log['args']
+
+                # print("-----------------------")
+
+                tx_block_number = log['blockNumber']
+                block_data = skale.web3.eth.getBlock(tx_block_number)
+                block_timestamp = datetime.utcfromtimestamp(block_data['timestamp'])
+                # print(block_timestamp)
+                # print(log)
+                tx_hash = log['transactionHash'].hex()
+                gas_used = skale.web3.eth.getTransactionReceipt(tx_hash)['gasUsed']
+                db.save_bounty_event(block_timestamp, tx_hash,
+                                     log['blockNumber'], args['nodeIndex'], args['bounty'],
+                                     args['averageDowntime'], args['averageLatency'],
+                                     gas_used)
+
+            start_block_number = start_block_number + BLOCK_STEP
+            if end_block_number >= block_number:
+                break
 
     def get_bounty(self):
         address = self.local_wallet['address']
