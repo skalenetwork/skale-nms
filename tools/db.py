@@ -62,6 +62,7 @@ class BountyEvent(BaseModel):
     my_id = IntegerField()
     tx_dt = DateTimeField()
     tx_hash = CharField()
+    block_number = IntegerField()
     bounty = CharField()
     downtime = IntegerField()
     latency = IntegerField()
@@ -107,7 +108,7 @@ def save_metrics_to_db(my_id, target_id, is_offline, latency):
     report.save()
 
 
-def save_bounty_event(tx_dt, tx_hash, my_id, bounty, downtime, latency, gas_used):
+def save_bounty_event(tx_dt, tx_hash, block_number, my_id, bounty, downtime, latency, gas_used):
     """ Save bounty events data to database"""
     data = BountyEvent(my_id=my_id,
                        tx_dt=tx_dt,
@@ -115,7 +116,8 @@ def save_bounty_event(tx_dt, tx_hash, my_id, bounty, downtime, latency, gas_used
                        downtime=downtime,
                        latency=latency,
                        gas_used=gas_used,
-                       tx_hash=tx_hash)
+                       tx_hash=tx_hash,
+                       block_number=block_number)
 
     data.save()
 

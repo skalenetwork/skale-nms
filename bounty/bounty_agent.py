@@ -61,7 +61,7 @@ class BountyCollector(base_agent.BaseAgent):
             raise
         self.logger.debug('Waiting for receipt of tx...')
 
-        tx_hash = receipt["transactionHash"].hex()
+        tx_hash = receipt['transactionHash'].hex()
 
         if receipt['status'] == 1:
             self.logger.info('The bounty was successfully received')
@@ -71,9 +71,9 @@ class BountyCollector(base_agent.BaseAgent):
             # self.logger.info(LONG_LINE)
             args = h_receipt[0]['args']
             db.save_bounty_event(datetime.utcfromtimestamp(args['time']), str(tx_hash),
-                                 args['nodeIndex'], args['bounty'],
+                                 receipt['blockNumber'], args['nodeIndex'], args['bounty'],
                                  args['averageDowntime'], args['averageLatency'],
-                                 receipt["gasUsed"])
+                                 receipt['gasUsed'])
         if receipt['status'] == 0:
             self.logger.info('The bounty was not received - transaction failed')
             # TODO: notify Skale Admin

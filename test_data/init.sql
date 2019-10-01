@@ -13,11 +13,11 @@ CREATE TABLE `report_event` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `my_id` int unsigned NULL,
   `target_id` int unsigned NULL,
-  `tx_dt` DATETIME NULL,
-  `tx_hash` CHAR(66) UNIQUE NULL,
   `downtime` int unsigned NULL,
   `latency` int unsigned NULL,
   `gas_used` DECIMAL(65) NULL,
+  `tx_dt` DATETIME NULL,
+  `tx_hash` CHAR(66) UNIQUE NULL,
   `stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4196 DEFAULT CHARSET=utf8;
@@ -25,12 +25,14 @@ CREATE TABLE `report_event` (
 CREATE TABLE `bounty_event` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `my_id` int unsigned NULL,
-  `tx_dt` DATETIME NULL,
-  `tx_hash` CHAR(66) UNIQUE NULL,
   `bounty` VARCHAR(28) NULL,
   `downtime` int unsigned NULL,
   `latency` int unsigned NULL,
   `gas_used` DECIMAL(65) NULL,
+  `tx_dt` DATETIME NULL,
+  `tx_hash` CHAR(66) UNIQUE NULL,
+  `block_number` int NULL,
+
   `stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4196 DEFAULT CHARSET=utf8;
