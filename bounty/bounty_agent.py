@@ -53,13 +53,13 @@ class BountyCollector(base_agent.BaseAgent):
 
         while True:
 
-            block_number = skale.web3.eth.blockNumber
+            block_number = self.skale.web3.eth.blockNumber
             # print(f'last block = {block_number}')
             end_block_number = start_block_number + BLOCK_STEP - 1
             if end_block_number > block_number:
                 end_block_number = block_number
 
-            event_filter = skale.manager.contract.events.BountyGot().createFilter(
+            event_filter = self.skale.manager.contract.events.BountyGot().createFilter(
                 argument_filters={'nodeIndex': self.id},
                 fromBlock=hex(start_block_number))
             logs = event_filter.get_all_entries()
@@ -72,12 +72,12 @@ class BountyCollector(base_agent.BaseAgent):
                 # print("-----------------------")
 
                 tx_block_number = log['blockNumber']
-                block_data = skale.web3.eth.getBlock(tx_block_number)
+                block_data = self.skale.web3.eth.getBlock(tx_block_number)
                 block_timestamp = datetime.utcfromtimestamp(block_data['timestamp'])
                 # print(block_timestamp)
                 # print(log)
                 tx_hash = log['transactionHash'].hex()
-                gas_used = skale.web3.eth.getTransactionReceipt(tx_hash)['gasUsed']
+                gas_used = self.skale.web3.eth.getTransactionReceipt(tx_hash)['gasUsed']
                 db.save_bounty_event(block_timestamp, tx_hash,
                                      log['blockNumber'], args['nodeIndex'], args['bounty'],
                                      args['averageDowntime'], args['averageLatency'],
