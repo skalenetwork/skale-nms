@@ -24,8 +24,9 @@ import pytest
 
 from bounty import bounty_agent
 from sla import sla_agent as sla
-from tests.integration.preparation import TEST_DELTA, TEST_EPOCH, accelerate_skale_manager, \
-    create_set_of_nodes, get_active_ids
+from tests.integration.preparation import (
+    TEST_DELTA, TEST_EPOCH, accelerate_skale_manager, create_set_of_nodes, get_active_ids)
+from tools import db
 from tools.config_storage import ConfigStorage
 # from tests.integration import preparation
 from tools.helper import init_skale
@@ -136,11 +137,22 @@ def test_get_reported_nodes_pos(monitor):
     assert err_send_verdicts_status == 0
 
 
-def test_get_bounty_pos(bounty_collector):
+def test_bounty_job_saves_data(bounty_collector):
     print(f'Sleep for {TEST_DELTA} sec')
     time.sleep(TEST_DELTA)
+    db.clear_all_bounty_receipts()
+    bounty_collector.job()
+    assert db.get_count_of_bounty_receipt_records() == 1
+
+
+@pytest.mark.skip(reason="skip to save time")
+def test_get_bounty_pos(bounty_collector):
+    print(f'Sleep for {TEST_EPOCH} sec')
+    time.sleep(TEST_EPOCH)
+    db.clear_all_bounty_receipts()
     status = bounty_collector.get_bounty()
     assert status == 1
+    assert db.get_count_of_bounty_receipt_records() == 1
 
 
 def test_get_id_from_config(monitor):

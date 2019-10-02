@@ -26,8 +26,8 @@ def get_node_metrics(host) -> dict:
     ping_parser = pingparsing.PingParsing()
     transmitter = pingparsing.PingTransmitter()
     transmitter.destination_host = host
-    # transmitter.ping_option = '-w5'
-    transmitter.count = 1
+    transmitter.ping_option = '-w1'
+    transmitter.count = 3
     result = transmitter.ping()
 
     # print(ping_parser.parse(result).as_dict())
