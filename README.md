@@ -1,11 +1,16 @@
 [![Build Status](https://travis-ci.com/skalenetwork/SLA.svg?token=5WWNQpSwuzBij2zT49wg&branch=develop)](https://travis-ci.com/skalenetwork/SLA)
 [![codecov](https://codecov.io/gh/skalenetwork/SLA/branch/develop/graph/badge.svg?token=aPCwLvSCAi)](https://codecov.io/gh/skalenetwork/SLA)
+[![Discord](https://img.shields.io/discord/534485763354787851.svg)](https://discord.gg/vvUtWJB)
 
 # SKALE Node Monitoring Service (NMS)
 
 SKALE NMS is comprised of the SLA agent and Bounty collector, which are parts of the [SKALE node](https://github.com/skalenetwork/skale-node).
 
 Every SKALE node has a NMS group of N (e.g. 24) other nodes in the network randomly assigned to it. NMS groups regularly audit node downtime and latency at predetermined periods (e.g. five minutes), log these measurements to their local databases, and submit average metrics to the SKALE Manager contract (SMC) once for every reward period - epoch (e.g. 30 days). Every node is rewarded for its validation efforts, based on results sent by NMS group of this node, at the end of each epoch.
+
+## An important note about production readiness
+
+SKALE-NMS is still in active development and therefore should be regarded as alpha software. The development is still subject to security hardening, further testing, and breaking changes. This repository has not yet been reviewed or audited for security.
 
 ## Project structure
 
@@ -146,3 +151,15 @@ _in process_
 -   [SKALE Network Blog](https://skale.network/blog)
 
 Learn more about the SKALE community over on [Discord](http://skale.chat).
+
+## Contributing
+
+**If you have any questions please ask our development community on [Discord](http://skale.chat).**
+
+[![Discord](https://img.shields.io/discord/534485763354787851.svg)](https://discord.gg/vvUtWJB)
+
+## License
+
+[![License](https://img.shields.io/github/license/skalenetwork/skale-nms)](LICENSE)
+
+Copyright (C) 2018-present SKALE Labs
