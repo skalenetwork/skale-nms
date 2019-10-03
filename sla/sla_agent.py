@@ -1,6 +1,6 @@
 #   -*- coding: utf-8 -*-
 #
-#   This file is part of SLA
+#   This file is part of SKALE-NMS
 #
 #   Copyright (C) 2019 SKALE Labs
 #
@@ -47,7 +47,7 @@ class Monitor(base_agent.BaseAgent):
 
         account = self.skale.web3.toChecksumAddress(self.local_wallet['address'])
 
-        # get raw binary data list from Skale Manager SC
+        # get raw binary data list from SKALE Manager SC
         try:
             nodes_in_bytes_array = self.skale.validators_data.get_validated_array(self.id, account)
         except Exception as err:

@@ -2,22 +2,22 @@
 
 ver=0.2.4
 
-echo "Building SKALE SLA manager v${ver}..."
+echo "Building SKALE SLA agent v${ver}..."
 docker build -t skalelabshub/sla-manager:${ver} .. -f ../Dockerfile.sla &&
-echo "SLA manager v${ver} was built successfully" &&
+echo "SLA agent v${ver} was built successfully" &&
 if [ "$1" == "p" ]
 then
     echo "-----------------------------"
     echo "Prepare to publish to Docker Hub..."
     docker tag skalelabshub/sla-manager:${ver} skalelabshub/sla-manager:latest &&
-    echo "SLA manager v${ver} was tagged to the latest successfully" &&
+    echo "SLA agent v${ver} was tagged to the latest successfully" &&
     echo "-----------------------------" &&
-    echo "Pushing SLA manager v${ver}" &&
+    echo "Pushing SLA agent v${ver}" &&
     docker push skalelabshub/sla-manager:${ver} &&
     echo "-----------------------------" &&
-    echo "SLA manager v${ver} was pushed successfully" &&
+    echo "SLA agent v${ver} was pushed successfully" &&
     echo "-----------------------------" &&
     docker push skalelabshub/sla-manager:latest &&
     echo "-----------------------------" &&
-    echo "SLA manager latest was pushed successfully"
+    echo "SLA agent latest was pushed successfully"
 fi

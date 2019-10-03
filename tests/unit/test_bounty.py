@@ -1,6 +1,6 @@
 #   -*- coding: utf-8 -*-
 #
-#   This file is part of SLA
+#   This file is part of SKALE-NMS
 #
 #   Copyright (C) 2019 SKALE Labs
 #
