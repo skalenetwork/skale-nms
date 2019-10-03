@@ -1,6 +1,6 @@
 #   -*- coding: utf-8 -*-
 #
-#   This file is part of SLA
+#   This file is part of SKALE-NMS
 #
 #   Copyright (C) 2019 SKALE Labs
 #
@@ -18,7 +18,7 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """
-Bounty agent runs on every node of Skale network and sends transactions
+Bounty agent runs on every node of SKALE network and sends transactions
 to CS with request to get reward for validation work when it's time to get it
 """
 import sys

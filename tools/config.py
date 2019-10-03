@@ -1,6 +1,6 @@
 #   -*- coding: utf-8 -*-
 #
-#   This file is part of SLA
+#   This file is part of SKALE-NMS
 #
 #   Copyright (C) 2019 SKALE Labs
 #
@@ -141,6 +141,6 @@ SCHAIN_OWNER_ALLOC = 1000000000000000000000
 # NODE_OWNER_ALLOC = 1000000000000000000
 NODE_OWNER_ALLOC = 1000000000000000000000  # todo: tmp!
 
-# ktm
+# IMA
 
-KTM_CONFIG_NAME = 'ktm'
+IMA_CONFIG_NAME = 'IMA'
