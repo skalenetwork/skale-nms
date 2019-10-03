@@ -24,7 +24,7 @@ import sys
 from logging import Formatter, StreamHandler
 
 # from cmreslogging.handlers import CMRESHandler
-from tools.config import LOG_BACKUP_COUNT, LOG_FILE_SIZE_BYTES, LOG_FOLDER, LOG_FORMAT
+from tools.configs import LOG_BACKUP_COUNT, LOG_FILE_SIZE_BYTES, LOG_FOLDER, LOG_FORMAT
 from tools.helper import TEST_DATA_DIR_PATH
 
 

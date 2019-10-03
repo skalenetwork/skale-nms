@@ -28,7 +28,7 @@ import schedule
 import tenacity
 
 from tools import helper
-from tools.config import NODE_CONFIG_FILEPATH
+from tools.configs import NODE_CONFIG_FILEPATH
 from tools.config_storage import ConfigStorage
 from tools.logger import init_agent_logger
 
