@@ -160,6 +160,6 @@ Learn more about the SKALE community over on [Discord](http://skale.chat).
 
 ## License
 
-[![License](https://img.shields.io/github/license/skalenetwork/skale-nms)](LICENSE)
+[![License](https://img.shields.io/github/license/skalenetwork/skale-nms.svg)](LICENSE)
 
 Copyright (C) 2018-present SKALE Labs
