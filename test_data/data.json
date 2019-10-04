@@ -1,5 +1,5 @@
 {
-  "skale_token_address": "0x5399abE22eD15B534497A050B6bb845cF3006eB7",
+  "skale_token_address": "0x6E744E82E4E93f3472e2365eDA7A63110435245E",
   "skale_token_abi": [
     {
       "constant": true,
@@ -515,7 +515,7 @@
       "signature": "0x2535f762"
     }
   ],
-  "nodes_data_address": "0x1eCCDBB5479b475EAE4474c66CD1d00622BC6C85",
+  "nodes_data_address": "0xA75F79A89D807EC70d5492dd4F9864fdFD180EC0",
   "nodes_data_abi": [
     {
       "constant": true,
@@ -1388,7 +1388,7 @@
       "signature": "0xd12fa445"
     }
   ],
-  "nodes_functionality_address": "0x85ae0B005253A5Fd4555f0474c7d1a8074B8C49e",
+  "nodes_functionality_address": "0x1B9A690e910e1e0642288BE3f94e25DcFb8028A3",
   "nodes_functionality_abi": [
     {
       "constant": true,
@@ -1662,7 +1662,7 @@
       "signature": "0x104f2f3f"
     }
   ],
-  "validators_data_address": "0xC0C151c0c4B81e941af828b44077ac8f907b6611",
+  "validators_data_address": "0x22Ca3E604994bFB6bc5b057D125b838A6aE400b5",
   "validators_data_abi": [
     {
       "constant": true,
@@ -2276,7 +2276,7 @@
       "signature": "0xacad7a4b"
     }
   ],
-  "validators_functionality_address": "0xe5fc7F1486d07B445e1815c6dF1b169277321e76",
+  "validators_functionality_address": "0x2A9fA70Fd7899561d0309D0b7188460Cd8D19CFF",
   "validators_functionality_abi": [
     {
       "constant": false,
@@ -2860,7 +2860,7 @@
       "signature": "0xc978f668"
     }
   ],
-  "schains_data_address": "0xBf9D405681E9b53266b9fe520e5DeCcB5c038f7C",
+  "schains_data_address": "0xB2a8E84e96CAfA8D2Dee771ED41bdac78E6AB50e",
   "schains_data_abi": [
     {
       "constant": true,
@@ -3825,7 +3825,7 @@
       "signature": "0x8f7e500a"
     }
   ],
-  "schains_functionality_address": "0x82609D90BD8023A8E93E73154Bc8228A1638b4D8",
+  "schains_functionality_address": "0x720C64d269C74503C08A27FdEdD86E41B347bE24",
   "schains_functionality_abi": [
     {
       "constant": true,
@@ -4040,7 +4040,7 @@
       "signature": "0xbe07f57c"
     }
   ],
-  "manager_data_address": "0xC63574188C03be4CFcB937FD5F8A7e6B81674408",
+  "manager_data_address": "0xc4A68EdC46ffA95c33898fd9AC982c83ceB3a991",
   "manager_data_abi": [
     {
       "constant": true,
@@ -4179,7 +4179,7 @@
       "signature": "0x3689f3d7"
     }
   ],
-  "skale_manager_address": "0xe41309c948F5C155A7efa7c6B6d6F3dCB293eEC1",
+  "skale_manager_address": "0x35c60f21e60B70E278c2Ab24ca6A02A339C6edA4",
   "skale_manager_abi": [
     {
       "constant": true,
@@ -4449,7 +4449,7 @@
       "signature": "0xee8c4bbf"
     }
   ],
-  "constants_address": "0x3aB5ad73bB2e2a6Ddb7108243e6814838ecC1Bd5",
+  "constants_address": "0x3D0a6BeeFE705783418628781c9456CF3Fd4b981",
   "constants_abi": [
     {
       "constant": true,
@@ -4878,7 +4878,7 @@
       "signature": "0xa8f3152b"
     }
   ],
-  "contract_manager_address": "0xfc78c65280Af163969e3764681AF26c6120d106c",
+  "contract_manager_address": "0x3BD8B661A494d1a7F6Ecc9D2d95b0a5b96f50470",
   "contract_manager_abi": [
     {
       "constant": true,
@@ -4968,7 +4968,7 @@
       "signature": "0xdd9e2940"
     }
   ],
-  "pricing_address": "0x3176648fE92f125376A248782EB1688FD1fac1aD",
+  "pricing_address": "0xEa6Df26cC8203B7DbF513531E7113237658CB062",
   "pricing_abi": [
     {
       "constant": true,
