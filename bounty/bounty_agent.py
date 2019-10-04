@@ -52,7 +52,7 @@ class BountyCollector(base_agent.BaseAgent):
     def collect_last_bounty_logs(self):
 
         last_block_number_in_db = db.get_bounty_max_block_number()
-        start_block_number = 380000 if last_block_number_in_db is None else \
+        start_block_number = 0 if last_block_number_in_db is None else \
             last_block_number_in_db + 1
         count = 0
         while True:

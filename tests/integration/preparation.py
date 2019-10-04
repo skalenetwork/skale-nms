@@ -22,7 +22,7 @@ import os
 import skale.utils.helper as Helper
 from skale.utils.helper import await_receipt, private_key_to_address
 
-from tools.config import LOCAL_WALLET_FILENAME
+from tools.configs import LOCAL_WALLET_FILENAME
 from tools.config_storage import ConfigStorage
 from tools.helper import TEST_DATA_DIR_PATH, init_skale
 

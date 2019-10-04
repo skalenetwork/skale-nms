@@ -23,7 +23,7 @@ import pytest
 
 from sla import sla_agent as sla
 from tools import db
-from tools.config import LOCAL_WALLET_FILENAME
+from tools.configs import LOCAL_WALLET_FILENAME
 from tools.config_storage import ConfigStorage
 from tools.helper import TEST_DATA_DIR_PATH
 from tools.skale_mock import init_skale, MOCK_IP
