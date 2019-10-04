@@ -33,7 +33,7 @@ from skale.utils.helper import await_receipt
 
 from sla import ping
 from tools import base_agent, db
-from tools.config import GOOD_IP, LONG_DOUBLE_LINE, LONG_LINE
+from tools.configs import GOOD_IP, LONG_DOUBLE_LINE, LONG_LINE
 from tools.helper import get_lock_filepath, init_skale
 
 

@@ -27,7 +27,7 @@ from tools.configs.web3 import ABI_FILEPATH
 from tools.configs import (
     LOCAL_WALLET_FILENAME, LOCAL_WALLET_FILEPATH, LOG_FOLDER,
     NODE_DATA_PATH)
-from tests.config import TEST_DATA_DIR_PATH, TEST_ABI_FILE
+from tools.config import TEST_DATA_DIR_PATH, TEST_ABI_FILE
 
 NETWORK = 'local'
 # NETWORK = 'do'
