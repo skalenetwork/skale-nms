@@ -28,8 +28,9 @@ import skale.utils.helper as Helper
 from filelock import FileLock, Timeout
 
 from tools import base_agent, db
-from tools.config import LONG_LINE, LONG_DOUBLE_LINE
+from tools.configs import LONG_LINE, LONG_DOUBLE_LINE
 from tools.helper import get_lock_filepath, init_skale
+import time
 
 BLOCK_STEP = 5000
 
@@ -38,7 +39,10 @@ class BountyCollector(base_agent.BaseAgent):
 
     def __init__(self, skale, node_id=None):
         super().__init__(skale, node_id)
+        start = time.time()
         self.collect_last_bounty_logs()
+        end = time.time()
+        print(f'Execution time = {end - start}')
 
     def get_reward_date(self):
         reward_period = self.skale.validators_data.get_reward_period()
@@ -48,12 +52,13 @@ class BountyCollector(base_agent.BaseAgent):
     def collect_last_bounty_logs(self):
 
         last_block_number_in_db = db.get_bounty_max_block_number()
-        start_block_number = 380000 if last_block_number_in_db is None else \
+        start_block_number = 0 if last_block_number_in_db is None else \
             last_block_number_in_db + 1
-
+        count = 0
         while True:
 
             block_number = self.skale.web3.eth.blockNumber
+            print()
             # print(f'last block = {block_number}')
             end_block_number = start_block_number + BLOCK_STEP - 1
             if end_block_number > block_number:
@@ -82,7 +87,8 @@ class BountyCollector(base_agent.BaseAgent):
                                      log['blockNumber'], args['nodeIndex'], args['bounty'],
                                      args['averageDowntime'], args['averageLatency'],
                                      gas_used)
-
+                count += 1
+            print(f'count = {count}')
             start_block_number = start_block_number + BLOCK_STEP
             if end_block_number >= block_number:
                 break

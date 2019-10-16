@@ -22,13 +22,13 @@ import os
 import skale.utils.helper as Helper
 from skale.utils.helper import await_receipt, private_key_to_address
 
-from tools.config import LOCAL_WALLET_FILENAME
+from tools.configs import LOCAL_WALLET_FILENAME
 from tools.config_storage import ConfigStorage
 from tools.helper import TEST_DATA_DIR_PATH, init_skale
 
 TEST_LOCAL_WALLET_PATH = os.path.join(TEST_DATA_DIR_PATH, LOCAL_WALLET_FILENAME)
-TEST_EPOCH = 120
-TEST_DELTA = 60
+TEST_EPOCH = 200
+TEST_DELTA = 100
 
 skale = init_skale()
 

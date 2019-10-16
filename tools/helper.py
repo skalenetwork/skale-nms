@@ -23,18 +23,18 @@ from distutils import util
 
 from dotenv import load_dotenv
 from skale import Skale
-
-from tools.config import (
-    CUSTOM_CONTRACTS_PATH, LOCAL_WALLET_FILENAME, LOCAL_WALLET_FILEPATH, LOG_FOLDER,
-    NODE_DATA_PATH, PROJECT_DIR)
+from tools.configs.web3 import ABI_FILEPATH
+from tools.configs import (
+    LOCAL_WALLET_FILENAME, LOCAL_WALLET_FILEPATH, LOG_FOLDER,
+    NODE_DATA_PATH)
+from tools.config import TEST_DATA_DIR_PATH, TEST_ABI_FILE
 
 NETWORK = 'local'
 # NETWORK = 'do'
 ENV_FILE = ".env"
-ABI_FILE = "data.json"
+
 LOCK_FILE = "tx.lock"
-TEST_DATA_DIR = "test_data"
-TEST_DATA_DIR_PATH = os.path.join(PROJECT_DIR, TEST_DATA_DIR)
+
 DOTENV_PATH = os.path.join(TEST_DATA_DIR_PATH, ENV_FILE)
 
 
@@ -79,6 +79,6 @@ def init_skale():
 
     is_test = os.environ.get("IS_TEST", "False")
     is_test = bool(util.strtobool(is_test))
-    abi_filepath = os.path.join(TEST_DATA_DIR_PATH, ABI_FILE) if is_test else CUSTOM_CONTRACTS_PATH
+    abi_filepath = os.path.join(TEST_DATA_DIR_PATH, TEST_ABI_FILE) if is_test else ABI_FILEPATH
     skale = Skale(ENDPOINT, abi_filepath)
     return skale
