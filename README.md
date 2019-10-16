@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.com/skalenetwork/SLA.svg?token=5WWNQpSwuzBij2zT49wg&branch=develop)](https://travis-ci.com/skalenetwork/SLA)
-[![codecov](https://codecov.io/gh/skalenetwork/SLA/branch/develop/graph/badge.svg?token=aPCwLvSCAi)](https://codecov.io/gh/skalenetwork/SLA)
+[![Build Status](https://travis-ci.com/skalenetwork/skale-nms.svg?token=5WWNQpSwuzBij2zT49wg&branch=develop)](https://travis-ci.com/skalenetwork/skale-nms)
+[![codecov](https://codecov.io/gh/skalenetwork/skale-nms/branch/develop/graph/badge.svg?token=aPCwLvSCAi)](https://codecov.io/gh/skalenetwork/skale-nms)
 [![Discord](https://img.shields.io/discord/534485763354787851.svg)](https://discord.gg/vvUtWJB)
 
 # SKALE Node Monitoring Service (NMS)
@@ -160,6 +160,6 @@ Learn more about the SKALE community over on [Discord](http://skale.chat).
 
 ## License
 
-[![License](https://img.shields.io/github/license/skalenetwork/skale-nms)](LICENSE)
+[![License](https://img.shields.io/github/license/skalenetwork/skale-nms.svg)](LICENSE)
 
 Copyright (C) 2018-present SKALE Labs
