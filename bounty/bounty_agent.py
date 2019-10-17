@@ -165,6 +165,7 @@ class BountyCollector(base_agent.BaseAgent):
                 self.get_bounty()
             except Exception as err:
                 self.logger.error(f'Cannot get bounty: {err}')
+                # TODO: notify Skale Admin
                 raise
 
 

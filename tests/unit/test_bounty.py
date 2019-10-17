@@ -17,18 +17,14 @@
 #   You should have received a copy of the GNU Affero General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import os
-
 import pytest
 
 from bounty import bounty_agent as bounty
 from tools import db
-from tools.configs import LOCAL_WALLET_FILENAME
+from tools.configs import LOCAL_WALLET_FILEPATH
 from tools.config_storage import ConfigStorage
-from tools.helper import TEST_DATA_DIR_PATH
 from tools.skale_mock import init_skale
 
-TEST_LOCAL_WALLET_PATH = os.path.join(TEST_DATA_DIR_PATH, LOCAL_WALLET_FILENAME)
 ID = 0
 IP_TEST = '0.0.0.0'
 
@@ -43,7 +39,7 @@ def prepare_wallets(count):
     account_dict = {"address": "0x0",
                     "private_key": "0x0"}
     for i in range(count):
-        local_wallet_config = ConfigStorage(TEST_LOCAL_WALLET_PATH + str(i))
+        local_wallet_config = ConfigStorage(LOCAL_WALLET_FILEPATH + str(i))
         local_wallet_config.update(account_dict)
 
 

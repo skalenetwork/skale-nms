@@ -24,10 +24,11 @@ from distutils import util
 from dotenv import load_dotenv
 from skale import Skale
 from tools.configs.web3 import ABI_FILEPATH
-from tools.configs import (
-    LOCAL_WALLET_FILENAME, LOCAL_WALLET_FILEPATH, LOG_FOLDER,
-    NODE_DATA_PATH)
-from tools.config import TEST_DATA_DIR_PATH, TEST_ABI_FILE
+from tools.configs import LOCAL_WALLET_FILEPATH, LOG_FOLDER, NODE_DATA_PATH
+from tools.config import TEST_DATA_DIR_PATH
+
+is_test = os.environ.get("IS_TEST", "False")
+is_test = bool(util.strtobool(is_test))
 
 NETWORK = 'local'
 # NETWORK = 'do'
@@ -53,32 +54,27 @@ def get_lock_filepath():
 
 
 def get_log_filepath(agent_name, node_id):
+    # log_filename = agent_name.lower() if node_id is None else agent_name.lower() \
+    #                                                           + '_' + str(node_id)
+    # log_filepath = os.path.join(LOG_FOLDER, log_filename + ".log")
 
-    if node_id is None:
-        log_folder = LOG_FOLDER
+    if node_id is None:  # production
         log_filename = agent_name.lower() + ".log"
-    else:
-        log_folder = TEST_DATA_DIR_PATH
+    else:  # test
         log_filename = agent_name.lower() + '_' + str(node_id) + ".log"
-    log_filepath = os.path.join(log_folder, log_filename)
-
+    log_filepath = os.path.join(LOG_FOLDER, log_filename)
     return log_filepath
 
 
 def get_local_wallet_filepath(node_id):
 
-    if node_id is None:
-        local_wallet_filepath = LOCAL_WALLET_FILEPATH
-    else:
-        local_wallet_filepath = os.path.join(TEST_DATA_DIR_PATH, LOCAL_WALLET_FILENAME) + \
-                                str(node_id)
-    return local_wallet_filepath
+    if node_id is None:  # production
+        return LOCAL_WALLET_FILEPATH
+    else:  # test
+        return LOCAL_WALLET_FILEPATH + str(node_id)
 
 
 def init_skale():
-
-    is_test = os.environ.get("IS_TEST", "False")
-    is_test = bool(util.strtobool(is_test))
-    abi_filepath = os.path.join(TEST_DATA_DIR_PATH, TEST_ABI_FILE) if is_test else ABI_FILEPATH
-    skale = Skale(ENDPOINT, abi_filepath)
+    print(ENDPOINT, " --- ", ABI_FILEPATH)
+    skale = Skale(ENDPOINT, ABI_FILEPATH)
     return skale
