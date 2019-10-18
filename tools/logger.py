@@ -23,9 +23,7 @@ import os
 import sys
 from logging import Formatter, StreamHandler
 
-# from cmreslogging.handlers import CMRESHandler
-from tools.configs import LOG_BACKUP_COUNT, LOG_FILE_SIZE_BYTES, LOG_FOLDER, LOG_FORMAT
-from tools.helper import TEST_DATA_DIR_PATH
+from tools.configs.logs import LOG_BACKUP_COUNT, LOG_FILE_SIZE_BYTES, LOG_FOLDER, LOG_FORMAT
 
 
 def init_logger(log_file_path, agent_name):
@@ -46,14 +44,6 @@ def init_logger(log_file_path, agent_name):
     stream_handler.setLevel(logging.INFO)
     handlers.append(stream_handler)
 
-    # elastic_handler = CMRESHandler(hosts=[{'host': '138.197.195.58', 'port': 9200}],
-    #
-    #                        auth_type=CMRESHandler.AuthType.NO_AUTH,
-    #                        es_index_name="skale_index",
-    #                        es_additional_fields={'App': 'SLA', 'Container': agent_name})
-    #
-    # handlers.append(elastic_handler)
-
     logging.basicConfig(level=logging.DEBUG, handlers=handlers)
 
 
@@ -65,13 +55,10 @@ def init_agent_logger(agent_name, node_id):
 
 
 def get_log_filepath(agent_name, node_id):
-
-    if node_id is None:
-        log_folder = LOG_FOLDER
+    if node_id is None:  # production
         log_filename = agent_name.lower() + ".log"
-    else:
-        log_folder = TEST_DATA_DIR_PATH
+    else:  # test
         log_filename = agent_name.lower() + '_' + str(node_id) + ".log"
-    log_filepath = os.path.join(log_folder, log_filename)
+    log_filepath = os.path.join(LOG_FOLDER, log_filename)
 
     return log_filepath

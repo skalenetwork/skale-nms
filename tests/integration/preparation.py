@@ -22,11 +22,12 @@ import os
 import skale.utils.helper as Helper
 from skale.utils.helper import await_receipt, private_key_to_address
 
-from tools.configs import LOCAL_WALLET_FILENAME
+from tools.configs import LOCAL_WALLET_FILEPATH
 from tools.config_storage import ConfigStorage
-from tools.helper import TEST_DATA_DIR_PATH, init_skale
+from tools.helper import init_skale
 
-TEST_LOCAL_WALLET_PATH = os.path.join(TEST_DATA_DIR_PATH, LOCAL_WALLET_FILENAME)
+DIR_LOG = '/skale_node_data/log'
+DIR_ABI = '/skale_vol/contracts_info'
 TEST_EPOCH = 200
 TEST_DELTA = 100
 
@@ -67,7 +68,7 @@ def generate_local_wallet(node_id):
     print('---- account dict:')
     print(account_dict)
 
-    local_wallet_config = ConfigStorage(TEST_LOCAL_WALLET_PATH + str(node_id))
+    local_wallet_config = ConfigStorage(LOCAL_WALLET_FILEPATH + str(node_id))
     local_wallet_config.update(account_dict)
 
     print(f'local wallet address: {account.address}')
@@ -78,12 +79,13 @@ def create_node(node_id):
 
     deposit = 100000000000000000000  # 100 SKL
     eth_amount = 10000000000000000000  # 10 ETH
-    # eth_amount = 1000000000000000000000  # 1000 ETH
 
     generate_local_wallet(node_id)
 
-    wallet = ConfigStorage(TEST_LOCAL_WALLET_PATH + str(node_id))
+    wallet = ConfigStorage(LOCAL_WALLET_FILEPATH + str(node_id))
     address = wallet['address']
+
+    print(f'loc_wal = {LOCAL_WALLET_FILEPATH}')
 
     eth_private_key = os.environ.get('ETH_PRIVATE_KEY')
     eth_base_account = Helper.private_key_to_address(eth_private_key)
@@ -167,3 +169,25 @@ def accelerate_skale_manager():
     reward_period = skale.validators_data.get_reward_period()
     delta_period = skale.validators_data.get_delta_period()
     print(reward_period, delta_period)
+
+
+def create_dirs():
+
+    if not os.path.exists(DIR_LOG):
+        os.makedirs(DIR_LOG)
+    if not os.path.exists(DIR_ABI):
+        os.makedirs(DIR_ABI)
+
+
+if __name__ == '__main__':
+
+    accelerate_skale_manager()
+    global cur_node_id
+    global nodes_count_before, nodes_count_to_add
+    ids = get_active_ids()
+    print(f'ids = {ids}')
+    nodes_count_before = len(ids)
+    cur_node_id = max(ids) + 1 if nodes_count_before else 0
+    # cur_node_id = 0
+    nodes_count_to_add = 2
+    create_set_of_nodes(cur_node_id, nodes_count_to_add)

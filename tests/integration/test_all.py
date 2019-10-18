@@ -24,11 +24,10 @@ import pytest
 
 from bounty import bounty_agent
 from sla import sla_agent as sla
-from tests.integration.preparation import (
-    TEST_DELTA, TEST_EPOCH, accelerate_skale_manager, create_set_of_nodes, get_active_ids)
+from tests.integration.preparation import (TEST_DELTA, TEST_EPOCH, accelerate_skale_manager,
+                                           create_set_of_nodes, get_active_ids, create_dirs)
 from tools import db
 from tools.config_storage import ConfigStorage
-# from tests.integration import preparation
 from tools.helper import init_skale
 
 FAKE_IP = '10.1.0.1'
@@ -36,6 +35,7 @@ FAKE_REPORT_DATE = 1567690544
 
 
 def setup_module(module):
+    create_dirs()
     accelerate_skale_manager()
     global cur_node_id
     global nodes_count_before, nodes_count_to_add

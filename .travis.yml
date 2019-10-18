@@ -22,14 +22,17 @@ before_install:
   - bash ./run_geth.sh
   - cd $TRAVIS_BUILD_DIR/test_data
   - bash ./deploy_sc.sh
-  - yes |cp $TRAVIS_BUILD_DIR/test_data/skale-manager/data/unique.json $TRAVIS_BUILD_DIR/test_data/data.json
+  - sudo mkdir -p /skale_vol/contracts_info
+  - sudo chown -R travis:travis /skale_vol
+  - sudo mkdir -p /skale_node_data
+  - sudo chown -R travis:travis /skale_node_data
+  - yes |sudo cp $TRAVIS_BUILD_DIR/test_data/skale-manager/data/unique.json /skale_vol/contracts_info/manager.json
   - cd $TRAVIS_BUILD_DIR
 install:
 - pip install -r tests/requirements.txt
 before_script:
   - "flake8 ."
 script:
-- export IS_TEST=true
 - export PYTHONPATH=$PYTHONPATH:.
 - py.test -v -s --cov=./ tests/
 

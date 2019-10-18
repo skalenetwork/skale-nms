@@ -18,30 +18,17 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-import os
-
-from dotenv import load_dotenv
 from peewee import BooleanField, CharField, CompositeKey, DateTimeField, IntegerField, Model, \
     MySQLDatabase, fn
 
-from tools.helper import TEST_DATA_DIR_PATH
+from tools.configs.db import DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USER
 
-ENV_FILE = ".env"
-DOTENV_PATH = os.path.join(TEST_DATA_DIR_PATH, ENV_FILE)
-
-load_dotenv(DOTENV_PATH)
-
-user = os.environ.get("DB_USER")
-password = os.environ.get("DB_PASSWORD")
-port = int(os.environ.get("DB_PORT"))
-db_name = 'db_skale'
-host = '127.0.0.1'
 
 dbhandle = MySQLDatabase(
-    db_name, user=user,
-    password=password,
-    host=host,
-    port=port
+    DB_NAME, user=DB_USER,
+    password=DB_PASSWORD,
+    host=DB_HOST,
+    port=DB_PORT
 )
 
 

@@ -22,17 +22,15 @@ Bounty agent runs on every node of SKALE network and sends transactions
 to CS with request to get reward for validation work when it's time to get it
 """
 import sys
+import time
 from datetime import datetime
 
 import skale.utils.helper as Helper
 from filelock import FileLock, Timeout
 
 from tools import base_agent, db
-from tools.configs import LONG_LINE, LONG_DOUBLE_LINE
-from tools.helper import get_lock_filepath, init_skale
-import time
-
-BLOCK_STEP = 5000
+from tools.configs import BLOCK_STEP_SIZE, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE
+from tools.helper import init_skale
 
 
 class BountyCollector(base_agent.BaseAgent):
@@ -42,7 +40,7 @@ class BountyCollector(base_agent.BaseAgent):
         start = time.time()
         self.collect_last_bounty_logs()
         end = time.time()
-        print(f'Execution time = {end - start}')
+        self.logger.debug(f'Execution time = {end - start}')
 
     def get_reward_date(self):
         reward_period = self.skale.validators_data.get_reward_period()
@@ -58,9 +56,8 @@ class BountyCollector(base_agent.BaseAgent):
         while True:
 
             block_number = self.skale.web3.eth.blockNumber
-            print()
-            # print(f'last block = {block_number}')
-            end_block_number = start_block_number + BLOCK_STEP - 1
+            self.logger.debug(f'last block = {block_number}')
+            end_block_number = start_block_number + BLOCK_STEP_SIZE - 1
             if end_block_number > block_number:
                 end_block_number = block_number
 
@@ -69,18 +66,13 @@ class BountyCollector(base_agent.BaseAgent):
                 fromBlock=hex(start_block_number))
             logs = event_filter.get_all_entries()
 
-            print('----------')
-            # print(logs)
+            self.logger.debug('----------')
             for log in logs:
                 args = log['args']
-
-                # print("-----------------------")
-
                 tx_block_number = log['blockNumber']
                 block_data = self.skale.web3.eth.getBlock(tx_block_number)
                 block_timestamp = datetime.utcfromtimestamp(block_data['timestamp'])
-                # print(block_timestamp)
-                # print(log)
+                self.logger.debug(log)
                 tx_hash = log['transactionHash'].hex()
                 gas_used = self.skale.web3.eth.getTransactionReceipt(tx_hash)['gasUsed']
                 db.save_bounty_event(block_timestamp, tx_hash,
@@ -88,8 +80,8 @@ class BountyCollector(base_agent.BaseAgent):
                                      args['averageDowntime'], args['averageLatency'],
                                      gas_used)
                 count += 1
-            print(f'count = {count}')
-            start_block_number = start_block_number + BLOCK_STEP
+            self.logger.debug(f'count = {count}')
+            start_block_number = start_block_number + BLOCK_STEP_SIZE
             if end_block_number >= block_number:
                 break
 
@@ -100,7 +92,7 @@ class BountyCollector(base_agent.BaseAgent):
         self.logger.info(f'ETH balance: {eth_bal_before}')
         self.logger.info(f'SKL balance: {skl_bal_before}')
         self.logger.info('--- Getting Bounty ---')
-        lock = FileLock(get_lock_filepath(), timeout=1)
+        lock = FileLock(LOCK_FILEPATH, timeout=1)
         self.logger.debug('Acquiring lock')
         try:
             with lock.acquire():
@@ -165,6 +157,7 @@ class BountyCollector(base_agent.BaseAgent):
                 self.get_bounty()
             except Exception as err:
                 self.logger.error(f'Cannot get bounty: {err}')
+                # TODO: notify Skale Admin
                 raise
 
 
