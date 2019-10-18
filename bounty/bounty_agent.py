@@ -40,7 +40,7 @@ class BountyCollector(base_agent.BaseAgent):
         start = time.time()
         self.collect_last_bounty_logs()
         end = time.time()
-        print(f'Execution time = {end - start}')
+        self.logger.debug(f'Execution time = {end - start}')
 
     def get_reward_date(self):
         reward_period = self.skale.validators_data.get_reward_period()
@@ -56,8 +56,7 @@ class BountyCollector(base_agent.BaseAgent):
         while True:
 
             block_number = self.skale.web3.eth.blockNumber
-            print()
-            # print(f'last block = {block_number}')
+            self.logger.debug(f'last block = {block_number}')
             end_block_number = start_block_number + BLOCK_STEP_SIZE - 1
             if end_block_number > block_number:
                 end_block_number = block_number
@@ -67,18 +66,13 @@ class BountyCollector(base_agent.BaseAgent):
                 fromBlock=hex(start_block_number))
             logs = event_filter.get_all_entries()
 
-            print('----------')
-            # print(logs)
+            self.logger.debug('----------')
             for log in logs:
                 args = log['args']
-
-                # print("-----------------------")
-
                 tx_block_number = log['blockNumber']
                 block_data = self.skale.web3.eth.getBlock(tx_block_number)
                 block_timestamp = datetime.utcfromtimestamp(block_data['timestamp'])
-                # print(block_timestamp)
-                # print(log)
+                self.logger.debug(log)
                 tx_hash = log['transactionHash'].hex()
                 gas_used = self.skale.web3.eth.getTransactionReceipt(tx_hash)['gasUsed']
                 db.save_bounty_event(block_timestamp, tx_hash,
@@ -86,7 +80,7 @@ class BountyCollector(base_agent.BaseAgent):
                                      args['averageDowntime'], args['averageLatency'],
                                      gas_used)
                 count += 1
-            print(f'count = {count}')
+            self.logger.debug(f'count = {count}')
             start_block_number = start_block_number + BLOCK_STEP_SIZE
             if end_block_number >= block_number:
                 break
