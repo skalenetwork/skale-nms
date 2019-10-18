@@ -45,4 +45,5 @@ LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
 
 LOCK_FILE = "tx.lock"
+LOCK_FILEPATH = os.path.join(NODE_DATA_PATH, LOCK_FILE)
 GOOD_IP = '8.8.8.8'

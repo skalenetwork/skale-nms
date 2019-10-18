@@ -33,8 +33,8 @@ from skale.utils.helper import await_receipt
 
 from sla import ping
 from tools import base_agent, db
-from tools.configs import GOOD_IP, LONG_DOUBLE_LINE, LONG_LINE
-from tools.helper import get_lock_filepath, init_skale
+from tools.configs import GOOD_IP, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE
+from tools.helper import init_skale
 
 
 class Monitor(base_agent.BaseAgent):
@@ -127,7 +127,7 @@ class Monitor(base_agent.BaseAgent):
             except Exception as err:
                 self.logger.exception(f'Failed getting month metrics from db: {err}')
 
-        lock = FileLock(get_lock_filepath(), timeout=1)
+        lock = FileLock(LOCK_FILEPATH, timeout=1)
         self.logger.debug('Acquiring lock')
         try:
             with lock.acquire():

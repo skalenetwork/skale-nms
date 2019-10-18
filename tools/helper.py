@@ -18,20 +18,13 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import logging
-import os
 
 from skale import Skale
-from tools.configs.web3 import ABI_FILEPATH, ENDPOINT
-from tools.configs import LOCAL_WALLET_FILEPATH, NODE_DATA_PATH, LOCK_FILE
 
+from tools.configs import LOCAL_WALLET_FILEPATH
+from tools.configs.web3 import ABI_FILEPATH, ENDPOINT
 
 logger = logging.getLogger(__name__)
-
-
-def get_lock_filepath():
-
-    lock_path = os.path.join(NODE_DATA_PATH, LOCK_FILE)
-    return lock_path
 
 
 def get_local_wallet_filepath(node_id):

@@ -22,15 +22,15 @@ Bounty agent runs on every node of SKALE network and sends transactions
 to CS with request to get reward for validation work when it's time to get it
 """
 import sys
+import time
 from datetime import datetime
 
 import skale.utils.helper as Helper
 from filelock import FileLock, Timeout
 
 from tools import base_agent, db
-from tools.configs import LONG_LINE, LONG_DOUBLE_LINE
-from tools.helper import get_lock_filepath, init_skale
-import time
+from tools.configs import LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE
+from tools.helper import init_skale
 
 BLOCK_STEP = 5000
 
@@ -100,7 +100,7 @@ class BountyCollector(base_agent.BaseAgent):
         self.logger.info(f'ETH balance: {eth_bal_before}')
         self.logger.info(f'SKL balance: {skl_bal_before}')
         self.logger.info('--- Getting Bounty ---')
-        lock = FileLock(get_lock_filepath(), timeout=1)
+        lock = FileLock(LOCK_FILEPATH, timeout=1)
         self.logger.debug('Acquiring lock')
         try:
             with lock.acquire():
