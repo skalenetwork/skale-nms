@@ -43,4 +43,6 @@ LOG_BACKUP_COUNT = 3
 
 LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
+
+LOCK_FILE = "tx.lock"
 GOOD_IP = '8.8.8.8'

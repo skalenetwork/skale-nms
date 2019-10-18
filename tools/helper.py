@@ -19,51 +19,19 @@
 
 import logging
 import os
-from distutils import util
 
-from dotenv import load_dotenv
 from skale import Skale
-from tools.configs.web3 import ABI_FILEPATH
-from tools.configs import LOCAL_WALLET_FILEPATH, LOG_FOLDER, NODE_DATA_PATH
-from tools.config import TEST_DATA_DIR_PATH
+from tools.configs.web3 import ABI_FILEPATH, ENDPOINT
+from tools.configs import LOCAL_WALLET_FILEPATH, NODE_DATA_PATH, LOCK_FILE
 
-is_test = os.environ.get("IS_TEST", "False")
-is_test = bool(util.strtobool(is_test))
-
-NETWORK = 'local'
-# NETWORK = 'do'
-ENV_FILE = ".env"
-
-LOCK_FILE = "tx.lock"
-
-DOTENV_PATH = os.path.join(TEST_DATA_DIR_PATH, ENV_FILE)
-
-
-load_dotenv(DOTENV_PATH)
-ENDPOINT = os.environ['ENDPOINT']
 
 logger = logging.getLogger(__name__)
 
 
 def get_lock_filepath():
-    is_test = os.environ.get("IS_TEST", "False")
-    is_test = bool(util.strtobool(is_test))
-    lock_path = os.path.join(TEST_DATA_DIR_PATH, LOCK_FILE) if is_test \
-        else os.path.join(NODE_DATA_PATH, LOCK_FILE)
+
+    lock_path = os.path.join(NODE_DATA_PATH, LOCK_FILE)
     return lock_path
-
-
-def get_log_filepath(agent_name, node_id):
-    # log_filename = agent_name.lower() if node_id is None else agent_name.lower() \
-    #                                                           + '_' + str(node_id)
-    # log_filepath = os.path.join(LOG_FOLDER, log_filename + ".log")
-
-    if node_id is None:  # production
-        log_filename = agent_name.lower() + ".log"
-    else:  # test
-        log_filename = agent_name.lower() + '_' + str(node_id) + ".log"
-    log_filepath = os.path.join(LOG_FOLDER, log_filename)
-    return log_filepath
 
 
 def get_local_wallet_filepath(node_id):
@@ -75,6 +43,5 @@ def get_local_wallet_filepath(node_id):
 
 
 def init_skale():
-    print(ENDPOINT, " --- ", ABI_FILEPATH)
     skale = Skale(ENDPOINT, ABI_FILEPATH)
     return skale

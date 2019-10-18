@@ -38,7 +38,6 @@ pip install -r sla/requirements.txt
 
 To run tests locally, you need to have MySQL v5.7 installed and database 'db_skale' and some tables created (see below). Also you have to change the name of `test_data/.env_template` to `test_data/.env` and fill it out with your environment variables:
 
-    IS_TEST=true #leave it as is
     ETH_PRIVATE_KEY='YOUR_PRIVATE_KEY' 
     DB_ROOT_PASSWORD='YOUR_MYSQL_ROOT_PASSWORD'
     DB_USER='YOUR_MYSQL_USER'
@@ -95,7 +94,6 @@ Python >= 3.6.5
 
 To run tests locally, you need to have MySQL v5.7 installed and database 'db_skale' and some tables created (see below). Also you have to change the name of `test_data/.env_template` to `test_data/.env` and fill it out with your environment variables:
 
-    IS_TEST=true #leave it as is
     ETH_PRIVATE_KEY='YOUR_PRIVATE_KEY' 
     DB_ROOT_PASSWORD='YOUR_MYSQL_ROOT_PASSWORD'
     DB_USER='YOUR_MYSQL_USER'

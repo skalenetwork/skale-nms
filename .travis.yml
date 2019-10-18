@@ -33,7 +33,6 @@ install:
 before_script:
   - "flake8 ."
 script:
-- export IS_TEST=true
 - export PYTHONPATH=$PYTHONPATH:.
 - py.test -v -s --cov=./ tests/
 
