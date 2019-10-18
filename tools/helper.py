@@ -36,5 +36,4 @@ def get_local_wallet_filepath(node_id):
 
 
 def init_skale():
-    skale = Skale(ENDPOINT, ABI_FILEPATH)
-    return skale
+    return Skale(ENDPOINT, ABI_FILEPATH)

@@ -28,11 +28,9 @@ import schedule
 import tenacity
 
 from tools import helper
-from tools.configs import NODE_CONFIG_FILEPATH
 from tools.config_storage import ConfigStorage
+from tools.configs import NODE_CONFIG_FILEPATH, CHECK_PERIOD
 from tools.logger import init_agent_logger
-
-CHECK_PERIOD = 2  # in min
 
 
 class BaseAgent:

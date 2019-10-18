@@ -29,10 +29,8 @@ import skale.utils.helper as Helper
 from filelock import FileLock, Timeout
 
 from tools import base_agent, db
-from tools.configs import LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE
+from tools.configs import BLOCK_STEP_SIZE, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE
 from tools.helper import init_skale
-
-BLOCK_STEP = 5000
 
 
 class BountyCollector(base_agent.BaseAgent):
@@ -60,7 +58,7 @@ class BountyCollector(base_agent.BaseAgent):
             block_number = self.skale.web3.eth.blockNumber
             print()
             # print(f'last block = {block_number}')
-            end_block_number = start_block_number + BLOCK_STEP - 1
+            end_block_number = start_block_number + BLOCK_STEP_SIZE - 1
             if end_block_number > block_number:
                 end_block_number = block_number
 
@@ -89,7 +87,7 @@ class BountyCollector(base_agent.BaseAgent):
                                      gas_used)
                 count += 1
             print(f'count = {count}')
-            start_block_number = start_block_number + BLOCK_STEP
+            start_block_number = start_block_number + BLOCK_STEP_SIZE
             if end_block_number >= block_number:
                 break
 

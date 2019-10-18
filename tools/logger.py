@@ -23,7 +23,7 @@ import os
 import sys
 from logging import Formatter, StreamHandler
 
-from tools.configs import LOG_BACKUP_COUNT, LOG_FILE_SIZE_BYTES, LOG_FOLDER, LOG_FORMAT
+from tools.configs.logs import LOG_BACKUP_COUNT, LOG_FILE_SIZE_BYTES, LOG_FOLDER, LOG_FORMAT
 
 
 def init_logger(log_file_path, agent_name):
