@@ -57,4 +57,4 @@ def find_block_for_tx_stamp(skale, tx_stamp, lo=0, hi=None):
             return mid
         count += 1
     print(f'number of iters = {count}')
-    return lo - 1
+    return lo
