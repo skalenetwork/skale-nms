@@ -30,7 +30,7 @@ from filelock import FileLock, Timeout
 
 from tools import base_agent, db
 from tools.configs import BLOCK_STEP_SIZE, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE
-from tools.helper import init_skale
+from tools.helper import find_block_for_tx_stamp, init_skale
 
 
 class BountyCollector(base_agent.BaseAgent):
@@ -48,25 +48,28 @@ class BountyCollector(base_agent.BaseAgent):
         return datetime.utcfromtimestamp(reward_date)
 
     def collect_last_bounty_logs(self):
-
+        start_date = datetime.utcfromtimestamp(self.skale.nodes_data.get(self.id)['start_date'])
         last_block_number_in_db = db.get_bounty_max_block_number()
-        start_block_number = 0 if last_block_number_in_db is None else \
-            last_block_number_in_db + 1
+        if last_block_number_in_db is None:
+            start_block_number = find_block_for_tx_stamp(self.skale, start_date)
+        else:
+            start_block_number = last_block_number_in_db + 1
         count = 0
         while True:
 
-            block_number = self.skale.web3.eth.blockNumber
-            self.logger.debug(f'last block = {block_number}')
-            end_block_number = start_block_number + BLOCK_STEP_SIZE - 1
-            if end_block_number > block_number:
-                end_block_number = block_number
+            last_block_number = self.skale.web3.eth.blockNumber
+            self.logger.debug(f'last block = {last_block_number}')
+            end_chunk_block_number = start_block_number + BLOCK_STEP_SIZE - 1
+
+            if end_chunk_block_number > last_block_number:
+                end_chunk_block_number = last_block_number
 
             event_filter = self.skale.manager.contract.events.BountyGot().createFilter(
                 argument_filters={'nodeIndex': self.id},
-                fromBlock=hex(start_block_number))
+                fromBlock=hex(start_block_number),
+                toBlock=hex(end_chunk_block_number))
             logs = event_filter.get_all_entries()
 
-            self.logger.debug('----------')
             for log in logs:
                 args = log['args']
                 tx_block_number = log['blockNumber']
@@ -82,7 +85,7 @@ class BountyCollector(base_agent.BaseAgent):
                 count += 1
             self.logger.debug(f'count = {count}')
             start_block_number = start_block_number + BLOCK_STEP_SIZE
-            if end_block_number >= block_number:
+            if end_chunk_block_number >= last_block_number:
                 break
 
     def get_bounty(self):
