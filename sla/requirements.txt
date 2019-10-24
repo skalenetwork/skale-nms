@@ -1,13 +1,13 @@
 docker==3.2.1
-pyjwt==1.4.2
+pyjwt==1.7.1
 simple-crypt==4.1.7
 skale-py==0.87.0
 pingparsing==0.13.2
 schedule==0.6.0
 tenacity==5.0.3
-mysqlclient==1.4.2.post1
+mysqlclient==1.4.4
 peewee==3.11.2
 python-dotenv==0.10.3
-pyyaml==4.2b1
+pyyaml==5.1.2
 filelock==3.0.12
 CMRESHandler==1.0.0
