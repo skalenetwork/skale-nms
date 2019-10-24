@@ -1,5 +1,5 @@
 docker==3.2.1
-pyjwt==1.4.2
+pyjwt==1.7.1
 simple-crypt==4.1.7
 skale-py==0.87.0
 pingparsing==0.13.2
