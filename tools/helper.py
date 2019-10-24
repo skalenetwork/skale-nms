@@ -18,6 +18,7 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import logging
+from datetime import datetime
 
 from skale import Skale
 
@@ -25,6 +26,10 @@ from tools.configs import LOCAL_WALLET_FILEPATH
 from tools.configs.web3 import ABI_FILEPATH, ENDPOINT
 
 logger = logging.getLogger(__name__)
+
+
+def init_skale():
+    return Skale(ENDPOINT, ABI_FILEPATH)
 
 
 def get_local_wallet_filepath(node_id):
@@ -35,5 +40,21 @@ def get_local_wallet_filepath(node_id):
         return LOCAL_WALLET_FILEPATH + str(node_id)
 
 
-def init_skale():
-    return Skale(ENDPOINT, ABI_FILEPATH)
+def find_block_for_tx_stamp(skale, tx_stamp, lo=0, hi=None):
+    count = 0
+    if hi is None:
+        hi = skale.web3.eth.blockNumber
+    while lo < hi:
+        mid = (lo + hi)//2
+        block_data = skale.web3.eth.getBlock(mid)
+        midval = datetime.utcfromtimestamp(block_data['timestamp'])
+        # print(f'block = {mid} - {midval}')
+        if midval < tx_stamp:
+            lo = mid + 1
+        elif midval > tx_stamp:
+            hi = mid
+        else:
+            return mid
+        count += 1
+    print(f'number of iters = {count}')
+    return lo
