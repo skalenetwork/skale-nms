@@ -23,6 +23,8 @@ from peewee import BooleanField, CharField, CompositeKey, DateTimeField, Integer
 
 from tools.configs.db import DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USER
 
+print(f'DB HOST = {DB_HOST}')
+
 
 dbhandle = MySQLDatabase(
     DB_NAME, user=DB_USER,
