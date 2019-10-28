@@ -15,36 +15,36 @@ addons:
 #  - sudo chmod +x /usr/local/bin/docker-compose
 jobs:
   include:
-#    - stage: test
-#      env:
-#        - NODE_VERSION="10.16.0"
-#      before_install:
-#        - nvm install $NODE_VERSION
-#        - sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-#        - sudo chmod +x /usr/local/bin/docker-compose
-#        - sudo apt-get update
-#        - sudo apt-get install -y libmysqlclient-dev
-#        - docker run -d --restart=always --name skale-mysql -e MYSQL_ROOT_PASSWORD=$DB_ROOT_PASSWORD -e MYSQL_DATABASE=db_skale -e MYSQL_USER=$DB_USER -e MYSQL_PASSWORD=$DB_PASSWORD -v $TRAVIS_BUILD_DIR/test_data/init.sql:/docker-entrypoint-initdb.d/init.sql -p 3307:3306  mysql/mysql-server:5.7
-#        - docker -v
-#        - cd test_data
-#        - bash ./run_geth.sh
-#        - cd $TRAVIS_BUILD_DIR/test_data
-#        - bash ./deploy_sc.sh
-#        - sudo mkdir -p /skale_vol/contracts_info
-#        - sudo chown -R travis:travis /skale_vol
-#        - sudo mkdir -p /skale_node_data
-#        - sudo chown -R travis:travis /skale_node_data
-#        - yes |sudo cp $TRAVIS_BUILD_DIR/test_data/skale-manager/data/unique.json /skale_vol/contracts_info/manager.json
-#        - cd $TRAVIS_BUILD_DIR
-#      install:
-#      - pip install -r tests/requirements.txt
-#      before_script:
-#        - "flake8 ."
-#      script:
-#      - export PYTHONPATH=$PYTHONPATH:.
-#      - ENV=DEV py.test -v -s --cov=./ tests/
-#      after_success:
-#      - codecov -t $CODECOV_TOKEN
+    - stage: test
+      env:
+        - NODE_VERSION="10.16.0"
+      before_install:
+        - nvm install $NODE_VERSION
+        - sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        - sudo chmod +x /usr/local/bin/docker-compose
+        - sudo apt-get update
+        - sudo apt-get install -y libmysqlclient-dev
+        - docker run -d --restart=always --name skale-mysql -e MYSQL_ROOT_PASSWORD=$DB_ROOT_PASSWORD -e MYSQL_DATABASE=db_skale -e MYSQL_USER=$DB_USER -e MYSQL_PASSWORD=$DB_PASSWORD -v $TRAVIS_BUILD_DIR/test_data/init.sql:/docker-entrypoint-initdb.d/init.sql -p 3307:3306  mysql/mysql-server:5.7
+        - docker -v
+        - cd test_data
+        - bash ./run_geth.sh
+        - cd $TRAVIS_BUILD_DIR/test_data
+        - bash ./deploy_sc.sh
+        - sudo mkdir -p /skale_vol/contracts_info
+        - sudo chown -R travis:travis /skale_vol
+        - sudo mkdir -p /skale_node_data
+        - sudo chown -R travis:travis /skale_node_data
+        - yes |sudo cp $TRAVIS_BUILD_DIR/test_data/skale-manager/data/unique.json /skale_vol/contracts_info/manager.json
+        - cd $TRAVIS_BUILD_DIR
+      install:
+      - pip install -r tests/requirements.txt
+      before_script:
+        - "flake8 ."
+      script:
+      - export PYTHONPATH=$PYTHONPATH:.
+      - ENV=DEV py.test -v -s --cov=./ tests/
+      after_success:
+      - codecov -t $CODECOV_TOKEN
 
     - stage: deploy
       if: branch IN (develop, beta, stable, master, enhancement/SKALE-1717-add-auto-build-deploy)
@@ -66,24 +66,24 @@ jobs:
           git push https://$GITHUB_OAUTH_TOKEN@github.com/$TRAVIS_REPO_SLUG.git $TRAVIS_TAG
           ) || true
       deploy:
-#        - provider: releases
-#          api_key: "$GITHUB_OAUTH_TOKEN"
-#          skip_cleanup: true
-#          name: $VERSION @ $(date +'%d.%m.%Y %R')
-#          on:
-#            repo: $TRAVIS_REPO_SLUG
-#            branch: master
-#        - provider: releases
-#          api_key: "$GITHUB_OAUTH_TOKEN"
-#          skip_cleanup: true
-#          prerelease: true
-#          name: $VERSION @ $(date +'%d.%m.%Y %R')
-#          on:
-#            repo: $TRAVIS_REPO_SLUG
-#            branch:
-#              - develop
-#              - beta
-#              - enhancement/SKALE-1717-add-auto-build-deploy
+        - provider: releases
+          api_key: "$GITHUB_OAUTH_TOKEN"
+          skip_cleanup: true
+          name: $VERSION @ $(date +'%d.%m.%Y %R')
+          on:
+            repo: $TRAVIS_REPO_SLUG
+            branch: master
+        - provider: releases
+          api_key: "$GITHUB_OAUTH_TOKEN"
+          skip_cleanup: true
+          prerelease: true
+          name: $VERSION @ $(date +'%d.%m.%Y %R')
+          on:
+            repo: $TRAVIS_REPO_SLUG
+            branch:
+              - develop
+              - beta
+              - enhancement/SKALE-1717-add-auto-build-deploy
         - provider: script
           skip_cleanup: true
           script: RELEASE=true bash $TRAVIS_BUILD_DIR/scripts/publish.sh
