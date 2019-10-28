@@ -95,7 +95,9 @@ jobs:
               - master
         - provider: script
           skip_cleanup: true
-          script: RELEASE=false bash $TRAVIS_BUILD_DIR/scripts/publish.sh
+          script:
+            - RELEASE=true bash $TRAVIS_BUILD_DIR/scripts/publish.sh bounty-agent
+            - RELEASE=true bash $TRAVIS_BUILD_DIR/scripts/publish.sh sla-manager
           on:
             repo: $TRAVIS_REPO_SLUG
             branch:
