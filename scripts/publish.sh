@@ -11,6 +11,8 @@ LATEST_IMAGE_NAME=$REPO_NAME:latest
 : "${PASSWORD?Need to set PASSWORD}"
 
 echo "$PASSWORD" | docker login --username $USERNAME --password-stdin
+echo "TEST!!!"
+echo $IMAGE_NAME
 docker push $IMAGE_NAME || exit $?
 if [ "$RELEASE" = true ]
 then
