@@ -4,14 +4,7 @@ tenacity==5.0.3
 mysqlclient==1.4.2.post1
 peewee==3.7.1
 pingparsing==0.13.2
-python-dotenv==0.10.1
 pytest-cov==2.6.1
 codecov==2.0.15
-pyyaml==3.13
 filelock==3.0.12
-CMRESHandler==1.0.0
 flake8==3.7.8
-
-
-
-
