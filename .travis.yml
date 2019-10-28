@@ -30,11 +30,14 @@ before_install:
   - cd $TRAVIS_BUILD_DIR
 install:
 - pip install -r tests/requirements.txt
-before_script:
-  - "flake8 ."
-script:
-- export PYTHONPATH=$PYTHONPATH:.
-- ENV=DEV py.test -v -s --cov=./ tests/
+jobs:
+  include:
+    - stage: test
+      before_script:
+        - "flake8 ."
+      script:
+      - export PYTHONPATH=$PYTHONPATH:.
+      - ENV=DEV py.test -v -s --cov=./ tests/
 
-after_success:
-- codecov -t $CODECOV_TOKEN
+      after_success:
+      - codecov -t $CODECOV_TOKEN
