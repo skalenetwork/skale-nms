@@ -22,6 +22,7 @@ Module contains BaseAgent class - base class for SLA and Bounty agents
 """
 import json
 import logging
+import threading
 import time
 
 import schedule
@@ -29,7 +30,7 @@ import tenacity
 
 from tools import helper
 from tools.config_storage import ConfigStorage
-from tools.configs import NODE_CONFIG_FILEPATH, CHECK_PERIOD
+from tools.configs import CHECK_PERIOD, NODE_CONFIG_FILEPATH
 from tools.logger import init_agent_logger
 
 
@@ -84,11 +85,15 @@ class BaseAgent:
         """Periodic job"""
         pass
 
+    def run_threaded(self, job_func):
+        job_thread = threading.Thread(target=job_func)
+        job_thread.start()
+
     def run(self) -> None:
         """Starts agent"""
         self.logger.debug(f'{self.agent_name} started')
         self.job()
-        schedule.every(CHECK_PERIOD).minutes.do(self.job)
+        schedule.every(CHECK_PERIOD).seconds.do(self.run_threaded, self.job)
         while True:
             schedule.run_pending()
             time.sleep(1)
