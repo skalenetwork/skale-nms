@@ -48,8 +48,8 @@ class BountyCollector(base_agent.BaseAgent):
     def get_reward_date(self):
         reward_period = self.skale.validators_data.get_reward_period()
         reward_date = self.skale.nodes_data.get(
-            self.id)['last_reward_date'] + reward_period + timedelta(seconds=REWARD_DELAY)
-        return datetime.utcfromtimestamp(reward_date)
+            self.id)['last_reward_date'] + reward_period
+        return datetime.utcfromtimestamp(reward_date) + timedelta(seconds=REWARD_DELAY)
 
     def collect_last_bounty_logs(self):
         start_date = datetime.utcfromtimestamp(self.skale.nodes_data.get(self.id)['start_date'])
