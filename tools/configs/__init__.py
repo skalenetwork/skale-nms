@@ -29,4 +29,4 @@ LOCK_FILEPATH = os.path.join(NODE_DATA_PATH, LOCK_FILE)
 GOOD_IP = '8.8.8.8'
 CHECK_PERIOD = 2  # in min
 BLOCK_STEP_SIZE = 5000
-REWARD_DELAY = 1  # in seconds
+REWARD_DELAY = 10  # in seconds

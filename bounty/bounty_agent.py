@@ -173,24 +173,24 @@ class BountyCollector(base_agent.BaseAgent):
         else:
             print('The job finished :)')
             reward_date = self.get_reward_date()
-            print(f'listen rew date: {reward_date}')
+            print(f'Reward date after job: {reward_date}')
+            utc_now = datetime.utcnow()
+            if utc_now > reward_date:
+                print('Changing reward date for now')
+                reward_date = utc_now
             self.scheduler.add_job(self.job, 'date', run_date=reward_date)
-            print(self.scheduler.get_job(job_id=event.job_id))
-            print(self.scheduler.get_jobs())
             self.scheduler.print_jobs()
 
     def run(self) -> None:
         """Starts agent"""
         self.logger.debug(f'{self.agent_name} started')
         reward_date = self.get_reward_date()
-        print(f'start rew date: {reward_date}')
+        print(f'Reward date on agent\'s start: {reward_date}')
         utc_now = datetime.utcnow()
         if utc_now > reward_date:
             reward_date = utc_now
-        job = self.scheduler.add_job(self.job, 'date', run_date=reward_date)
-        print(job)
+        self.scheduler.add_job(self.job, 'date', run_date=reward_date)
         self.scheduler.print_jobs()
-        print(self.scheduler.get_jobs())
         self.scheduler.add_listener(self.job_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
         self.scheduler.start()
         while True:
