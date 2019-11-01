@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ver=0.2.8
+ver=0.3.0
 
 echo "Building SKALE SLA agent v${ver}..."
 docker build -t skalelabshub/sla-manager:${ver} .. -f ../Dockerfile.sla &&
