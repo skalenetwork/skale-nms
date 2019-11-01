@@ -93,7 +93,7 @@ class BaseAgent:
         """Starts agent"""
         self.logger.debug(f'{self.agent_name} started')
         self.job()
-        schedule.every(CHECK_PERIOD).seconds.do(self.run_threaded, self.job)
+        schedule.every(CHECK_PERIOD).minutes.do(self.run_threaded, self.job)
         while True:
             schedule.run_pending()
             time.sleep(1)
