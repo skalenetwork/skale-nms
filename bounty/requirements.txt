@@ -5,3 +5,4 @@ tenacity==5.1.4
 mysqlclient==1.4.4
 peewee==3.7.1
 filelock==3.0.12
+apscheduler==3.6.1

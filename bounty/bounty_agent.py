@@ -23,13 +23,15 @@ to CS with request to get reward for validation work when it's time to get it
 """
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import skale.utils.helper as Helper
 from filelock import FileLock, Timeout
 
+from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
+from apscheduler.schedulers.background import BackgroundScheduler
 from tools import base_agent, db
-from tools.configs import BLOCK_STEP_SIZE, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE
+from tools.configs import BLOCK_STEP_SIZE, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE, REWARD_DELAY
 from tools.helper import find_block_for_tx_stamp, init_skale
 
 
@@ -41,11 +43,13 @@ class BountyCollector(base_agent.BaseAgent):
         self.collect_last_bounty_logs()
         end = time.time()
         self.logger.debug(f'Execution time = {end - start}')
+        self.scheduler = BackgroundScheduler(timezone='UTC')
 
     def get_reward_date(self):
         reward_period = self.skale.validators_data.get_reward_period()
-        reward_date = self.skale.nodes_data.get(self.id)['last_reward_date'] + reward_period
-        return datetime.utcfromtimestamp(reward_date)
+        reward_date = self.skale.nodes_data.get(
+            self.id)['last_reward_date'] + reward_period
+        return datetime.utcfromtimestamp(reward_date) + timedelta(seconds=REWARD_DELAY)
 
     def collect_last_bounty_logs(self):
         start_date = datetime.utcfromtimestamp(self.skale.nodes_data.get(self.id)['start_date'])
@@ -162,6 +166,35 @@ class BountyCollector(base_agent.BaseAgent):
                 self.logger.error(f'Cannot get bounty: {err}')
                 # TODO: notify Skale Admin
                 raise
+
+    def job_listener(self, event):
+        if event.exception:
+            print('The job failed :(')
+        else:
+            print('The job finished :)')
+            reward_date = self.get_reward_date()
+            print(f'Reward date after job: {reward_date}')
+            utc_now = datetime.utcnow()
+            if utc_now > reward_date:
+                print('Changing reward date for now')
+                reward_date = utc_now
+            self.scheduler.add_job(self.job, 'date', run_date=reward_date)
+            self.scheduler.print_jobs()
+
+    def run(self) -> None:
+        """Starts agent"""
+        self.logger.debug(f'{self.agent_name} started')
+        reward_date = self.get_reward_date()
+        print(f'Reward date on agent\'s start: {reward_date}')
+        utc_now = datetime.utcnow()
+        if utc_now > reward_date:
+            reward_date = utc_now
+        self.scheduler.add_job(self.job, 'date', run_date=reward_date)
+        self.scheduler.print_jobs()
+        self.scheduler.add_listener(self.job_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
+        self.scheduler.start()
+        while True:
+            pass
 
 
 if __name__ == '__main__':
