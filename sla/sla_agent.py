@@ -78,7 +78,7 @@ class Monitor(base_agent.BaseAgent):
             if os.system("ping -c 1 " + GOOD_IP + " > /dev/null") == 0:
                 metrics = ping.get_node_metrics(host)
                 # metrics = sim.generate_node_metrics()  # use to simulate metrics for some tests
-                healthcheck = get_containers_healthcheck(host)
+                healthcheck = get_containers_healthcheck(host, self.is_test_mode)
                 if healthcheck:
                     metrics['is_offline'] = True
                 self.logger.info(f'Received metrics from node ID = {node["id"]}: {metrics}')

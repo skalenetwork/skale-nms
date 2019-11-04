@@ -63,11 +63,13 @@ def find_block_for_tx_stamp(skale, tx_stamp, lo=0, hi=None):
     return lo
 
 
-def get_containers_healthcheck(host):
+def get_containers_healthcheck(host, test_mode):
+    if test_mode:
+        return 0
     url = 'http://' + host + ':' + PORT + HEALTH_REQ_URL
     print(url)
     try:
-        response = requests.get(url, timeout=(5, 10))
+        response = requests.get(url, timeout=10)
     except requests.exceptions.ConnectionError as e:
         logger.error(e)
         print(f'Could not connect to {url}')
