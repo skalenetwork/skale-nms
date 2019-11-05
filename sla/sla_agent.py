@@ -34,7 +34,7 @@ from skale.utils.helper import await_receipt
 from sla import ping
 from tools import base_agent, db
 from tools.configs import GOOD_IP, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE
-from tools.helper import init_skale
+from tools.helper import get_containers_healthcheck, init_skale
 
 
 class Monitor(base_agent.BaseAgent):
@@ -78,6 +78,9 @@ class Monitor(base_agent.BaseAgent):
             if os.system("ping -c 1 " + GOOD_IP + " > /dev/null") == 0:
                 metrics = ping.get_node_metrics(host)
                 # metrics = sim.generate_node_metrics()  # use to simulate metrics for some tests
+                healthcheck = get_containers_healthcheck(host, self.is_test_mode)
+                if healthcheck:
+                    metrics['is_offline'] = True
                 self.logger.info(f'Received metrics from node ID = {node["id"]}: {metrics}')
                 db.save_metrics_to_db(self.id, node['id'],
                                       metrics['is_offline'], metrics['latency'])
