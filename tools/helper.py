@@ -20,10 +20,14 @@
 import logging
 from datetime import datetime
 
+import requests
 from skale import Skale
 
 from tools.configs import LOCAL_WALLET_FILEPATH
 from tools.configs.web3 import ABI_FILEPATH, ENDPOINT
+
+PORT = '3307'
+HEALTH_REQ_URL = '/healthchecks/containers'
 
 logger = logging.getLogger(__name__)
 
@@ -45,10 +49,9 @@ def find_block_for_tx_stamp(skale, tx_stamp, lo=0, hi=None):
     if hi is None:
         hi = skale.web3.eth.blockNumber
     while lo < hi:
-        mid = (lo + hi)//2
+        mid = (lo + hi) // 2
         block_data = skale.web3.eth.getBlock(mid)
         midval = datetime.utcfromtimestamp(block_data['timestamp'])
-        # print(f'block = {mid} - {midval}')
         if midval < tx_stamp:
             lo = mid + 1
         elif midval > tx_stamp:
@@ -58,3 +61,32 @@ def find_block_for_tx_stamp(skale, tx_stamp, lo=0, hi=None):
         count += 1
     print(f'number of iters = {count}')
     return lo
+
+
+def get_containers_healthcheck(host, test_mode):
+    if test_mode:
+        return 0
+    url = 'http://' + host + ':' + PORT + HEALTH_REQ_URL
+    print(url)
+    try:
+        response = requests.get(url, timeout=10)
+    except requests.exceptions.ConnectionError as e:
+        logger.error(e)
+        print(f'Could not connect to {url}')
+        return 1
+
+    if response.status_code != requests.codes.ok:
+        print('Request failed, status code:', response.status_code)
+        return 1
+
+    json = response.json()
+    if json['res'] != 1:
+        for error in response.json()['errors']:
+            print(error)
+        return 1
+    else:
+        data = json['data']
+    for container in data:
+        if not container['state']['Running']:
+            return 1
+    return 0
