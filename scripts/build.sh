@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 
+# Auto building of sla/bounty agents docker images
+
 set -e
 
-#NAME=bounty-agent
-NAME=$1
-#VERSION=0.2.9
+readarray -t NAMES < CONTAINERS
+
+for NAME in "${NAMES[@]}"
+do
+  echo "$NAME"
+
 REPO_NAME=skalelabshub/$NAME
 IMAGE_NAME=$REPO_NAME:$VERSION
 LATEST_IMAGE_NAME=$REPO_NAME:latest
@@ -12,8 +17,7 @@ LATEST_IMAGE_NAME=$REPO_NAME:latest
 : "${VERSION?Need to set VERSION}"
 
 echo "Building $IMAGE_NAME..."
-#docker build -t $IMAGE_NAME . || exit $?
-docker build -t $IMAGE_NAME . -f ./Dockerfile.bounty || exit $?
+docker build -t $IMAGE_NAME . -f ./Dockerfile.$NAME || exit $?
 
 if [ "$RELEASE" = true ]
 then
@@ -22,3 +26,5 @@ fi
 
 echo "========================================================================================="
 echo "Built $IMAGE_NAME"
+
+done
