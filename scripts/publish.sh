@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
+
+# Auto publishing of sla/bounty agents docker images
+
 set -e
 
-NAMES=("bounty-agent" "sla-manager")
+readarray -t NAMES < CONTAINERS
 
-for i in "${NAMES[@]}"
+for NAME in "${NAMES[@]}"
 do
-  echo "$i"
-
-NAME=$i
+  echo "$NAME"
 
 REPO_NAME=skalelabshub/$NAME
 IMAGE_NAME=$REPO_NAME:$VERSION
@@ -17,7 +18,6 @@ LATEST_IMAGE_NAME=$REPO_NAME:latest
 : "${PASSWORD?Need to set PASSWORD}"
 
 echo "$PASSWORD" | docker login --username $USERNAME --password-stdin
-echo "TEST!!!"
 echo $IMAGE_NAME
 docker push $IMAGE_NAME || exit $?
 if [ "$RELEASE" = true ]
