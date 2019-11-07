@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Auto building of sla/bounty agents docker images
+
 set -e
 
 readarray -t NAMES < CONTAINERS

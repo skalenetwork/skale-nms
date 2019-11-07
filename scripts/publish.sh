@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+# Auto publishing of sla/bounty agents docker images
+
 set -e
 
 readarray -t NAMES < CONTAINERS
