@@ -2,7 +2,7 @@ docker==3.2.1
 skale-py==0.87.0
 pingparsing==0.13.2
 schedule==0.6.0
-tenacity==5.1.4
+tenacity==5.1.5
 mysqlclient==1.4.4
 peewee==3.11.2
 filelock==3.0.12
