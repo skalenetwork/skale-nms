@@ -35,6 +35,11 @@ from tools.configs import BLOCK_STEP_SIZE, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG
 from tools.helper import find_block_for_tx_stamp, init_skale
 
 
+class IsNotTimeException(Exception):
+    """Raised when reward date has come but current block's timestamp is less than reward date """
+    pass
+
+
 class BountyCollector(base_agent.BaseAgent):
 
     def __init__(self, skale, node_id=None):
@@ -155,7 +160,15 @@ class BountyCollector(base_agent.BaseAgent):
         except Exception as err:
             self.logger.error(f'Cannot get reward date: {err}')
             # TODO: notify Skale Admin
-            return
+            raise
+
+        last_block_number = self.skale.web3.eth.blockNumber
+        block_data = self.skale.web3.eth.getBlock(last_block_number)
+        block_timestamp = datetime.utcfromtimestamp(block_data['timestamp'])
+        self.logger.info(f'Reward date: {reward_date}')
+        self.logger.info(f'Timestamp: {block_timestamp}')
+        if reward_date > block_timestamp:
+            raise IsNotTimeException(Exception)
 
         self.logger.debug(f'Next reward date: {reward_date}')
 
@@ -169,14 +182,19 @@ class BountyCollector(base_agent.BaseAgent):
 
     def job_listener(self, event):
         if event.exception:
-            print('The job failed :(')
+            self.logger.debug('The job failed')
+            if type(event.exception) == IsNotTimeException:
+                self.logger.debug('It\'s not time yet for reward - wait for current block is mined')
+            utc_now = datetime.utcnow()
+            self.scheduler.add_job(self.job, 'date', run_date=utc_now + timedelta(seconds=60))
+            self.logger.debug(self.scheduler.get_jobs())
         else:
-            print('The job finished :)')
+            self.logger.debug('The job finished successfully)')
             reward_date = self.get_reward_date()
-            print(f'Reward date after job: {reward_date}')
+            self.logger.debug(f'Reward date after job: {reward_date}')
             utc_now = datetime.utcnow()
             if utc_now > reward_date:
-                print('Changing reward date for now')
+                self.logger.debug('Changing reward date for now')
                 reward_date = utc_now
             self.scheduler.add_job(self.job, 'date', run_date=reward_date)
             self.scheduler.print_jobs()
@@ -185,7 +203,7 @@ class BountyCollector(base_agent.BaseAgent):
         """Starts agent"""
         self.logger.debug(f'{self.agent_name} started')
         reward_date = self.get_reward_date()
-        print(f'Reward date on agent\'s start: {reward_date}')
+        self.logger.debug(f'Reward date on agent\'s start: {reward_date}')
         utc_now = datetime.utcnow()
         if utc_now > reward_date:
             reward_date = utc_now
