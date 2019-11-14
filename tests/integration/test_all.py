@@ -28,7 +28,7 @@ from tests.integration.preparation import (TEST_DELTA, TEST_EPOCH, accelerate_sk
                                            create_set_of_nodes, get_active_ids, create_dirs)
 from tools import db
 from tools.config_storage import ConfigStorage
-from tools.helper import init_skale
+from tools.helper import init_skale, check_node_id
 
 FAKE_IP = '10.1.0.1'
 FAKE_REPORT_DATE = 1567690544
@@ -80,8 +80,6 @@ def test_nodes_are_created():
 
 
 def test_get_validated_nodes(monitor):
-    # skale = init_skale()
-
     nodes = monitor.get_validated_nodes()
     print(f'nodes = {nodes}')
     assert type(nodes) is list
@@ -109,6 +107,13 @@ def test_get_reported_nodes_neg(monitor):
     fake_nodes = [{'id': 2, 'ip': FAKE_IP, 'rep_date': FAKE_REPORT_DATE}]
     err_send_verdicts_count = monitor.send_reports(fake_nodes)
     assert err_send_verdicts_count == 1
+
+
+def test_check_my_id(bounty_collector):
+    skale = bounty_collector.skale
+    assert check_node_id(skale, 0)
+    assert check_node_id(skale, 1)
+    assert not check_node_id(skale, 100)
 
 
 def test_get_bounty_neg(bounty_collector):
