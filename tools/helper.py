@@ -90,3 +90,7 @@ def get_containers_healthcheck(host, test_mode):
         if not container['state']['Running']:
             return 1
     return 0
+
+
+def check_node_id(skale, node_id):
+    return node_id in skale.nodes_data.get_active_node_ids()
