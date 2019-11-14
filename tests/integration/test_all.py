@@ -21,6 +21,7 @@ import time
 from datetime import datetime
 
 import pytest
+from tools.exceptions import GetBountyTxFailedException
 
 from bounty import bounty_agent
 from sla import sla_agent as sla
@@ -117,8 +118,8 @@ def test_check_my_id(bounty_collector):
 
 
 def test_get_bounty_neg(bounty_collector):
-    status = bounty_collector.get_bounty()
-    assert status == 0
+    with pytest.raises(GetBountyTxFailedException):
+        bounty_collector.get_bounty()
 
 
 def test_get_reported_nodes_pos(monitor):
