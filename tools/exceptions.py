@@ -6,3 +6,8 @@ class IsNotTimeException(Exception):
 class NodeNotFoundException(Exception):
     """Raised when Node ID doesn't exist in SKALE Manager"""
     pass
+
+
+class GetBountyTxFailedException(Exception):
+    """Raised when getBounty transaction failed"""
+    pass
