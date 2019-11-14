@@ -33,11 +33,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from tools import base_agent, db
 from tools.configs import BLOCK_STEP_SIZE, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE, REWARD_DELAY
 from tools.helper import find_block_for_tx_stamp, init_skale
-
-
-class IsNotTimeException(Exception):
-    """Raised when reward date has come but current block's timestamp is less than reward date """
-    pass
+from tools.exceptions import IsNotTimeException
 
 
 class BountyCollector(base_agent.BaseAgent):
@@ -71,8 +67,7 @@ class BountyCollector(base_agent.BaseAgent):
             end_chunk_block_number = start_block_number + BLOCK_STEP_SIZE - 1
 
             if end_chunk_block_number > last_block_number:
-                end_chunk_block_number = last_block_number
-
+                end_chunk_block_number = last_block_number + 1
             event_filter = self.skale.manager.contract.events.BountyGot().createFilter(
                 argument_filters={'nodeIndex': self.id},
                 fromBlock=hex(start_block_number),
@@ -114,7 +109,7 @@ class BountyCollector(base_agent.BaseAgent):
             self.logger.info('Another agent currently holds the lock')
             return 2
         except Exception as err:
-            self.logger.error(f'Failed getting bounty tx: {err}')
+            self.logger.exception(f'Failed getting bounty tx: {err}')
             # TODO: notify Skale Admin
             raise
         self.logger.debug('Waiting for receipt of tx...')
