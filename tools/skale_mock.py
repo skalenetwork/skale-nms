@@ -108,6 +108,8 @@ class NodesData:
         last_reward_date = utc_now.replace(tzinfo=timezone.utc).timestamp() - REWARD_PERIOD - 10
         return {'last_reward_date': last_reward_date}
 
+    def get_active_node_ids(self):
+        return [0, 1]
 # reward_date = self.skale.nodes_data.get(self.id)['last_reward_date'] + reward_period
 
 

@@ -32,12 +32,8 @@ from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
 from apscheduler.schedulers.background import BackgroundScheduler
 from tools import base_agent, db
 from tools.configs import BLOCK_STEP_SIZE, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE, REWARD_DELAY
+from tools.exceptions import GetBountyTxFailedException, IsNotTimeException
 from tools.helper import find_block_for_tx_stamp, init_skale
-
-
-class IsNotTimeException(Exception):
-    """Raised when reward date has come but current block's timestamp is less than reward date """
-    pass
 
 
 class BountyCollector(base_agent.BaseAgent):
@@ -45,7 +41,10 @@ class BountyCollector(base_agent.BaseAgent):
     def __init__(self, skale, node_id=None):
         super().__init__(skale, node_id)
         start = time.time()
-        self.collect_last_bounty_logs()
+        try:
+            self.collect_last_bounty_logs()
+        except Exception as err:
+            self.logger.exception(f'Error occurred while checking logs from blockchain: {err} ')
         end = time.time()
         self.logger.debug(f'Execution time = {end - start}')
         self.scheduler = BackgroundScheduler(timezone='UTC')
@@ -71,8 +70,7 @@ class BountyCollector(base_agent.BaseAgent):
             end_chunk_block_number = start_block_number + BLOCK_STEP_SIZE - 1
 
             if end_chunk_block_number > last_block_number:
-                end_chunk_block_number = last_block_number
-
+                end_chunk_block_number = last_block_number + 1
             event_filter = self.skale.manager.contract.events.BountyGot().createFilter(
                 argument_filters={'nodeIndex': self.id},
                 fromBlock=hex(start_block_number),
@@ -113,13 +111,19 @@ class BountyCollector(base_agent.BaseAgent):
         except Timeout:
             self.logger.info('Another agent currently holds the lock')
             return 2
-        except Exception as err:
-            self.logger.error(f'Failed getting bounty tx: {err}')
-            # TODO: notify Skale Admin
-            raise
         self.logger.debug('Waiting for receipt of tx...')
 
         tx_hash = receipt['transactionHash'].hex()
+        self.logger.debug(f'Receipt: {receipt}')
+
+        eth_bal = self.skale.web3.eth.getBalance(address)
+        skl_bal = self.skale.token.get_balance(address)
+        self.logger.info(f'ETH balance: {eth_bal}')
+        self.logger.info(f'SKL balance: {skl_bal}')
+        self.logger.debug(f'ETH difference: {eth_bal - eth_bal_before}')
+
+        db.save_bounty_stats(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_bal)
+        self.logger.info(LONG_DOUBLE_LINE)
 
         if receipt['status'] == 1:
             self.logger.info('The bounty was successfully received')
@@ -132,21 +136,11 @@ class BountyCollector(base_agent.BaseAgent):
                                  receipt['blockNumber'], args['nodeIndex'], args['bounty'],
                                  args['averageDowntime'], args['averageLatency'],
                                  receipt['gasUsed'])
-        if receipt['status'] == 0:
+        else:
             self.logger.info('The bounty was not received - transaction failed')
             # TODO: notify Skale Admin
-        self.logger.debug(f'Receipt: {receipt}')
+            raise GetBountyTxFailedException
 
-        eth_bal = self.skale.web3.eth.getBalance(address)
-        skl_bal = self.skale.token.get_balance(address)
-        self.logger.debug(f'transactionHash: {tx_hash}')
-        self.logger.info(f'ETH balance: {eth_bal}')
-        self.logger.info(f'SKL balance: {skl_bal}')
-        self.logger.debug(f'ETH difference: {eth_bal - eth_bal_before}')
-
-        db.save_bounty_stats(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_bal)
-        self.logger.debug('Waiting for the next periodic check')
-        self.logger.info(LONG_DOUBLE_LINE)
         return receipt['status']
 
     def job(self) -> None:
@@ -173,16 +167,11 @@ class BountyCollector(base_agent.BaseAgent):
         self.logger.debug(f'Next reward date: {reward_date}')
 
         if utc_now >= reward_date:
-            try:
-                self.get_bounty()
-            except Exception as err:
-                self.logger.error(f'Cannot get bounty: {err}')
-                # TODO: notify Skale Admin
-                raise
+            self.get_bounty()
 
     def job_listener(self, event):
         if event.exception:
-            self.logger.debug('The job failed')
+            self.logger.info('The job failed')
             if type(event.exception) == IsNotTimeException:
                 self.logger.debug('It\'s not time yet for reward - wait for current block is mined')
             utc_now = datetime.utcnow()

@@ -24,11 +24,11 @@ import json
 import logging
 import threading
 import time
-
+from tools.exceptions import NodeNotFoundException
 import schedule
 import tenacity
 
-from tools import helper
+from tools.helper import get_local_wallet_filepath, check_node_id
 from tools.config_storage import ConfigStorage
 from tools.configs import CHECK_PERIOD, NODE_CONFIG_FILEPATH
 from tools.logger import init_agent_logger
@@ -43,16 +43,20 @@ class BaseAgent:
         self.logger = logging.getLogger(__name__)
 
         self.logger.info(f'Initialization of {self.agent_name} ...')
-        local_wallet_filepath = helper.get_local_wallet_filepath(node_id)
+        local_wallet_filepath = get_local_wallet_filepath(node_id)
         if node_id is None:
             self.id = self.get_id_from_config(NODE_CONFIG_FILEPATH)
             self.is_test_mode = False
         else:
             self.id = node_id
             self.is_test_mode = True
+        self.skale = skale
+        if not check_node_id(self.skale, self.id):
+            err_msg = f'There is no Node with ID = {self.id} in SKALE manager'
+            self.logger.error(err_msg)
+            raise NodeNotFoundException(err_msg)
         self.logger.info(f'Node ID = {self.id}')
         self.local_wallet = ConfigStorage(local_wallet_filepath)
-        self.skale = skale
         self.logger.debug(f"Account = {self.local_wallet['address']}")
         self.logger.info(f'Initialization of {self.agent_name} is completed')
 

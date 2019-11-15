@@ -14,7 +14,7 @@ docker-compose up -d &&
 cd $TRAVIS_BUILD_DIR &&
 git clone -b stable https://$GITHUB_TOKEN\@github.com/skalenetwork/skale-manager.git &&
 cd skale-manager &&
-npm install &&
+yarn install &&
 PRIVATE_KEY=$ETH_PRIVATE_KEY ENDPOINT=$ENDPOINT  ./node_modules/.bin/truffle migrate --network unique
 
 # Prepare directories
