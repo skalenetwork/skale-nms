@@ -36,7 +36,8 @@ from skale.utils.helper import await_receipt
 
 from sla import ping
 from tools import base_agent, db
-from tools.configs import CHECK_PERIOD, GOOD_IP, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE
+from tools.configs import MONITOR_PERIOD, REPORT_PERIOD, GOOD_IP, LOCK_FILEPATH, LONG_DOUBLE_LINE, \
+    LONG_LINE
 from tools.helper import get_containers_healthcheck, init_skale
 
 
@@ -198,8 +199,10 @@ class Monitor(base_agent.BaseAgent):
     def run(self) -> None:
         """Starts agent"""
         self.logger.debug(f'{self.agent_name} started')
-        schedule.every(CHECK_PERIOD).minutes.do(self.run_threaded, self.monitor_job)
-        schedule.every(CHECK_PERIOD).minutes.do(self.run_threaded, self.report_job)
+        self.run_threaded(self.monitor_job)
+        self.run_threaded(self.report_job)
+        schedule.every(MONITOR_PERIOD).minutes.do(self.run_threaded, self.monitor_job)
+        schedule.every(REPORT_PERIOD).minutes.do(self.run_threaded, self.report_job)
         while True:
             schedule.run_pending()
             time.sleep(1)
