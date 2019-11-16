@@ -66,7 +66,7 @@ def test_get_reported_nodes(monitor):
 def test_report_saved_to_db(monitor):
     db.clear_all_reports()
     assert db.get_count_of_report_records() == 0
-    monitor.job()
+    monitor.monitor_job()
     assert db.get_count_of_report_records() == 2
 
 
