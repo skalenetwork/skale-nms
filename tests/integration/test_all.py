@@ -147,7 +147,7 @@ def test_bounty_job_saves_data(bounty_collector):
     print(f'Sleep for {TEST_DELTA} sec')
     time.sleep(TEST_DELTA)
     db.clear_all_bounty_receipts()
-    bounty_collector.monitor_job()
+    bounty_collector.job()
     assert db.get_count_of_bounty_receipt_records() == 1
 
 
