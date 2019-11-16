@@ -45,7 +45,7 @@ class Monitor(base_agent.BaseAgent):
 
     def __init__(self, skale, node_id=None):
         super().__init__(skale, node_id)
-        self.nodes = []
+        self.nodes = self.get_validated_nodes()
 
     def get_validated_nodes(self) -> list:
         """Returns a list of nodes to validate - node node_id, report date, ip address"""
