@@ -26,14 +26,18 @@ to send it
 import os
 import socket
 import sys
+import threading
+import time
 from datetime import datetime
 
+import schedule
 from filelock import FileLock, Timeout
 from skale.utils.helper import await_receipt
 
 from sla import ping
 from tools import base_agent, db
-from tools.configs import GOOD_IP, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE
+from tools.configs import MONITOR_PERIOD, REPORT_PERIOD, GOOD_IP, LOCK_FILEPATH, LONG_DOUBLE_LINE, \
+    LONG_LINE
 from tools.helper import get_containers_healthcheck, init_skale
 
 
@@ -41,6 +45,7 @@ class Monitor(base_agent.BaseAgent):
 
     def __init__(self, skale, node_id=None):
         super().__init__(skale, node_id)
+        self.nodes = self.get_validated_nodes()
 
     def get_validated_nodes(self) -> list:
         """Returns a list of nodes to validate - node node_id, report date, ip address"""
@@ -161,23 +166,46 @@ class Monitor(base_agent.BaseAgent):
 
         return err_status
 
-    def job(self) -> None:
+    def monitor_job(self) -> None:
         """
-        Periodic job
+        Periodic job for monitoring nodes
         """
-        self.logger.debug('New periodic job started...')
+        self.logger.info('New monitor job started...')
         try:
-            nodes = self.get_validated_nodes()
+            self.nodes = self.get_validated_nodes()
         except Exception as err:
             self.logger.error(f'Failed to get list of monitored nodes {str(err)}')
-            nodes = []
-        self.validate_nodes(nodes)
-        nodes_for_report = self.get_reported_nodes(nodes)
+
+        self.validate_nodes(self.nodes)
+
+        self.logger.info('Monitor job finished...')
+
+    def report_job(self) -> None:
+        """
+        Periodic job for sending reports
+        """
+        self.logger.info('New report job started...')
+        nodes_for_report = self.get_reported_nodes(self.nodes)
 
         if len(nodes_for_report) > 0:
             self.send_reports(nodes_for_report)
 
-        self.logger.debug('Periodic job finished...')
+        self.logger.info('Report job finished...')
+
+    def run_threaded(self, job_func):
+        job_thread = threading.Thread(target=job_func)
+        job_thread.start()
+
+    def run(self) -> None:
+        """Starts agent"""
+        self.logger.debug(f'{self.agent_name} started')
+        self.run_threaded(self.monitor_job)
+        self.run_threaded(self.report_job)
+        schedule.every(MONITOR_PERIOD).minutes.do(self.run_threaded, self.monitor_job)
+        schedule.every(REPORT_PERIOD).minutes.do(self.run_threaded, self.report_job)
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
 
 
 if __name__ == '__main__':
