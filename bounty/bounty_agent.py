@@ -25,7 +25,7 @@ import sys
 import time
 from datetime import datetime, timedelta
 
-import skale.utils.helper as Helper
+from skale.utils.web3_utils import wait_receipt
 from filelock import FileLock, Timeout
 
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
@@ -106,8 +106,8 @@ class BountyCollector(base_agent.BaseAgent):
         self.logger.debug('Acquiring lock')
         try:
             with lock.acquire():
-                res = self.skale.manager.get_bounty(self.id, self.local_wallet)
-                receipt = Helper.await_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
+                res = self.skale.manager.get_bounty(self.id)
+                receipt = wait_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
         except Timeout:
             self.logger.info('Another agent currently holds the lock')
             return 2
@@ -211,6 +211,6 @@ if __name__ == '__main__':
     else:
         node_id = None
 
-    skale = init_skale()
+    skale = init_skale(node_id)
     bounty_collector = BountyCollector(skale, node_id)
     bounty_collector.run()

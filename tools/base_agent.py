@@ -25,10 +25,10 @@ import logging
 
 import tenacity
 
-from tools.config_storage import ConfigStorage
+# from tools.config_storage import ConfigStorage
 from tools.configs import NODE_CONFIG_FILEPATH
 from tools.exceptions import NodeNotFoundException
-from tools.helper import check_node_id, get_local_wallet_filepath
+from tools.helper import check_node_id  # , get_local_wallet_filepath
 from tools.logger import init_agent_logger
 
 
@@ -41,7 +41,7 @@ class BaseAgent:
         self.logger = logging.getLogger(__name__)
 
         self.logger.info(f'Initialization of {self.agent_name} ...')
-        local_wallet_filepath = get_local_wallet_filepath(node_id)
+        # local_wallet_filepath = get_local_wallet_filepath(node_id)
         if node_id is None:
             self.id = self.get_id_from_config(NODE_CONFIG_FILEPATH)
             self.is_test_mode = False
@@ -54,8 +54,8 @@ class BaseAgent:
             self.logger.error(err_msg)
             raise NodeNotFoundException(err_msg)
         self.logger.info(f'Node ID = {self.id}')
-        self.local_wallet = ConfigStorage(local_wallet_filepath)
-        self.logger.debug(f"Account = {self.local_wallet['address']}")
+        # self.local_wallet = ConfigStorage(local_wallet_filepath)
+        # self.logger.debug(f"Account = {self.local_wallet['address']}")
         self.logger.info(f'Initialization of {self.agent_name} is completed')
 
     @tenacity.retry(

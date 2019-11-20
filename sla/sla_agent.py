@@ -32,12 +32,12 @@ from datetime import datetime
 
 import schedule
 from filelock import FileLock, Timeout
-from skale.utils.helper import await_receipt
+from skale.utils.web3_utils import wait_receipt
 
 from sla import ping
 from tools import base_agent, db
-from tools.configs import MONITOR_PERIOD, REPORT_PERIOD, GOOD_IP, LOCK_FILEPATH, LONG_DOUBLE_LINE, \
-    LONG_LINE
+from tools.configs import GOOD_IP, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE, MONITOR_PERIOD, \
+    REPORT_PERIOD
 from tools.helper import get_containers_healthcheck, init_skale
 
 
@@ -50,8 +50,8 @@ class Monitor(base_agent.BaseAgent):
     def get_validated_nodes(self) -> list:
         """Returns a list of nodes to validate - node node_id, report date, ip address"""
 
-        account = self.skale.web3.toChecksumAddress(self.local_wallet['address'])
-
+        # account = self.skale.web3.toChecksumAddress(self.local_wallet['address'])
+        account = self.skale.wallet.address
         # get raw binary data list from SKALE Manager SC
         try:
             nodes_in_bytes_array = self.skale.validators_data.get_validated_array(self.id, account)
@@ -140,8 +140,8 @@ class Monitor(base_agent.BaseAgent):
         try:
             with lock.acquire():
                 res = self.skale.manager.send_verdicts(self.id, ids, downtimes,
-                                                       latencies, self.local_wallet)
-                receipt = await_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
+                                                       latencies)
+                receipt = wait_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
                 if receipt['status'] == 1:
                     self.logger.info('The report was successfully sent')
                     h_receipt = self.skale.validators.contract.events.VerdictWasSent(

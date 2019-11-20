@@ -19,9 +19,11 @@
 
 import logging
 from datetime import datetime
-
+from tools.config_storage import ConfigStorage
 import requests
 from skale import Skale
+from skale.wallets import Web3Wallet
+from skale.utils.web3_utils import init_web3
 
 from tools.configs import LOCAL_WALLET_FILEPATH
 from tools.configs.web3 import ABI_FILEPATH, ENDPOINT
@@ -32,8 +34,15 @@ HEALTH_REQ_URL = '/healthchecks/containers'
 logger = logging.getLogger(__name__)
 
 
-def init_skale():
-    return Skale(ENDPOINT, ABI_FILEPATH)
+def init_skale(node_id=None):
+    # return Skale(ENDPOINT, ABI_FILEPATH)
+    local_wallet_filepath = get_local_wallet_filepath(node_id)
+    local_wallet = ConfigStorage(local_wallet_filepath)
+    private_key = local_wallet['private_key']
+    web3 = init_web3(ENDPOINT)
+    wallet = Web3Wallet(private_key, web3)
+    skale = Skale(ENDPOINT, ABI_FILEPATH, wallet)
+    return skale
 
 
 def get_local_wallet_filepath(node_id):
