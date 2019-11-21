@@ -25,8 +25,8 @@ import sys
 import time
 from datetime import datetime, timedelta
 
-from skale.utils.web3_utils import wait_receipt
 from filelock import FileLock, Timeout
+from skale.utils.web3_utils import wait_receipt
 
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
 from apscheduler.schedulers.background import BackgroundScheduler

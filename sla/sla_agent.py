@@ -36,8 +36,8 @@ from skale.utils.web3_utils import wait_receipt
 
 from sla import ping
 from tools import base_agent, db
-from tools.configs import GOOD_IP, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE, MONITOR_PERIOD, \
-    REPORT_PERIOD
+from tools.configs import GOOD_IP, LOCK_FILEPATH, MONITOR_PERIOD, REPORT_PERIOD
+from tools.configs import LONG_DOUBLE_LINE, LONG_LINE
 from tools.helper import get_containers_healthcheck, init_skale
 
 
