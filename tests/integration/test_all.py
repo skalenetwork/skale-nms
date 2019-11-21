@@ -21,15 +21,16 @@ import time
 from datetime import datetime
 
 import pytest
-from tools.exceptions import GetBountyTxFailedException
 
 from bounty import bounty_agent
 from sla import sla_agent as sla
-from tests.integration.preparation import (TEST_DELTA, TEST_EPOCH, accelerate_skale_manager,
-                                           create_set_of_nodes, get_active_ids, create_dirs)
+from tests.integration.preparation import (
+    TEST_DELTA, TEST_EPOCH, accelerate_skale_manager, create_dirs, create_set_of_nodes,
+    get_active_ids, init_skale)
 from tools import db
 from tools.config_storage import ConfigStorage
-from tools.helper import init_skale, check_node_id
+from tools.exceptions import GetBountyTxFailedException
+from tools.helper import check_node_id
 
 FAKE_IP = '10.1.0.1'
 FAKE_REPORT_DATE = 1567690544

@@ -18,12 +18,12 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import logging
+import os
 from datetime import datetime
-from tools.config_storage import ConfigStorage
+
 import requests
 from skale import Skale
-from skale.wallets import Web3Wallet
-from skale.utils.web3_utils import init_web3
+from skale.wallets import RPCWallet
 
 from tools.configs import LOCAL_WALLET_FILEPATH
 from tools.configs.web3 import ABI_FILEPATH, ENDPOINT
@@ -34,16 +34,9 @@ HEALTH_REQ_URL = '/healthchecks/containers'
 logger = logging.getLogger(__name__)
 
 
-def init_skale(node_id=None):
-    if node_id:
-        local_wallet_filepath = get_local_wallet_filepath(node_id)
-        local_wallet = ConfigStorage(local_wallet_filepath)
-        private_key = local_wallet['private_key']
-        web3 = init_web3(ENDPOINT)
-        wallet = Web3Wallet(private_key, web3)
-    else:
-        wallet = None
-    skale = Skale(ENDPOINT, ABI_FILEPATH, wallet)
+def init_skale():
+    rpc_wallet = RPCWallet(os.environ['TM_URL'])
+    skale = Skale(ENDPOINT, ABI_FILEPATH, rpc_wallet)
     return skale
 
 

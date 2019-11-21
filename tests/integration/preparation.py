@@ -19,13 +19,15 @@
 
 import os
 
-from skale.utils.account_tools import send_tokens, send_ether
-from skale.utils.web3_utils import wait_receipt
+from skale import Skale
+from skale.utils.account_tools import send_ether, send_tokens
+from skale.utils.web3_utils import init_web3, wait_receipt
 from skale.wallets import Web3Wallet
 
 from tools.config_storage import ConfigStorage
 from tools.configs import LOCAL_WALLET_FILEPATH
-from tools.helper import init_skale
+from tools.configs.web3 import ABI_FILEPATH, ENDPOINT
+from tools.helper import get_local_wallet_filepath
 
 DIR_LOG = '/skale_node_data/log'
 DIR_ABI = '/skale_vol/contracts_info'
@@ -33,6 +35,19 @@ TEST_EPOCH = 200
 TEST_DELTA = 100
 SKL_DEPOSIT = 100
 ETH_AMOUNT = 1
+
+
+def init_skale(node_id=None):
+    if node_id:
+        local_wallet_filepath = get_local_wallet_filepath(node_id)
+        local_wallet = ConfigStorage(local_wallet_filepath)
+        private_key = local_wallet['private_key']
+        web3 = init_web3(ENDPOINT)
+        wallet = Web3Wallet(private_key, web3)
+    else:
+        wallet = None
+    skale = Skale(ENDPOINT, ABI_FILEPATH, wallet)
+    return skale
 
 
 def generate_local_wallet(node_id):
