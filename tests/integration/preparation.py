@@ -35,17 +35,19 @@ TEST_EPOCH = 200
 TEST_DELTA = 100
 SKL_DEPOSIT = 100
 ETH_AMOUNT = 1
+IP_BASE = '10.1.0.'
+TEST_PORT = 123
 
 
 def init_skale(node_id=None):
-    if node_id:
+    if node_id is None:
+        wallet = None
+    else:
         local_wallet_filepath = get_local_wallet_filepath(node_id)
         local_wallet = ConfigStorage(local_wallet_filepath)
         private_key = local_wallet['private_key']
         web3 = init_web3(ENDPOINT)
         wallet = Web3Wallet(private_key, web3)
-    else:
-        wallet = None
     skale = Skale(ENDPOINT, ABI_FILEPATH, wallet)
     return skale
 
@@ -76,15 +78,8 @@ def create_node(node_id):
 
     generate_local_wallet(node_id)
 
-    wallet = ConfigStorage(LOCAL_WALLET_FILEPATH + str(node_id))
-    address = wallet['address']
-
-    print(f'loc_wal = {LOCAL_WALLET_FILEPATH + "1"}')
-
     base_skale = init_skale_with_base_wallet()
     sender_wallet = base_skale.wallet
-
-    print(f'sender: {sender_wallet.address}')
 
     eth_base_bal = base_skale.web3.eth.getBalance(sender_wallet.address)
     skl_base_bal = base_skale.token.contract.functions.balanceOf(sender_wallet.address).call()
@@ -94,19 +89,18 @@ def create_node(node_id):
 
     if eth_base_bal > ETH_AMOUNT and skl_base_bal > SKL_DEPOSIT:
         skale = init_skale(node_id)
+        wallet = ConfigStorage(LOCAL_WALLET_FILEPATH + str(node_id))
+        address = wallet['address']
 
         # transfer ETH and SKL
         send_ether(base_skale.web3, sender_wallet, address, ETH_AMOUNT)
         print(f'ETH balance after: {skale.web3.eth.getBalance(address)}')
 
-        # transfer SKL
         send_tokens(base_skale, sender_wallet, address, SKL_DEPOSIT)
         print(f'SKL balance after: {skale.token.contract.functions.balanceOf(address).call()}')
 
         # create node
-        ip_base = '10.1.0.'
-        test_port = 56
-        res = skale.manager.create_node(ip_base + str(node_id), test_port,
+        res = skale.manager.create_node(IP_BASE + str(node_id), TEST_PORT,
                                         'node_' + str(node_id))
         receipt = wait_receipt(skale.web3, res['tx'])
         print(f'create_node receipt: {receipt}')
