@@ -50,11 +50,9 @@ class Monitor(base_agent.BaseAgent):
     def get_validated_nodes(self) -> list:
         """Returns a list of nodes to validate - node node_id, report date, ip address"""
 
-        # account = self.skale.web3.toChecksumAddress(self.local_wallet['address'])
-        account = self.skale.wallet.address
         # get raw binary data list from SKALE Manager SC
         try:
-            nodes_in_bytes_array = self.skale.validators_data.get_validated_array(self.id, account)
+            nodes_in_bytes_array = self.skale.validators_data.get_validated_array(self.id)
         except Exception as err:
             self.logger.error(f'Cannot get a list of nodes for validating: {str(err)}',
                               exc_info=True)

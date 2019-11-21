@@ -46,7 +46,7 @@ class BountyCollector(base_agent.BaseAgent):
         except Exception as err:
             self.logger.exception(f'Error occurred while checking logs from blockchain: {err} ')
         end = time.time()
-        self.logger.debug(f'Execution time = {end - start}')
+        self.logger.info(f'Execution time = {end - start}')
         self.scheduler = BackgroundScheduler(timezone='UTC')
 
     def get_reward_date(self):
@@ -96,7 +96,7 @@ class BountyCollector(base_agent.BaseAgent):
                 break
 
     def get_bounty(self):
-        address = self.local_wallet['address']
+        address = self.skale.wallet.address
         eth_bal_before = self.skale.web3.eth.getBalance(address)
         skl_bal_before = self.skale.token.get_balance(address)
         self.logger.info(f'ETH balance: {eth_bal_before}')
@@ -114,7 +114,8 @@ class BountyCollector(base_agent.BaseAgent):
         self.logger.debug('Waiting for receipt of tx...')
 
         tx_hash = receipt['transactionHash'].hex()
-        self.logger.debug(f'Receipt: {receipt}')
+        self.logger.info(f'tx hash: {tx_hash}')
+        self.logger.info(f'Receipt: {receipt}')
 
         eth_bal = self.skale.web3.eth.getBalance(address)
         skl_bal = self.skale.token.get_balance(address)
@@ -163,8 +164,6 @@ class BountyCollector(base_agent.BaseAgent):
         self.logger.info(f'Timestamp: {block_timestamp}')
         if reward_date > block_timestamp:
             raise IsNotTimeException(Exception)
-
-        self.logger.debug(f'Next reward date: {reward_date}')
 
         if utc_now >= reward_date:
             self.get_bounty()
