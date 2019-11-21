@@ -40,13 +40,14 @@ class BountyCollector(base_agent.BaseAgent):
 
     def __init__(self, skale, node_id=None):
         super().__init__(skale, node_id)
+        self.logger.info('Start checking logs on blockchain')
         start = time.time()
         try:
             self.collect_last_bounty_logs()
         except Exception as err:
             self.logger.exception(f'Error occurred while checking logs from blockchain: {err} ')
         end = time.time()
-        self.logger.info(f'Execution time = {end - start}')
+        self.logger.info(f'Check completed. Execution time = {end - start}')
         self.scheduler = BackgroundScheduler(timezone='UTC')
 
     def get_reward_date(self):
