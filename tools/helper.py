@@ -35,12 +35,14 @@ logger = logging.getLogger(__name__)
 
 
 def init_skale(node_id=None):
-    # return Skale(ENDPOINT, ABI_FILEPATH)
-    local_wallet_filepath = get_local_wallet_filepath(node_id)
-    local_wallet = ConfigStorage(local_wallet_filepath)
-    private_key = local_wallet['private_key']
-    web3 = init_web3(ENDPOINT)
-    wallet = Web3Wallet(private_key, web3)
+    if node_id:
+        local_wallet_filepath = get_local_wallet_filepath(node_id)
+        local_wallet = ConfigStorage(local_wallet_filepath)
+        private_key = local_wallet['private_key']
+        web3 = init_web3(ENDPOINT)
+        wallet = Web3Wallet(private_key, web3)
+    else:
+        wallet = None
     skale = Skale(ENDPOINT, ABI_FILEPATH, wallet)
     return skale
 
