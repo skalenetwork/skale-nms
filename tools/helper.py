@@ -18,10 +18,12 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import logging
+import os
 from datetime import datetime
 
 import requests
 from skale import Skale
+from skale.wallets import RPCWallet
 
 from tools.configs import LOCAL_WALLET_FILEPATH
 from tools.configs.web3 import ABI_FILEPATH, ENDPOINT
@@ -33,7 +35,9 @@ logger = logging.getLogger(__name__)
 
 
 def init_skale():
-    return Skale(ENDPOINT, ABI_FILEPATH)
+    rpc_wallet = RPCWallet(os.environ['TM_URL'])
+    skale = Skale(ENDPOINT, ABI_FILEPATH, rpc_wallet)
+    return skale
 
 
 def get_local_wallet_filepath(node_id):

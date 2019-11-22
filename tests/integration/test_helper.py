@@ -19,7 +19,8 @@
 
 from datetime import datetime
 
-from tools.helper import find_block_for_tx_stamp, init_skale
+from tools.helper import find_block_for_tx_stamp
+from tests.integration.preparation import init_skale
 
 
 def test_find_block_for_tx_stamp():

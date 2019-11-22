@@ -21,15 +21,16 @@ import time
 from datetime import datetime
 
 import pytest
-from tools.exceptions import GetBountyTxFailedException
 
 from bounty import bounty_agent
 from sla import sla_agent as sla
-from tests.integration.preparation import (TEST_DELTA, TEST_EPOCH, accelerate_skale_manager,
-                                           create_set_of_nodes, get_active_ids, create_dirs)
+from tests.integration.preparation import (
+    TEST_DELTA, TEST_EPOCH, accelerate_skale_manager, create_dirs, create_set_of_nodes,
+    get_active_ids, init_skale)
 from tools import db
 from tools.config_storage import ConfigStorage
-from tools.helper import init_skale, check_node_id
+from tools.exceptions import GetBountyTxFailedException
+from tools.helper import check_node_id
 
 FAKE_IP = '10.1.0.1'
 FAKE_REPORT_DATE = 1567690544
@@ -54,7 +55,7 @@ def setup_module(module):
 @pytest.fixture(scope="module")
 def monitor(request):
     print("\nskale setup")
-    skale = init_skale()
+    skale = init_skale(cur_node_id)
     print(f'\ncur_node = {cur_node_id}')
     _monitor = sla.Monitor(skale, cur_node_id)
 
@@ -64,7 +65,7 @@ def monitor(request):
 @pytest.fixture(scope="module")
 def bounty_collector(request):
     print("\nskale setup")
-    skale = init_skale()
+    skale = init_skale(cur_node_id)
     print(f'\ncur_node = {cur_node_id}')
     _bounty_collector = bounty_agent.BountyCollector(skale, cur_node_id)
 
@@ -145,7 +146,7 @@ def test_get_reported_nodes_pos(monitor):
 
 def test_bounty_job_saves_data(bounty_collector):
     print(f'Sleep for {TEST_DELTA} sec')
-    time.sleep(TEST_DELTA)
+    time.sleep(TEST_DELTA + 60)  # Added temporarily delay to wait next block after end of epoch
     db.clear_all_bounty_receipts()
     bounty_collector.job()
     assert db.get_count_of_bounty_receipt_records() == 1
