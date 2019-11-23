@@ -131,34 +131,34 @@ class Monitor(base_agent.BaseAgent):
                 latencies.append(metrics['latency'])
             except Exception as err:
                 self.logger.error(f'Failed getting month metrics from db: {err}')
-
-        lock = FileLock(LOCK_FILEPATH, timeout=1)
-        self.logger.debug('Acquiring lock')
-        try:
-            with lock.acquire():
-                res = self.skale.manager.send_verdicts(self.id, ids, downtimes,
-                                                       latencies)
-                receipt = wait_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
-                if receipt['status'] == 1:
-                    self.logger.info('The report was successfully sent')
-                    h_receipt = self.skale.validators.contract.events.VerdictWasSent(
-                    ).processReceipt(receipt)
-                    self.logger.info(LONG_LINE)
-                    self.logger.info(h_receipt)
-                    args = h_receipt[0]['args']
-                    db.save_report_event(datetime.utcfromtimestamp(args['time']),
-                                         str(res['tx'].hex()), args['fromValidatorIndex'],
-                                         args['toNodeIndex'], args['downtime'], args['latency'],
-                                         receipt["gasUsed"])
-                if receipt['status'] == 0:
-                    self.logger.info('The report was not sent - transaction failed')
-                    err_status = 1
-                self.logger.debug(f'Receipt: {receipt}')
-                self.logger.info(LONG_DOUBLE_LINE)
-        except Timeout:
-            self.logger.info('Another agent currently holds the lock')
-        except Exception as err:
-            self.logger.exception(f'Failed send report. Error: {err}')
+        if len(ids) == len(downtimes) == len(latencies) and len(ids) != 0:
+            lock = FileLock(LOCK_FILEPATH, timeout=1)
+            self.logger.debug('Acquiring lock')
+            try:
+                with lock.acquire():
+                    res = self.skale.manager.send_verdicts(self.id, ids, downtimes,
+                                                           latencies)
+                    receipt = wait_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
+                    if receipt['status'] == 1:
+                        self.logger.info('The report was successfully sent')
+                        h_receipt = self.skale.validators.contract.events.VerdictWasSent(
+                        ).processReceipt(receipt)
+                        self.logger.info(LONG_LINE)
+                        self.logger.info(h_receipt)
+                        args = h_receipt[0]['args']
+                        db.save_report_event(datetime.utcfromtimestamp(args['time']),
+                                             str(res['tx'].hex()), args['fromValidatorIndex'],
+                                             args['toNodeIndex'], args['downtime'], args['latency'],
+                                             receipt["gasUsed"])
+                    if receipt['status'] == 0:
+                        self.logger.info('The report was not sent - transaction failed')
+                        err_status = 1
+                    self.logger.debug(f'Receipt: {receipt}')
+                    self.logger.info(LONG_DOUBLE_LINE)
+            except Timeout:
+                self.logger.info('Another agent currently holds the lock')
+            except Exception as err:
+                self.logger.exception(f'Failed send report. Error: {err}')
 
         return err_status
 
