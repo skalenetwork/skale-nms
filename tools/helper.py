@@ -83,10 +83,13 @@ def get_containers_healthcheck(host, test_mode):
     print(url)
     try:
         response = requests.get(url, timeout=10)
-    except requests.exceptions.ConnectionError as e:
-        logger.error(e)
+    except requests.exceptions.ConnectionError as err:
+        logger.error(err)
         print(f'Could not connect to {url}')
         return 1
+    except Exception as err:
+        logger.error(err)
+        print(f'Could not get data from {url}')
 
     if response.status_code != requests.codes.ok:
         print('Request failed, status code:', response.status_code)
