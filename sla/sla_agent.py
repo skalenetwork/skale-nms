@@ -85,8 +85,12 @@ class Monitor(base_agent.BaseAgent):
                 if healthcheck:
                     metrics['is_offline'] = True
                 self.logger.info(f'Received metrics from node ID = {node["id"]}: {metrics}')
-                db.save_metrics_to_db(self.id, node['id'],
-                                      metrics['is_offline'], metrics['latency'])
+                try:
+                    db.save_metrics_to_db(self.id, node['id'],
+                                          metrics['is_offline'], metrics['latency'])
+                except Exception as err:
+                    self.logger.error(f'Couldn\'t save metrics to database - '
+                                      f'is mysql container running? {err}')
             else:
                 self.logger.error(f'Couldn\'t ping 8.8.8.8 - skipping monitoring node {node["id"]}')
 
@@ -108,11 +112,6 @@ class Monitor(base_agent.BaseAgent):
         """Send reports for every node from nodes_for_report"""
 
         self.logger.info(LONG_LINE)
-        if len(nodes_for_report) == 0:
-            self.logger.info(f'- No nodes to be reported on')
-        else:
-            self.logger.info(f'Number of nodes for reporting: {len(nodes_for_report)}')
-            self.logger.info(f'The nodes to be reported on: {nodes_for_report}')
         err_status = 0
 
         ids = []
@@ -131,7 +130,7 @@ class Monitor(base_agent.BaseAgent):
                 downtimes.append(metrics['downtime'])
                 latencies.append(metrics['latency'])
             except Exception as err:
-                self.logger.exception(f'Failed getting month metrics from db: {err}')
+                self.logger.error(f'Failed getting month metrics from db: {err}')
 
         lock = FileLock(LOCK_FILEPATH, timeout=1)
         self.logger.debug('Acquiring lock')
@@ -159,8 +158,7 @@ class Monitor(base_agent.BaseAgent):
         except Timeout:
             self.logger.info('Another agent currently holds the lock')
         except Exception as err:
-            self.logger.error(f'Failed send report on the node #{node["id"]}. Error: '
-                              f'{str(err)}', exc_info=True)
+            self.logger.exception(f'Failed send report. Error: {err}')
 
         return err_status
 
@@ -186,7 +184,11 @@ class Monitor(base_agent.BaseAgent):
         nodes_for_report = self.get_reported_nodes(self.nodes)
 
         if len(nodes_for_report) > 0:
+            self.logger.info(f'Number of nodes for reporting: {len(nodes_for_report)}')
+            self.logger.info(f'The nodes to be reported on: {nodes_for_report}')
             self.send_reports(nodes_for_report)
+        else:
+            self.logger.info(f'- No nodes to be reported on')
 
         self.logger.info('Report job finished...')
 
