@@ -23,8 +23,10 @@ from datetime import datetime
 
 import requests
 from skale import Skale
-from skale.wallets import RPCWallet
+from skale.utils.web3_utils import init_web3
+from skale.wallets import RPCWallet, Web3Wallet
 
+from tools.config_storage import ConfigStorage
 from tools.configs import LOCAL_WALLET_FILEPATH
 from tools.configs.web3 import ABI_FILEPATH, ENDPOINT
 
@@ -34,9 +36,16 @@ HEALTH_REQ_URL = '/healthchecks/containers'
 logger = logging.getLogger(__name__)
 
 
-def init_skale():
-    rpc_wallet = RPCWallet(os.environ['TM_URL'])
-    skale = Skale(ENDPOINT, ABI_FILEPATH, rpc_wallet)
+def init_skale(node_id):
+    if node_id is None:
+        wallet = RPCWallet(os.environ['TM_URL'])
+    else:
+        local_wallet_filepath = get_local_wallet_filepath(node_id)
+        local_wallet = ConfigStorage(local_wallet_filepath)
+        private_key = local_wallet['private_key']
+        web3 = init_web3(ENDPOINT)
+        wallet = Web3Wallet(private_key, web3)
+    skale = Skale(ENDPOINT, ABI_FILEPATH, wallet)
     return skale
 
 

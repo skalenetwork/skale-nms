@@ -213,6 +213,6 @@ if __name__ == '__main__':
     else:
         node_id = None
 
-    skale = init_skale()
+    skale = init_skale(node_id)
     monitor = Monitor(skale, node_id)
     monitor.run()
