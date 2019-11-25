@@ -27,7 +27,7 @@ LOCK_FILE = "tx.lock"
 LOCK_FILEPATH = os.path.join(NODE_DATA_PATH, LOCK_FILE)
 
 GOOD_IP = '8.8.8.8'
-MONITOR_PERIOD = 2  # in min
-REPORT_PERIOD = 5  # in min
+MONITOR_PERIOD = 1  # in min (2)
+REPORT_PERIOD = 2  # in min (5)
 BLOCK_STEP_SIZE = 5000
 REWARD_DELAY = 60  # in seconds
