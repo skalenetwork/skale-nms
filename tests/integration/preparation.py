@@ -134,7 +134,7 @@ def accelerate_skale_manager():
 
     reward_period = skale.validators_data.get_reward_period()
     delta_period = skale.validators_data.get_delta_period()
-    print(f'New times for SM: {reward_period}, {delta_period}')
+    print(f'Existing times for SM: {reward_period}, {delta_period}')
 
     res = skale.constants.set_periods(TEST_EPOCH, TEST_DELTA)
     receipt = wait_receipt(skale.web3, res['tx'], retries=30, timeout=6)
@@ -142,7 +142,7 @@ def accelerate_skale_manager():
     print("-------------------------")
     reward_period = skale.validators_data.get_reward_period()
     delta_period = skale.validators_data.get_delta_period()
-    print(reward_period, delta_period)
+    print(f'New times for SM: {reward_period}, {delta_period}')
 
 
 def create_dirs():

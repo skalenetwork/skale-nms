@@ -166,7 +166,8 @@ def get_month_metrics_for_node(my_id, target_id, start_date, end_date) -> dict:
             Report.stamp >= start_date) & (
             Report.stamp <= end_date) & (
             Report.latency >= 0))
-
+    if downtime_results[0].sum is None:
+        print(f'--- !!! Sum result from db is None !!!')
     downtime = int(
         downtime_results[0].sum) if downtime_results[0].sum is not None else 0
     latency = latency_results[0].avg if latency_results[0].avg is not None else 0

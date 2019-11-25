@@ -90,6 +90,7 @@ def get_containers_healthcheck(host, test_mode):
     except Exception as err:
         logger.error(err)
         print(f'Could not get data from {url}')
+        return 1
 
     if response.status_code != requests.codes.ok:
         print('Request failed, status code:', response.status_code)

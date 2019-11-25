@@ -121,7 +121,11 @@ class Monitor(base_agent.BaseAgent):
         for node in nodes_for_report:
             reward_period = self.skale.validators_data.get_reward_period()
             start_date = node['rep_date'] - reward_period
+
             try:
+                self.logger.info('Getting month metrics:')
+                self.logger.info(f'Start date: {datetime.utcfromtimestamp(start_date)}')
+                self.logger.info(f'End date: {datetime.utcfromtimestamp(node["rep_date"])}')
                 metrics = db.get_month_metrics_for_node(self.id, node['id'],
                                                         datetime.utcfromtimestamp(start_date),
                                                         datetime.utcfromtimestamp(node['rep_date']))
@@ -170,7 +174,8 @@ class Monitor(base_agent.BaseAgent):
         try:
             self.nodes = self.get_validated_nodes()
         except Exception as err:
-            self.logger.error(f'Failed to get list of monitored nodes {str(err)}')
+            self.logger.error(f'Failed to get list of monitored nodes. Error: {err}')
+            self.logger.info('Monitoring nodes from previous job list')
 
         self.validate_nodes(self.nodes)
 
