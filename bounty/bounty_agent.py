@@ -45,7 +45,7 @@ class BountyCollector(base_agent.BaseAgent):
         try:
             self.collect_last_bounty_logs()
         except Exception as err:
-            self.logger.exception(f'Error occurred while checking logs from blockchain: {err} ')
+            self.logger.error(f'Error occurred while checking logs from blockchain: {err} ')
         end = time.time()
         self.logger.info(f'Check completed. Execution time = {end - start}')
         self.scheduler = BackgroundScheduler(timezone='UTC')
@@ -123,8 +123,11 @@ class BountyCollector(base_agent.BaseAgent):
         self.logger.info(f'ETH balance: {eth_bal}')
         self.logger.info(f'SKL balance: {skl_bal}')
         self.logger.debug(f'ETH difference: {eth_bal - eth_bal_before}')
+        try:
+            db.save_bounty_stats(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_bal)
+        except Exception as err:
+            self.logger.error(f'Cannot save getBounty stats. Error: {err}')
 
-        db.save_bounty_stats(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_bal)
         self.logger.info(LONG_DOUBLE_LINE)
 
         if receipt['status'] == 1:
@@ -134,10 +137,13 @@ class BountyCollector(base_agent.BaseAgent):
             self.logger.info(h_receipt)
             # self.logger.info(LONG_LINE)
             args = h_receipt[0]['args']
-            db.save_bounty_event(datetime.utcfromtimestamp(args['time']), str(tx_hash),
-                                 receipt['blockNumber'], args['nodeIndex'], args['bounty'],
-                                 args['averageDowntime'], args['averageLatency'],
-                                 receipt['gasUsed'])
+            try:
+                db.save_bounty_event(datetime.utcfromtimestamp(args['time']), str(tx_hash),
+                                     receipt['blockNumber'], args['nodeIndex'], args['bounty'],
+                                     args['averageDowntime'], args['averageLatency'],
+                                     receipt['gasUsed'])
+            except Exception as err:
+                self.logger.error(f'Cannot save getBounty event. Error: {err}')
         else:
             self.logger.info('The bounty was not received - transaction failed')
             # TODO: notify Skale Admin
