@@ -27,6 +27,7 @@ from datetime import datetime, timedelta
 
 from filelock import FileLock, Timeout
 from skale.utils.web3_utils import wait_receipt
+from web3.logs import DISCARD
 
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -72,7 +73,7 @@ class BountyCollector(base_agent.BaseAgent):
 
             if end_chunk_block_number > last_block_number:
                 end_chunk_block_number = last_block_number + 1
-            event_filter = self.skale.manager.contract.events.BountyGot().createFilter(
+            event_filter = self.skale.manager.contract.events.BountyGot.createFilter(
                 argument_filters={'nodeIndex': self.id},
                 fromBlock=hex(start_block_number),
                 toBlock=hex(end_chunk_block_number))
@@ -116,7 +117,7 @@ class BountyCollector(base_agent.BaseAgent):
 
         tx_hash = receipt['transactionHash'].hex()
         self.logger.info(f'tx hash: {tx_hash}')
-        self.logger.info(f'Receipt: {receipt}')
+        self.logger.debug(f'Receipt: {receipt}')
 
         eth_bal = self.skale.web3.eth.getBalance(address)
         skl_bal = self.skale.token.get_balance(address)
@@ -132,7 +133,8 @@ class BountyCollector(base_agent.BaseAgent):
 
         if receipt['status'] == 1:
             self.logger.info('The bounty was successfully received')
-            h_receipt = self.skale.manager.contract.events.BountyGot().processReceipt(receipt)
+            h_receipt = self.skale.manager.contract.events.BountyGot().processReceipt(
+                receipt, errors=DISCARD)
             self.logger.info(LONG_LINE)
             self.logger.info(h_receipt)
             # self.logger.info(LONG_LINE)
