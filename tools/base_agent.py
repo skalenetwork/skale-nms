@@ -54,10 +54,7 @@ class BaseAgent:
         self.logger.info(f'Node ID = {self.id}')
         self.logger.info(f'Initialization of {self.agent_name} is completed')
 
-    @tenacity.retry(
-        wait=tenacity.wait_fixed(10),
-        retry=tenacity.retry_if_exception_type(KeyError) | tenacity.retry_if_exception_type(
-            FileNotFoundError))
+    @tenacity.retry(wait=tenacity.wait_fixed(10))
     def get_id_from_config(self, node_config_filepath) -> int:
         """Gets node ID from config file for agent initialization"""
         try:

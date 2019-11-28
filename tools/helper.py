@@ -50,7 +50,6 @@ def init_skale(node_id):
 
 
 def get_local_wallet_filepath(node_id):
-
     if node_id is None:  # production
         return LOCAL_WALLET_FILEPATH
     else:  # test
@@ -72,7 +71,7 @@ def find_block_for_tx_stamp(skale, tx_stamp, lo=0, hi=None):
         else:
             return mid
         count += 1
-    print(f'number of iters = {count}')
+    print(f'Number of iterations = {count}')
     return lo
 
 

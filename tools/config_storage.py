@@ -37,12 +37,6 @@ class ConfigStorage:
         self.config[key] = value
         self.update(self.config)
 
-    def update_item_field(self, key, field, value):
-        item = self.config[key]
-        item[field] = value
-        self.config[key] = item
-        self.update(self.config)
-
     def update(self, new_config):
         config = self._read_config()
         config.update(new_config)
