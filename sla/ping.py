@@ -45,9 +45,3 @@ def get_node_metrics(host) -> dict:
         # print('Ping ok!')
 
     return {'is_offline': is_dead, 'latency': latency}
-
-
-if __name__ == '__main__':
-
-    host = '8.8.8.8'
-    get_node_metrics(host)

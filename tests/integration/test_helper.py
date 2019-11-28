@@ -33,5 +33,6 @@ def test_find_block_for_tx_stamp():
     block_timestamp = str(datetime.utcfromtimestamp(block_data['timestamp']))
 
     assert type(last_block_number) == int
+    assert last_block_number >= 0
     assert last_block_number >= block_number
     assert datetime.strptime(block_timestamp, '%Y-%m-%d %H:%M:%S') <= utc_now

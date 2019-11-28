@@ -58,7 +58,7 @@ def generate_local_wallet(node_id):
     account = skale.web3.eth.account.create()
     private_key = account.privateKey.hex()
     account_dict = {'address': account.address, 'private_key': private_key}
-    print('---- account dict:')
+    print('--- account dict:')
     print(account_dict)
 
     local_wallet_config = ConfigStorage(LOCAL_WALLET_FILEPATH + str(node_id))
@@ -106,7 +106,7 @@ def create_node(node_id):
         print(f'create_node receipt: {receipt}')
 
     else:
-        print('Insufficient funds!')
+        print('Insufficient funds on sender account!')
 
 
 def get_active_ids():

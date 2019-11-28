@@ -135,6 +135,7 @@ class Monitor(base_agent.BaseAgent):
                 latencies.append(metrics['latency'])
             except Exception as err:
                 self.logger.error(f'Failed getting month metrics from db: {err}')
+                self.logger.info(f'Report on node id = {node["id"]} cannot be sent!')
         if len(ids) == len(downtimes) == len(latencies) and len(ids) != 0:
             lock = FileLock(LOCK_FILEPATH, timeout=1)
             self.logger.debug('Acquiring lock')
@@ -162,7 +163,7 @@ class Monitor(base_agent.BaseAgent):
             except Timeout:
                 self.logger.info('Another agent currently holds the lock')
             except Exception as err:
-                self.logger.exception(f'Failed send report. Error: {err}')
+                self.logger.exception(f'Failed to send report. Error: {err}')
 
         return err_status
 

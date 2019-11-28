@@ -2,3 +2,4 @@
 omit =
     tests/*
     tools/skale_mock.py
+    tools/configs/*

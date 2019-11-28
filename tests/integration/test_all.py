@@ -19,7 +19,7 @@
 
 import time
 from datetime import datetime
-
+from tools.configs import LONG_LINE
 import pytest
 
 from bounty import bounty_agent
@@ -81,9 +81,16 @@ def test_nodes_are_created():
     assert nodes_count_after == nodes_count_before + nodes_count_to_add
 
 
+def test_check_node_id(bounty_collector):
+    skale = bounty_collector.skale
+    assert check_node_id(skale, 0)
+    assert check_node_id(skale, 1)
+    assert not check_node_id(skale, 100)
+
+
 def test_get_validated_nodes(monitor):
     nodes = monitor.get_validated_nodes()
-    print(f'nodes = {nodes}')
+    print(f'\n Validated nodes = {nodes}')
     assert type(nodes) is list
     assert any(node.get('id') == cur_node_id + 1 for node in nodes)
 
@@ -93,29 +100,20 @@ def test_get_reported_nodes_neg(monitor):
     nodes = monitor.get_validated_nodes()
     reported_nodes = monitor.get_reported_nodes(nodes)
     assert type(reported_nodes) is list
-    print(f'rep nodes = {reported_nodes}')
+    print(f'\nrep nodes = {reported_nodes}')
     assert len(reported_nodes) == 0
 
-    print('\n+++++++++++++++++++++++++++++')
-    print('report date:')
-    print(datetime.utcfromtimestamp(nodes[0]['rep_date']))
-    print('now:')
-    print(datetime.utcnow())
+    print(LONG_LINE)
+    print(f'report date: {datetime.utcfromtimestamp(nodes[0]["rep_date"])}')
+    print('now: {datetime.utcnow()}')
 
     fake_nodes = [{'id': 1, 'ip': FAKE_IP, 'rep_date': FAKE_REPORT_DATE}]
-    err_send_verdicts_count = monitor.send_reports(fake_nodes)
-    assert err_send_verdicts_count == 1
+    err_status = monitor.send_reports(fake_nodes)
+    assert err_status == 1
 
     fake_nodes = [{'id': 2, 'ip': FAKE_IP, 'rep_date': FAKE_REPORT_DATE}]
-    err_send_verdicts_count = monitor.send_reports(fake_nodes)
-    assert err_send_verdicts_count == 1
-
-
-def test_check_my_id(bounty_collector):
-    skale = bounty_collector.skale
-    assert check_node_id(skale, 0)
-    assert check_node_id(skale, 1)
-    assert not check_node_id(skale, 100)
+    err_status = monitor.send_reports(fake_nodes)
+    assert err_status == 1
 
 
 def test_get_bounty_neg(bounty_collector):
@@ -127,11 +125,9 @@ def test_get_reported_nodes_pos(monitor):
     print(f'Sleep for {TEST_EPOCH - TEST_DELTA} sec')
     time.sleep(TEST_EPOCH - TEST_DELTA)
     nodes = monitor.get_validated_nodes()
-    print('\n+++++++++++++++++++++++++++++')
-    print('report date:')
-    print(datetime.utcfromtimestamp(nodes[0]['rep_date']))
-    print('now:')
-    print(datetime.utcnow())
+    print(LONG_LINE)
+    print(f'report date: {datetime.utcfromtimestamp(nodes[0]["rep_date"])}')
+    print(f'now: {datetime.utcnow()}')
     reported_nodes = monitor.get_reported_nodes(nodes)
     assert type(reported_nodes) is list
     print(f'rep nodes = {reported_nodes}')
@@ -140,12 +136,17 @@ def test_get_reported_nodes_pos(monitor):
     # assert reported_nodes[0]['id'] == 1
     assert any(node.get('id') == cur_node_id + 1 for node in reported_nodes)
 
-    err_send_verdicts_status = monitor.send_reports(reported_nodes)
-    assert err_send_verdicts_status == 0
+
+def test_send_reports_pos(monitor):
+    reported_nodes = monitor.get_reported_nodes(monitor.nodes)
+    db.clear_all_reports()
+    assert monitor.send_reports(reported_nodes) == 0
+    # monitor.monitor_job()
+    # assert db.get_count_of_report_records() == 1
 
 
 def test_bounty_job_saves_data(bounty_collector):
-    print(f'Sleep for {TEST_DELTA} sec')
+    print(f'\nSleep for {TEST_DELTA} sec')
     time.sleep(TEST_DELTA + 60)  # Added temporarily delay to wait next block after end of epoch
     db.clear_all_bounty_receipts()
     bounty_collector.job()
@@ -154,7 +155,7 @@ def test_bounty_job_saves_data(bounty_collector):
 
 @pytest.mark.skip(reason="skip to save time")
 def test_get_bounty_pos(bounty_collector):
-    print(f'Sleep for {TEST_EPOCH} sec')
+    print(f'\nSleep for {TEST_EPOCH} sec')
     time.sleep(TEST_EPOCH)
     db.clear_all_bounty_receipts()
     status = bounty_collector.get_bounty()
