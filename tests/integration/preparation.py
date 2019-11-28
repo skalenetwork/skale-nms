@@ -102,7 +102,7 @@ def create_node(node_id):
         # create node
         res = skale.manager.create_node(IP_BASE + str(node_id), TEST_PORT,
                                         'node_' + str(node_id))
-        receipt = wait_receipt(skale.web3, res['tx'])
+        receipt = wait_receipt(skale.web3, res['tx'], retries=12, timeout=5)
         print(f'create_node receipt: {receipt}')
 
     else:
