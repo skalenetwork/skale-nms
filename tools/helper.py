@@ -27,7 +27,7 @@ from skale.utils.web3_utils import init_web3
 from skale.wallets import RPCWallet, Web3Wallet
 
 from tools.config_storage import ConfigStorage
-from tools.configs import LOCAL_WALLET_FILEPATH
+from tools.configs import ENV, LOCAL_WALLET_FILEPATH
 from tools.configs.web3 import ABI_FILEPATH, ENDPOINT
 
 PORT = '3007'
@@ -36,9 +36,9 @@ HEALTH_REQ_URL = '/healthchecks/containers'
 logger = logging.getLogger(__name__)
 
 
-def init_skale(node_id):
+def init_skale(node_id=None):
     if node_id is None:
-        wallet = RPCWallet(os.environ['TM_URL'])
+        wallet = RPCWallet(os.environ['TM_URL']) if ENV != 'DEV' else None
     else:
         local_wallet_filepath = get_local_wallet_filepath(node_id)
         local_wallet = ConfigStorage(local_wallet_filepath)

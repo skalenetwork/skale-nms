@@ -1,5 +1,7 @@
 import os
 
+ENV = os.environ.get('ENV')
+
 LONG_LINE = '-' * 100
 LONG_DOUBLE_LINE = '=' * 100
 

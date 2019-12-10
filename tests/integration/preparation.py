@@ -19,15 +19,13 @@
 
 import os
 
-from skale import Skale
 from skale.utils.account_tools import send_ether, send_tokens
-from skale.utils.web3_utils import init_web3, wait_receipt
+from skale.utils.web3_utils import wait_receipt
 from skale.wallets import Web3Wallet
 
 from tools.config_storage import ConfigStorage
 from tools.configs import LOCAL_WALLET_FILEPATH
-from tools.configs.web3 import ABI_FILEPATH, ENDPOINT
-from tools.helper import get_local_wallet_filepath
+from tools.helper import init_skale
 
 DIR_LOG = '/skale_node_data/log'
 DIR_ABI = '/skale_vol/contracts_info'
@@ -37,19 +35,6 @@ SKL_DEPOSIT = 100
 ETH_AMOUNT = 1
 IP_BASE = '10.1.0.'
 TEST_PORT = 123
-
-
-def init_skale(node_id=None):
-    if node_id is None:
-        wallet = None
-    else:
-        local_wallet_filepath = get_local_wallet_filepath(node_id)
-        local_wallet = ConfigStorage(local_wallet_filepath)
-        private_key = local_wallet['private_key']
-        web3 = init_web3(ENDPOINT)
-        wallet = Web3Wallet(private_key, web3)
-    skale = Skale(ENDPOINT, ABI_FILEPATH, wallet)
-    return skale
 
 
 def generate_local_wallet(node_id):
@@ -102,7 +87,7 @@ def create_node(node_id):
         # create node
         res = skale.manager.create_node(IP_BASE + str(node_id), TEST_PORT,
                                         'node_' + str(node_id))
-        receipt = wait_receipt(skale.web3, res['tx'], retries=12, timeout=5)
+        receipt = wait_receipt(skale.web3, res['tx'], retries=30, timeout=6)
         print(f'create_node receipt: {receipt}')
 
     else:

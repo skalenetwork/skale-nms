@@ -1,9 +1,10 @@
 import pytest
-from tests.integration.preparation import init_skale
+
 from tools.base_agent import BaseAgent
 from tools.config_storage import ConfigStorage
 from tools.configs import NODE_CONFIG_FILEPATH
 from tools.exceptions import NodeNotFoundException
+from tools.helper import init_skale
 
 
 @pytest.fixture(scope="module")
