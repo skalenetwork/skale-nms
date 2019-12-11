@@ -4,7 +4,7 @@
 # Use "p" parameter to publish after build
 
 VERSION=$(cat VERSION)
-TAG=$VERSION-beta.1
+TAG=$VERSION-test.0
 LINE="----------------------------------------"
 
 echo "Building SKALE SLA agent v${VERSION}..."
