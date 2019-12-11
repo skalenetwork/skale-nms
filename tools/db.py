@@ -143,13 +143,6 @@ def save_bounty_stats(
 def get_month_metrics_for_node(my_id, target_id, start_date, end_date) -> dict:
     """ Returns a dict with aggregated month metrics - downtime and latency"""
 
-    # results = Report.select(fn.SUM(Report.is_offline).alias('sum'),
-    #                         fn.AVG(Report.latency).alias('avg')).where((
-    #                             Report.my_id == my_id) & (Report.target_id == target_id) & (
-    #                             Report.stamp >= start_date) & (Report.stamp <= end_date))
-    # downtime = int(results[0].sum) if results[0].sum is not None else 0
-    # latency = results[0].avg if results[0].avg is not None else 0
-
     downtime_results = Report.select(
         fn.SUM(
             Report.is_offline).alias('sum')).where(
@@ -167,7 +160,7 @@ def get_month_metrics_for_node(my_id, target_id, start_date, end_date) -> dict:
             Report.stamp <= end_date) & (
             Report.latency >= 0))
     if downtime_results[0].sum is None:
-        print(f'--- Sum result from db is None')
+        print(f'Sum result from db is None')
     downtime = int(
         downtime_results[0].sum) if downtime_results[0].sum is not None else 0
     latency = latency_results[0].avg if latency_results[0].avg is not None else 0
