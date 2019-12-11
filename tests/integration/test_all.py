@@ -164,11 +164,11 @@ def test_get_bounty_pos(bounty_collector):
 
 
 def test_get_bounty_second_time(bounty_collector):
+    db.clear_all_bounty_receipts()
     skale = bounty_collector.skale
     bounty_collector2 = bounty_agent.BountyCollector(skale, cur_node_id)
     print(f'\nSleep for {TEST_EPOCH} sec')
     time.sleep(TEST_EPOCH + 60)  # Added temporarily delay to wait next block after end of epoch
-    db.clear_all_bounty_receipts()
     bounty_collector2.job()
     assert db.get_count_of_bounty_receipt_records() == 1
 
