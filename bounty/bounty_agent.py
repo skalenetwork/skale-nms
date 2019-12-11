@@ -34,7 +34,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from tools import base_agent, db
 from tools.configs import BLOCK_STEP_SIZE, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE, REWARD_DELAY
 from tools.exceptions import GetBountyTxFailedException, IsNotTimeException
-from tools.helper import find_block_for_tx_stamp, init_skale
+from tools.helper import find_block_for_tx_stamp, run_agent
 
 
 class BountyCollector(base_agent.BaseAgent):
@@ -213,12 +213,4 @@ class BountyCollector(base_agent.BaseAgent):
 
 
 if __name__ == '__main__':
-
-    if len(sys.argv) > 1 and sys.argv[1].isdecimal():
-        node_id = int(sys.argv[1])
-    else:
-        node_id = None
-
-    skale = init_skale(node_id)
-    bounty_collector = BountyCollector(skale, node_id)
-    bounty_collector.run()
+    run_agent(sys.argv, BountyCollector)

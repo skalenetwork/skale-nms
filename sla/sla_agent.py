@@ -38,7 +38,7 @@ from sla import ping
 from tools import base_agent, db
 from tools.configs import GOOD_IP, LOCK_FILEPATH, MONITOR_PERIOD, REPORT_PERIOD
 from tools.configs import LONG_DOUBLE_LINE, LONG_LINE
-from tools.helper import get_containers_healthcheck, init_skale
+from tools.helper import get_containers_healthcheck, run_agent
 
 
 class Monitor(base_agent.BaseAgent):
@@ -216,11 +216,4 @@ class Monitor(base_agent.BaseAgent):
 
 if __name__ == '__main__':
 
-    if len(sys.argv) > 1 and sys.argv[1].isdecimal():
-        node_id = int(sys.argv[1])
-    else:
-        node_id = None
-
-    skale = init_skale(node_id)
-    monitor = Monitor(skale, node_id)
-    monitor.run()
+    run_agent(sys.argv, Monitor)
