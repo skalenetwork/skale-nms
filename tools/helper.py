@@ -27,7 +27,7 @@ from skale.utils.web3_utils import init_web3
 from skale.wallets import RPCWallet, Web3Wallet
 
 from tools.config_storage import ConfigStorage
-from tools.configs import LOCAL_WALLET_FILEPATH
+from tools.configs import ENV, LOCAL_WALLET_FILEPATH
 from tools.configs.web3 import ABI_FILEPATH, ENDPOINT
 
 PORT = '3007'
@@ -36,9 +36,9 @@ HEALTH_REQ_URL = '/healthchecks/containers'
 logger = logging.getLogger(__name__)
 
 
-def init_skale(node_id):
+def init_skale(node_id=None):
     if node_id is None:
-        wallet = RPCWallet(os.environ['TM_URL'])
+        wallet = RPCWallet(os.environ['TM_URL']) if ENV != 'DEV' else None
     else:
         local_wallet_filepath = get_local_wallet_filepath(node_id)
         local_wallet = ConfigStorage(local_wallet_filepath)
@@ -49,8 +49,18 @@ def init_skale(node_id):
     return skale
 
 
-def get_local_wallet_filepath(node_id):
+def run_agent(args, agent):
+    if len(args) > 1 and args[1].isdecimal():
+        node_id = int(args[1])
+    else:
+        node_id = None
 
+    skale = init_skale(node_id)
+    bounty_collector = agent(skale, node_id)
+    bounty_collector.run()
+
+
+def get_local_wallet_filepath(node_id):
     if node_id is None:  # production
         return LOCAL_WALLET_FILEPATH
     else:  # test
@@ -72,7 +82,7 @@ def find_block_for_tx_stamp(skale, tx_stamp, lo=0, hi=None):
         else:
             return mid
         count += 1
-    print(f'number of iters = {count}')
+    print(f'Number of iterations = {count}')
     return lo
 
 
@@ -90,6 +100,7 @@ def get_containers_healthcheck(host, test_mode):
     except Exception as err:
         logger.error(err)
         print(f'Could not get data from {url}')
+        return 1
 
     if response.status_code != requests.codes.ok:
         print('Request failed, status code:', response.status_code)

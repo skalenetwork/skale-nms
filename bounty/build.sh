@@ -4,7 +4,7 @@
 # Use "p" parameter to publish after build
 
 VERSION=$(cat VERSION)
-TAG=$VERSION-test
+TAG=$VERSION-test.0
 LINE="----------------------------------------"
 
 echo "Building SKALE Bounty agent v${VERSION}..."

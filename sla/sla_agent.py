@@ -38,7 +38,7 @@ from sla import ping
 from tools import base_agent, db
 from tools.configs import GOOD_IP, LOCK_FILEPATH, MONITOR_PERIOD, REPORT_PERIOD
 from tools.configs import LONG_DOUBLE_LINE, LONG_LINE
-from tools.helper import get_containers_healthcheck, init_skale
+from tools.helper import get_containers_healthcheck, run_agent
 
 
 class Monitor(base_agent.BaseAgent):
@@ -121,7 +121,11 @@ class Monitor(base_agent.BaseAgent):
         for node in nodes_for_report:
             reward_period = self.skale.validators_data.get_reward_period()
             start_date = node['rep_date'] - reward_period
+
             try:
+                self.logger.info('Getting month metrics:')
+                self.logger.info(f'Start date: {datetime.utcfromtimestamp(start_date)}')
+                self.logger.info(f'End date: {datetime.utcfromtimestamp(node["rep_date"])}')
                 metrics = db.get_month_metrics_for_node(self.id, node['id'],
                                                         datetime.utcfromtimestamp(start_date),
                                                         datetime.utcfromtimestamp(node['rep_date']))
@@ -131,6 +135,7 @@ class Monitor(base_agent.BaseAgent):
                 latencies.append(metrics['latency'])
             except Exception as err:
                 self.logger.error(f'Failed getting month metrics from db: {err}')
+                self.logger.info(f'Report on node id = {node["id"]} cannot be sent!')
         if len(ids) == len(downtimes) == len(latencies) and len(ids) != 0:
             lock = FileLock(LOCK_FILEPATH, timeout=1)
             self.logger.debug('Acquiring lock')
@@ -158,7 +163,7 @@ class Monitor(base_agent.BaseAgent):
             except Timeout:
                 self.logger.info('Another agent currently holds the lock')
             except Exception as err:
-                self.logger.exception(f'Failed send report. Error: {err}')
+                self.logger.exception(f'Failed to send report. Error: {err}')
 
         return err_status
 
@@ -170,7 +175,8 @@ class Monitor(base_agent.BaseAgent):
         try:
             self.nodes = self.get_validated_nodes()
         except Exception as err:
-            self.logger.error(f'Failed to get list of monitored nodes {str(err)}')
+            self.logger.error(f'Failed to get list of monitored nodes. Error: {err}')
+            self.logger.info('Monitoring nodes from previous job list')
 
         self.validate_nodes(self.nodes)
 
@@ -210,11 +216,4 @@ class Monitor(base_agent.BaseAgent):
 
 if __name__ == '__main__':
 
-    if len(sys.argv) > 1 and sys.argv[1].isdecimal():
-        node_id = int(sys.argv[1])
-    else:
-        node_id = None
-
-    skale = init_skale(node_id)
-    monitor = Monitor(skale, node_id)
-    monitor.run()
+    run_agent(sys.argv, Monitor)

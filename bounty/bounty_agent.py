@@ -27,13 +27,14 @@ from datetime import datetime, timedelta
 
 from filelock import FileLock, Timeout
 from skale.utils.web3_utils import wait_receipt
+from web3.logs import DISCARD
 
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
 from apscheduler.schedulers.background import BackgroundScheduler
 from tools import base_agent, db
 from tools.configs import BLOCK_STEP_SIZE, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE, REWARD_DELAY
 from tools.exceptions import GetBountyTxFailedException, IsNotTimeException
-from tools.helper import find_block_for_tx_stamp, init_skale
+from tools.helper import find_block_for_tx_stamp, run_agent
 
 
 class BountyCollector(base_agent.BaseAgent):
@@ -45,7 +46,7 @@ class BountyCollector(base_agent.BaseAgent):
         try:
             self.collect_last_bounty_logs()
         except Exception as err:
-            self.logger.exception(f'Error occurred while checking logs from blockchain: {err} ')
+            self.logger.error(f'Error occurred while checking logs from blockchain: {err} ')
         end = time.time()
         self.logger.info(f'Check completed. Execution time = {end - start}')
         self.scheduler = BackgroundScheduler(timezone='UTC')
@@ -72,7 +73,7 @@ class BountyCollector(base_agent.BaseAgent):
 
             if end_chunk_block_number > last_block_number:
                 end_chunk_block_number = last_block_number + 1
-            event_filter = self.skale.manager.contract.events.BountyGot().createFilter(
+            event_filter = self.skale.manager.contract.events.BountyGot.createFilter(
                 argument_filters={'nodeIndex': self.id},
                 fromBlock=hex(start_block_number),
                 toBlock=hex(end_chunk_block_number))
@@ -116,28 +117,35 @@ class BountyCollector(base_agent.BaseAgent):
 
         tx_hash = receipt['transactionHash'].hex()
         self.logger.info(f'tx hash: {tx_hash}')
-        self.logger.info(f'Receipt: {receipt}')
+        self.logger.debug(f'Receipt: {receipt}')
 
         eth_bal = self.skale.web3.eth.getBalance(address)
         skl_bal = self.skale.token.get_balance(address)
         self.logger.info(f'ETH balance: {eth_bal}')
         self.logger.info(f'SKL balance: {skl_bal}')
         self.logger.debug(f'ETH difference: {eth_bal - eth_bal_before}')
+        try:
+            db.save_bounty_stats(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_bal)
+        except Exception as err:
+            self.logger.error(f'Cannot save getBounty stats. Error: {err}')
 
-        db.save_bounty_stats(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_bal)
         self.logger.info(LONG_DOUBLE_LINE)
 
         if receipt['status'] == 1:
             self.logger.info('The bounty was successfully received')
-            h_receipt = self.skale.manager.contract.events.BountyGot().processReceipt(receipt)
+            h_receipt = self.skale.manager.contract.events.BountyGot().processReceipt(
+                receipt, errors=DISCARD)
             self.logger.info(LONG_LINE)
             self.logger.info(h_receipt)
             # self.logger.info(LONG_LINE)
             args = h_receipt[0]['args']
-            db.save_bounty_event(datetime.utcfromtimestamp(args['time']), str(tx_hash),
-                                 receipt['blockNumber'], args['nodeIndex'], args['bounty'],
-                                 args['averageDowntime'], args['averageLatency'],
-                                 receipt['gasUsed'])
+            try:
+                db.save_bounty_event(datetime.utcfromtimestamp(args['time']), str(tx_hash),
+                                     receipt['blockNumber'], args['nodeIndex'], args['bounty'],
+                                     args['averageDowntime'], args['averageLatency'],
+                                     receipt['gasUsed'])
+            except Exception as err:
+                self.logger.error(f'Cannot save getBounty event. Error: {err}')
         else:
             self.logger.info('The bounty was not received - transaction failed')
             # TODO: notify Skale Admin
@@ -205,12 +213,4 @@ class BountyCollector(base_agent.BaseAgent):
 
 
 if __name__ == '__main__':
-
-    if len(sys.argv) > 1 and sys.argv[1].isdecimal():
-        node_id = int(sys.argv[1])
-    else:
-        node_id = None
-
-    skale = init_skale(node_id)
-    bounty_collector = BountyCollector(skale, node_id)
-    bounty_collector.run()
+    run_agent(sys.argv, BountyCollector)

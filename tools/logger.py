@@ -26,7 +26,7 @@ from logging import Formatter, StreamHandler
 from tools.configs.logs import LOG_BACKUP_COUNT, LOG_FILE_SIZE_BYTES, LOG_FOLDER, LOG_FORMAT
 
 
-def init_logger(log_file_path, agent_name):
+def init_logger(log_file_path):
     handlers = []
 
     formatter = Formatter(LOG_FORMAT)
@@ -40,7 +40,6 @@ def init_logger(log_file_path, agent_name):
 
     stream_handler = StreamHandler(sys.stderr)
     stream_handler.setFormatter(formatter)
-    # stream_handler.setLevel(logging.DEBUG)
     stream_handler.setLevel(logging.INFO)
     handlers.append(stream_handler)
 
@@ -49,7 +48,7 @@ def init_logger(log_file_path, agent_name):
 
 def init_agent_logger(agent_name, node_id):
     log_path = get_log_filepath(agent_name, node_id)
-    init_logger(log_path, agent_name)
+    init_logger(log_path)
     flock_logger = logging.getLogger('filelock')
     flock_logger.setLevel(logging.WARNING)
 
