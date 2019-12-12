@@ -44,13 +44,14 @@ To run tests locally, you need to have MySQL v5.7 installed and database 'db_ska
     DB_PASSWORD='YOUR_MYSQL_PASSWORD'
 
 As for using MySQL you have two options:
-1\. Use MySQL docker container (recommended). In this case:
+
+1.  Use MySQL docker container (recommended). In this case:
     \- install [Docker CE](https://docs.docker.com/install/) v18.06? (if you haven't it installed)
     \- run following command:
 
     docker run -d --restart=always --name skale-mysql -e MYSQL_ROOT_PASSWORD=$DB_ROOT_PASSWORD 
-    -e MYSQL_DATABASE=db_skale -e MYSQL_USER=$DB_USER -e MYSQL_PASSWORD=$DB_PASSWORD 
-    -v test_data/init.sql:/docker-entrypoint-initdb.d/init.sql -p 3307:3306  mysql/mysql-server:5.7
+    \-e MYSQL_DATABASE=db_skale -e MYSQL_USER=$DB_USER -e MYSQL_PASSWORD=$DB_PASSWORD 
+    \-v test_data/init.sql:/docker-entrypoint-initdb.d/init.sql -p 3307:3306  mysql/mysql-server:5.7
 
 2.  If you already have MySQL v5.7 installed on your PC - create db named 'db_skale' and tables with a help of this [init.sql](https://github.com/skalenetwork/skale-nms/blob/develop/test_data/init.sql) file. Keep in mind that SLA agent uses MySQL on port 3307 (not 3306)
 
@@ -100,13 +101,14 @@ To run tests locally, you need to have MySQL v5.7 installed and database 'db_ska
     DB_PASSWORD='YOUR_MYSQL_PASSWORD'
 
 As for using MySQL you have two options:
-1\. Use MySQL docker container (recommended). In this case:
+
+1.  Use MySQL docker container (recommended). In this case:
     \- install [Docker CE](https://docs.docker.com/install/) v18.06? (if you haven't it installed)
     \- run following command:
 
     docker run -d --restart=always --name skale-mysql -e MYSQL_ROOT_PASSWORD=$DB_ROOT_PASSWORD 
-    -e MYSQL_DATABASE=db_skale -e MYSQL_USER=$DB_USER -e MYSQL_PASSWORD=$DB_PASSWORD 
-    -v test_data/init.sql:/docker-entrypoint-initdb.d/init.sql -p 3307:3306  mysql/mysql-server:5.7
+    \-e MYSQL_DATABASE=db_skale -e MYSQL_USER=$DB_USER -e MYSQL_PASSWORD=$DB_PASSWORD 
+    \-v test_data/init.sql:/docker-entrypoint-initdb.d/init.sql -p 3307:3306  mysql/mysql-server:5.7
 
 2.  If you already have MySQL v5.7 installed on your PC - create db named 'db_skale' and tables with a help of this [init.sql](https://github.com/skalenetwork/skale-nms/blob/develop/test_data/init.sql) file. Keep in mind that SLA agent uses MySQL on port 3307 (not 3306)
 
@@ -145,7 +147,7 @@ _in process_
 ## For more information
 
 -   [SKALE Network Website](https://skale.network)
--   [SKALE Labs Twitter](https://twitter.com/skalelabs)
+-   [SKALE Network Twitter](https://twitter.com/SkaleNetwork)
 -   [SKALE Network Blog](https://skale.network/blog)
 
 Learn more about the SKALE community over on [Discord](http://skale.chat).
