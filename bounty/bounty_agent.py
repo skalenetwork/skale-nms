@@ -209,6 +209,7 @@ class BountyCollector(base_agent.BaseAgent):
         self.scheduler.add_listener(self.job_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
         self.scheduler.start()
         while True:
+            time.sleep(1)
             pass
 
 
