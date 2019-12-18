@@ -33,7 +33,8 @@ from web3.logs import DISCARD
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
 from apscheduler.schedulers.background import BackgroundScheduler
 from tools import base_agent, db
-from tools.configs import BLOCK_STEP_SIZE, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE, REWARD_DELAY
+from tools.configs import BLOCK_STEP_SIZE, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE, \
+    REWARD_DELAY, MISFIRE_GRACE_TIME
 from tools.exceptions import GetBountyTxFailedException, IsNotTimeException
 from tools.helper import find_block_for_tx_stamp, run_agent
 
@@ -52,7 +53,7 @@ class BountyCollector(base_agent.BaseAgent):
         self.logger.info(f'Check completed. Execution time = {end - start}')
         self.scheduler = BackgroundScheduler(
             timezone='UTC',
-            job_defaults={'misfire_grace_time': 365 * 24 * 60 * 60})
+            job_defaults={'misfire_grace_time': MISFIRE_GRACE_TIME})
 
     def get_reward_date(self):
         reward_period = self.skale.validators_data.get_reward_period()
