@@ -33,7 +33,8 @@ from web3.logs import DISCARD
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
 from apscheduler.schedulers.background import BackgroundScheduler
 from tools import base_agent, db
-from tools.configs import BLOCK_STEP_SIZE, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE, REWARD_DELAY
+from tools.configs import BLOCK_STEP_SIZE, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE, \
+    REWARD_DELAY, MISFIRE_GRACE_TIME
 from tools.exceptions import GetBountyTxFailedException, IsNotTimeException
 from tools.helper import find_block_for_tx_stamp, run_agent
 
@@ -50,7 +51,9 @@ class BountyCollector(base_agent.BaseAgent):
             self.logger.error(f'Error occurred while checking logs from blockchain: {err} ')
         end = time.time()
         self.logger.info(f'Check completed. Execution time = {end - start}')
-        self.scheduler = BackgroundScheduler(timezone='UTC')
+        self.scheduler = BackgroundScheduler(
+            timezone='UTC',
+            job_defaults={'coalesce': True, 'misfire_grace_time': MISFIRE_GRACE_TIME})
 
     def get_reward_date(self):
         reward_period = self.skale.validators_data.get_reward_period()
@@ -137,7 +140,6 @@ class BountyCollector(base_agent.BaseAgent):
                 receipt, errors=DISCARD)
             self.logger.info(LONG_LINE)
             self.logger.info(h_receipt)
-            # self.logger.info(LONG_LINE)
             args = h_receipt[0]['args']
             try:
                 db.save_bounty_event(datetime.utcfromtimestamp(args['time']), str(tx_hash),
