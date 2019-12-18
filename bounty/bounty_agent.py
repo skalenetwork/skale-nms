@@ -53,7 +53,7 @@ class BountyCollector(base_agent.BaseAgent):
         self.logger.info(f'Check completed. Execution time = {end - start}')
         self.scheduler = BackgroundScheduler(
             timezone='UTC',
-            job_defaults={'misfire_grace_time': MISFIRE_GRACE_TIME})
+            job_defaults={'coalesce': True, 'misfire_grace_time': MISFIRE_GRACE_TIME})
 
     def get_reward_date(self):
         reward_period = self.skale.validators_data.get_reward_period()
