@@ -54,7 +54,10 @@ class BaseAgent:
         self.logger.info(f'Node ID = {self.id}')
         self.logger.info(f'Initialization of {self.agent_name} is completed')
 
-    @tenacity.retry(wait=tenacity.wait_fixed(20))
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(20),
+        retry=tenacity.retry_if_exception_type(KeyError) | tenacity.retry_if_exception_type(
+            FileNotFoundError))
     def get_id_from_config(self, node_config_filepath) -> int:
         """Gets node ID from config file for agent initialization"""
         try:
@@ -66,6 +69,3 @@ class BaseAgent:
             self.logger.warning(
                 f'Cannot read a node id from config file - is the node already registered?')
             raise err
-        # except Exception as err:
-        #     self.logger.exception(f'Cannot read config from the file: {err}')
-        #     raise err

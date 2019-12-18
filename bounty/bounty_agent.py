@@ -25,6 +25,7 @@ import sys
 import time
 from datetime import datetime, timedelta
 
+import tenacity
 from filelock import FileLock, Timeout
 from skale.utils.web3_utils import wait_receipt
 from web3.logs import DISCARD
@@ -66,7 +67,6 @@ class BountyCollector(base_agent.BaseAgent):
             start_block_number = last_block_number_in_db + 1
         count = 0
         while True:
-
             last_block_number = self.skale.web3.eth.blockNumber
             self.logger.debug(f'last block = {last_block_number}')
             end_chunk_block_number = start_block_number + BLOCK_STEP_SIZE - 1
@@ -153,11 +153,12 @@ class BountyCollector(base_agent.BaseAgent):
 
         return receipt['status']
 
+    @tenacity.retry(wait=tenacity.wait_fixed(60),
+                    retry=tenacity.retry_if_exception_type(IsNotTimeException))
     def job(self) -> None:
         """ Periodic job"""
+        self.logger.info(f'Job started')
         utc_now = datetime.utcnow()
-        self.logger.debug('Checking my reward date...')
-        self.logger.debug(f'Now (UTC): {utc_now}')
 
         try:
             reward_date = self.get_reward_date()
@@ -172,6 +173,7 @@ class BountyCollector(base_agent.BaseAgent):
         self.logger.info(f'Reward date: {reward_date}')
         self.logger.info(f'Timestamp: {block_timestamp}')
         if reward_date > block_timestamp:
+            self.logger.info('Current block timestamp is less than reward time. Will try in 1 min')
             raise IsNotTimeException(Exception)
 
         if utc_now >= reward_date:
@@ -180,8 +182,6 @@ class BountyCollector(base_agent.BaseAgent):
     def job_listener(self, event):
         if event.exception:
             self.logger.info('The job failed')
-            if type(event.exception) == IsNotTimeException:
-                self.logger.debug('It\'s not time yet for reward - wait for current block is mined')
             utc_now = datetime.utcnow()
             self.scheduler.add_job(self.job, 'date', run_date=utc_now + timedelta(seconds=60))
             self.logger.debug(self.scheduler.get_jobs())
@@ -209,6 +209,7 @@ class BountyCollector(base_agent.BaseAgent):
         self.scheduler.add_listener(self.job_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
         self.scheduler.start()
         while True:
+            time.sleep(1)
             pass
 
 
