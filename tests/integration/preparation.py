@@ -19,122 +19,83 @@
 
 import os
 
-import skale.utils.helper as Helper
-from skale.utils.helper import await_receipt, private_key_to_address
+from skale.utils.account_tools import send_ether, send_tokens
+from skale.utils.web3_utils import wait_receipt
+from skale.wallets import Web3Wallet
 
-from tools.configs import LOCAL_WALLET_FILEPATH
 from tools.config_storage import ConfigStorage
+from tools.configs import LOCAL_WALLET_FILEPATH
 from tools.helper import init_skale
 
 DIR_LOG = '/skale_node_data/log'
 DIR_ABI = '/skale_vol/contracts_info'
 TEST_EPOCH = 200
 TEST_DELTA = 100
-
-skale = init_skale()
-
-
-def get_eth_nonce(web3, address):
-    return web3.eth.getTransactionCount(address)
-
-
-def get_nonce(skale, address):
-    lib_nonce = skale.nonces.get(address)
-    if not lib_nonce:
-        lib_nonce = get_eth_nonce(skale.web3, address)
-        skale.nonces.get(address)
-    else:
-        lib_nonce += lib_nonce
-    return lib_nonce
-
-
-def sign_and_send(skale, method, gas_amount, wallet):
-    eth_nonce = get_nonce(skale, wallet['address'])
-    txn = method.buildTransaction({
-        'gas': gas_amount,
-        'nonce': eth_nonce
-    })
-    signed_txn = skale.web3.eth.account.signTransaction(txn, private_key=wallet['private_key'])
-    tx = skale.web3.eth.sendRawTransaction(signed_txn.rawTransaction)
-    print(f'{method.__class__.__name__} - transaction_hash: {skale.web3.toHex(tx)}')
-    return tx
+SKL_DEPOSIT = 100
+ETH_AMOUNT = 1
+IP_BASE = '10.1.0.'
+TEST_PORT = 123
 
 
 def generate_local_wallet(node_id):
+    skale = init_skale()
     print('generating local wallet')
     account = skale.web3.eth.account.create()
     private_key = account.privateKey.hex()
     account_dict = {'address': account.address, 'private_key': private_key}
-    print('---- account dict:')
+    print('--- account dict:')
     print(account_dict)
 
     local_wallet_config = ConfigStorage(LOCAL_WALLET_FILEPATH + str(node_id))
     local_wallet_config.update(account_dict)
-
-    print(f'local wallet address: {account.address}')
     return {'address': account.address}
+
+
+def init_skale_with_base_wallet():
+    skale = init_skale()
+    eth_private_key = os.environ.get('ETH_PRIVATE_KEY')
+    sender_wallet = Web3Wallet(eth_private_key, skale.web3)
+    skale.wallet = sender_wallet
+    return skale
 
 
 def create_node(node_id):
 
-    deposit = 100000000000000000000  # 100 SKL
-    eth_amount = 10000000000000000000  # 10 ETH
-
     generate_local_wallet(node_id)
 
-    wallet = ConfigStorage(LOCAL_WALLET_FILEPATH + str(node_id))
-    address = wallet['address']
+    base_skale = init_skale_with_base_wallet()
+    sender_wallet = base_skale.wallet
 
-    print(f'loc_wal = {LOCAL_WALLET_FILEPATH}')
-
-    eth_private_key = os.environ.get('ETH_PRIVATE_KEY')
-    eth_base_account = Helper.private_key_to_address(eth_private_key)
-    eth_base_account = skale.web3.toChecksumAddress(eth_base_account)
-    sender_wallet = {'address': eth_base_account,
-                     'private_key': eth_private_key}
-
-    eth_base_bal = skale.web3.eth.getBalance(eth_base_account)
-    skl_base_bal = skale.token.contract.functions.balanceOf(eth_base_account).call()
+    eth_base_bal = base_skale.web3.eth.getBalance(sender_wallet.address)
+    skl_base_bal = base_skale.token.contract.functions.balanceOf(sender_wallet.address).call()
 
     print(f'ETH balance of etherbase account : {eth_base_bal}')
     print(f'SKL balance of etherbase account: {skl_base_bal}')
 
-    if eth_base_bal > eth_amount and skl_base_bal > deposit:
+    if eth_base_bal > ETH_AMOUNT and skl_base_bal > SKL_DEPOSIT:
+        skale = init_skale(node_id)
+        wallet = ConfigStorage(LOCAL_WALLET_FILEPATH + str(node_id))
+        address = wallet['address']
 
-        print(f'ETH balance before: {skale.web3.eth.getBalance(address)}')
-        print(f'SKL balance before: {skale.token.contract.functions.balanceOf(address).call()}')
-
-        # transfer SKL
-        op = skale.token.contract.functions.transfer(address, deposit)
-        gas = 90000
-        tx_skl = sign_and_send(skale, op, gas, sender_wallet)
-        receipt = Helper.await_receipt(skale.web3, tx_skl)
-        # print(f'receipt of SKL transfer: {receipt}')
-
-        # transfer ETH
-        tx = Helper.send_eth(skale.web3, address, eth_amount, sender_wallet)
-        receipt = Helper.await_receipt(skale.web3, tx)
-        # print(f'receipt of ETH transfer: {receipt}')
-
+        # transfer ETH and SKL
+        send_ether(base_skale.web3, sender_wallet, address, ETH_AMOUNT)
         print(f'ETH balance after: {skale.web3.eth.getBalance(address)}')
+
+        send_tokens(base_skale, sender_wallet, address, SKL_DEPOSIT)
         print(f'SKL balance after: {skale.token.contract.functions.balanceOf(address).call()}')
-        print(wallet['address'])
 
         # create node
-        ip_base = '10.1.0.'
-        test_port = 56
-        res = skale.manager.create_node(ip_base + str(node_id), test_port,
-                                        'node_' + str(node_id), wallet)
-        print(f'create_node res: {res}')
-
-        receipt = Helper.await_receipt(skale.web3, res['tx'])
+        res = skale.manager.create_node(IP_BASE + str(node_id), TEST_PORT,
+                                        'node_' + str(node_id))
+        receipt = wait_receipt(skale.web3, res['tx'], retries=30, timeout=6)
         print(f'create_node receipt: {receipt}')
 
     else:
-        print('Insufficient funds!')
+        print('Insufficient funds on sender account!')
 
 
 def get_active_ids():
+    skale = init_skale()
     return skale.nodes_data.get_active_node_ids()
 
 
@@ -154,21 +115,19 @@ def create_set_of_nodes(first_node_id, nodes_number):
 
 
 def accelerate_skale_manager():
-    pr_key = os.environ.get('ETH_PRIVATE_KEY')
-    account = skale.web3.toChecksumAddress(private_key_to_address(pr_key))
+    skale = init_skale_with_base_wallet()
 
     reward_period = skale.validators_data.get_reward_period()
     delta_period = skale.validators_data.get_delta_period()
-    print(reward_period, delta_period)
+    print(f'Existing times for SM: {reward_period}, {delta_period}')
 
-    wallet = {'address': account, 'private_key': pr_key}
-    res = skale.constants.set_periods(TEST_EPOCH, TEST_DELTA, wallet)
-    receipt = await_receipt(skale.web3, res['tx'], retries=30, timeout=6)
+    res = skale.constants.set_periods(TEST_EPOCH, TEST_DELTA)
+    receipt = wait_receipt(skale.web3, res['tx'], retries=30, timeout=6)
     print(receipt)
     print("-------------------------")
     reward_period = skale.validators_data.get_reward_period()
     delta_period = skale.validators_data.get_delta_period()
-    print(reward_period, delta_period)
+    print(f'New times for SM: {reward_period}, {delta_period}')
 
 
 def create_dirs():
@@ -188,6 +147,5 @@ if __name__ == '__main__':
     print(f'ids = {ids}')
     nodes_count_before = len(ids)
     cur_node_id = max(ids) + 1 if nodes_count_before else 0
-    # cur_node_id = 0
     nodes_count_to_add = 2
     create_set_of_nodes(cur_node_id, nodes_count_to_add)

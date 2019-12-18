@@ -1,5 +1,7 @@
 import os
 
+ENV = os.environ.get('ENV')
+
 LONG_LINE = '-' * 100
 LONG_DOUBLE_LINE = '=' * 100
 
@@ -27,6 +29,8 @@ LOCK_FILE = "tx.lock"
 LOCK_FILEPATH = os.path.join(NODE_DATA_PATH, LOCK_FILE)
 
 GOOD_IP = '8.8.8.8'
-CHECK_PERIOD = 2  # in min
+MONITOR_PERIOD = 1  # in min (2)
+REPORT_PERIOD = 2  # in min (5)
 BLOCK_STEP_SIZE = 5000
 REWARD_DELAY = 60  # in seconds
+MISFIRE_GRACE_TIME = 365 * 24 * 60 * 60

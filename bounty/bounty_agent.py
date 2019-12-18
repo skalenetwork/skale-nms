@@ -25,29 +25,35 @@ import sys
 import time
 from datetime import datetime, timedelta
 
-import skale.utils.helper as Helper
+import tenacity
 from filelock import FileLock, Timeout
+from skale.utils.web3_utils import wait_receipt
+from web3.logs import DISCARD
 
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
 from apscheduler.schedulers.background import BackgroundScheduler
 from tools import base_agent, db
-from tools.configs import BLOCK_STEP_SIZE, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE, REWARD_DELAY
+from tools.configs import BLOCK_STEP_SIZE, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE, \
+    REWARD_DELAY, MISFIRE_GRACE_TIME
 from tools.exceptions import GetBountyTxFailedException, IsNotTimeException
-from tools.helper import find_block_for_tx_stamp, init_skale
+from tools.helper import find_block_for_tx_stamp, run_agent
 
 
 class BountyCollector(base_agent.BaseAgent):
 
     def __init__(self, skale, node_id=None):
         super().__init__(skale, node_id)
+        self.logger.info('Start checking logs on blockchain')
         start = time.time()
         try:
             self.collect_last_bounty_logs()
         except Exception as err:
-            self.logger.exception(f'Error occurred while checking logs from blockchain: {err} ')
+            self.logger.error(f'Error occurred while checking logs from blockchain: {err} ')
         end = time.time()
-        self.logger.debug(f'Execution time = {end - start}')
-        self.scheduler = BackgroundScheduler(timezone='UTC')
+        self.logger.info(f'Check completed. Execution time = {end - start}')
+        self.scheduler = BackgroundScheduler(
+            timezone='UTC',
+            job_defaults={'coalesce': True, 'misfire_grace_time': MISFIRE_GRACE_TIME})
 
     def get_reward_date(self):
         reward_period = self.skale.validators_data.get_reward_period()
@@ -64,14 +70,13 @@ class BountyCollector(base_agent.BaseAgent):
             start_block_number = last_block_number_in_db + 1
         count = 0
         while True:
-
             last_block_number = self.skale.web3.eth.blockNumber
             self.logger.debug(f'last block = {last_block_number}')
             end_chunk_block_number = start_block_number + BLOCK_STEP_SIZE - 1
 
             if end_chunk_block_number > last_block_number:
                 end_chunk_block_number = last_block_number + 1
-            event_filter = self.skale.manager.contract.events.BountyGot().createFilter(
+            event_filter = self.skale.manager.contract.events.BountyGot.createFilter(
                 argument_filters={'nodeIndex': self.id},
                 fromBlock=hex(start_block_number),
                 toBlock=hex(end_chunk_block_number))
@@ -96,7 +101,7 @@ class BountyCollector(base_agent.BaseAgent):
                 break
 
     def get_bounty(self):
-        address = self.local_wallet['address']
+        address = self.skale.wallet.address
         eth_bal_before = self.skale.web3.eth.getBalance(address)
         skl_bal_before = self.skale.token.get_balance(address)
         self.logger.info(f'ETH balance: {eth_bal_before}')
@@ -106,14 +111,15 @@ class BountyCollector(base_agent.BaseAgent):
         self.logger.debug('Acquiring lock')
         try:
             with lock.acquire():
-                res = self.skale.manager.get_bounty(self.id, self.local_wallet)
-                receipt = Helper.await_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
+                res = self.skale.manager.get_bounty(self.id)
+                receipt = wait_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
         except Timeout:
             self.logger.info('Another agent currently holds the lock')
             return 2
         self.logger.debug('Waiting for receipt of tx...')
 
         tx_hash = receipt['transactionHash'].hex()
+        self.logger.info(f'tx hash: {tx_hash}')
         self.logger.debug(f'Receipt: {receipt}')
 
         eth_bal = self.skale.web3.eth.getBalance(address)
@@ -121,21 +127,27 @@ class BountyCollector(base_agent.BaseAgent):
         self.logger.info(f'ETH balance: {eth_bal}')
         self.logger.info(f'SKL balance: {skl_bal}')
         self.logger.debug(f'ETH difference: {eth_bal - eth_bal_before}')
+        try:
+            db.save_bounty_stats(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_bal)
+        except Exception as err:
+            self.logger.error(f'Cannot save getBounty stats. Error: {err}')
 
-        db.save_bounty_stats(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_bal)
         self.logger.info(LONG_DOUBLE_LINE)
 
         if receipt['status'] == 1:
             self.logger.info('The bounty was successfully received')
-            h_receipt = self.skale.manager.contract.events.BountyGot().processReceipt(receipt)
+            h_receipt = self.skale.manager.contract.events.BountyGot().processReceipt(
+                receipt, errors=DISCARD)
             self.logger.info(LONG_LINE)
             self.logger.info(h_receipt)
-            # self.logger.info(LONG_LINE)
             args = h_receipt[0]['args']
-            db.save_bounty_event(datetime.utcfromtimestamp(args['time']), str(tx_hash),
-                                 receipt['blockNumber'], args['nodeIndex'], args['bounty'],
-                                 args['averageDowntime'], args['averageLatency'],
-                                 receipt['gasUsed'])
+            try:
+                db.save_bounty_event(datetime.utcfromtimestamp(args['time']), str(tx_hash),
+                                     receipt['blockNumber'], args['nodeIndex'], args['bounty'],
+                                     args['averageDowntime'], args['averageLatency'],
+                                     receipt['gasUsed'])
+            except Exception as err:
+                self.logger.error(f'Cannot save getBounty event. Error: {err}')
         else:
             self.logger.info('The bounty was not received - transaction failed')
             # TODO: notify Skale Admin
@@ -143,11 +155,12 @@ class BountyCollector(base_agent.BaseAgent):
 
         return receipt['status']
 
+    @tenacity.retry(wait=tenacity.wait_fixed(60),
+                    retry=tenacity.retry_if_exception_type(IsNotTimeException))
     def job(self) -> None:
         """ Periodic job"""
+        self.logger.info(f'Job started')
         utc_now = datetime.utcnow()
-        self.logger.debug('Checking my reward date...')
-        self.logger.debug(f'Now (UTC): {utc_now}')
 
         try:
             reward_date = self.get_reward_date()
@@ -162,9 +175,8 @@ class BountyCollector(base_agent.BaseAgent):
         self.logger.info(f'Reward date: {reward_date}')
         self.logger.info(f'Timestamp: {block_timestamp}')
         if reward_date > block_timestamp:
+            self.logger.info('Current block timestamp is less than reward time. Will try in 1 min')
             raise IsNotTimeException(Exception)
-
-        self.logger.debug(f'Next reward date: {reward_date}')
 
         if utc_now >= reward_date:
             self.get_bounty()
@@ -172,8 +184,6 @@ class BountyCollector(base_agent.BaseAgent):
     def job_listener(self, event):
         if event.exception:
             self.logger.info('The job failed')
-            if type(event.exception) == IsNotTimeException:
-                self.logger.debug('It\'s not time yet for reward - wait for current block is mined')
             utc_now = datetime.utcnow()
             self.scheduler.add_job(self.job, 'date', run_date=utc_now + timedelta(seconds=60))
             self.logger.debug(self.scheduler.get_jobs())
@@ -201,16 +211,9 @@ class BountyCollector(base_agent.BaseAgent):
         self.scheduler.add_listener(self.job_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
         self.scheduler.start()
         while True:
+            time.sleep(1)
             pass
 
 
 if __name__ == '__main__':
-
-    if len(sys.argv) > 1 and sys.argv[1].isdecimal():
-        node_id = int(sys.argv[1])
-    else:
-        node_id = None
-
-    skale = init_skale()
-    bounty_collector = BountyCollector(skale, node_id)
-    bounty_collector.run()
+    run_agent(sys.argv, BountyCollector)

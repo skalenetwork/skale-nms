@@ -26,30 +26,33 @@ to send it
 import os
 import socket
 import sys
+import threading
+import time
 from datetime import datetime
 
+import schedule
 from filelock import FileLock, Timeout
-from skale.utils.helper import await_receipt
+from skale.utils.web3_utils import wait_receipt
 
 from sla import ping
 from tools import base_agent, db
-from tools.configs import GOOD_IP, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE
-from tools.helper import get_containers_healthcheck, init_skale
+from tools.configs import GOOD_IP, LOCK_FILEPATH, MONITOR_PERIOD, REPORT_PERIOD
+from tools.configs import LONG_DOUBLE_LINE, LONG_LINE
+from tools.helper import get_containers_healthcheck, run_agent
 
 
 class Monitor(base_agent.BaseAgent):
 
     def __init__(self, skale, node_id=None):
         super().__init__(skale, node_id)
+        self.nodes = self.get_validated_nodes()
 
     def get_validated_nodes(self) -> list:
         """Returns a list of nodes to validate - node node_id, report date, ip address"""
 
-        account = self.skale.web3.toChecksumAddress(self.local_wallet['address'])
-
         # get raw binary data list from SKALE Manager SC
         try:
-            nodes_in_bytes_array = self.skale.validators_data.get_validated_array(self.id, account)
+            nodes_in_bytes_array = self.skale.validators_data.get_validated_array(self.id)
         except Exception as err:
             self.logger.error(f'Cannot get a list of nodes for validating: {str(err)}',
                               exc_info=True)
@@ -82,8 +85,12 @@ class Monitor(base_agent.BaseAgent):
                 if healthcheck:
                     metrics['is_offline'] = True
                 self.logger.info(f'Received metrics from node ID = {node["id"]}: {metrics}')
-                db.save_metrics_to_db(self.id, node['id'],
-                                      metrics['is_offline'], metrics['latency'])
+                try:
+                    db.save_metrics_to_db(self.id, node['id'],
+                                          metrics['is_offline'], metrics['latency'])
+                except Exception as err:
+                    self.logger.error(f'Couldn\'t save metrics to database - '
+                                      f'is mysql container running? {err}')
             else:
                 self.logger.error(f'Couldn\'t ping 8.8.8.8 - skipping monitoring node {node["id"]}')
 
@@ -105,11 +112,6 @@ class Monitor(base_agent.BaseAgent):
         """Send reports for every node from nodes_for_report"""
 
         self.logger.info(LONG_LINE)
-        if len(nodes_for_report) == 0:
-            self.logger.info(f'- No nodes to be reported on')
-        else:
-            self.logger.info(f'Number of nodes for reporting: {len(nodes_for_report)}')
-            self.logger.info(f'The nodes to be reported on: {nodes_for_report}')
         err_status = 0
 
         ids = []
@@ -119,7 +121,11 @@ class Monitor(base_agent.BaseAgent):
         for node in nodes_for_report:
             reward_period = self.skale.validators_data.get_reward_period()
             start_date = node['rep_date'] - reward_period
+
             try:
+                self.logger.info('Getting month metrics:')
+                self.logger.info(f'Start date: {datetime.utcfromtimestamp(start_date)}')
+                self.logger.info(f'End date: {datetime.utcfromtimestamp(node["rep_date"])}')
                 metrics = db.get_month_metrics_for_node(self.id, node['id'],
                                                         datetime.utcfromtimestamp(start_date),
                                                         datetime.utcfromtimestamp(node['rep_date']))
@@ -128,65 +134,86 @@ class Monitor(base_agent.BaseAgent):
                 downtimes.append(metrics['downtime'])
                 latencies.append(metrics['latency'])
             except Exception as err:
-                self.logger.exception(f'Failed getting month metrics from db: {err}')
-
-        lock = FileLock(LOCK_FILEPATH, timeout=1)
-        self.logger.debug('Acquiring lock')
-        try:
-            with lock.acquire():
-                res = self.skale.manager.send_verdicts(self.id, ids, downtimes,
-                                                       latencies, self.local_wallet)
-                receipt = await_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
-                if receipt['status'] == 1:
-                    self.logger.info('The report was successfully sent')
-                    h_receipt = self.skale.validators.contract.events.VerdictWasSent(
-                    ).processReceipt(receipt)
-                    self.logger.info(LONG_LINE)
-                    self.logger.info(h_receipt)
-                    args = h_receipt[0]['args']
-                    db.save_report_event(datetime.utcfromtimestamp(args['time']),
-                                         str(res['tx'].hex()), args['fromValidatorIndex'],
-                                         args['toNodeIndex'], args['downtime'], args['latency'],
-                                         receipt["gasUsed"])
-                if receipt['status'] == 0:
-                    self.logger.info('The report was not sent - transaction failed')
-                    err_status = 1
-                self.logger.debug(f'Receipt: {receipt}')
-                self.logger.info(LONG_DOUBLE_LINE)
-        except Timeout:
-            self.logger.info('Another agent currently holds the lock')
-        except Exception as err:
-            self.logger.error(f'Failed send report on the node #{node["id"]}. Error: '
-                              f'{str(err)}', exc_info=True)
+                self.logger.error(f'Failed getting month metrics from db: {err}')
+                self.logger.info(f'Report on node id = {node["id"]} cannot be sent!')
+        if len(ids) == len(downtimes) == len(latencies) and len(ids) != 0:
+            lock = FileLock(LOCK_FILEPATH, timeout=1)
+            self.logger.debug('Acquiring lock')
+            try:
+                with lock.acquire():
+                    res = self.skale.manager.send_verdicts(self.id, ids, downtimes,
+                                                           latencies)
+                    receipt = wait_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
+                    if receipt['status'] == 1:
+                        self.logger.info('The report was successfully sent')
+                        h_receipt = self.skale.validators.contract.events.VerdictWasSent(
+                        ).processReceipt(receipt)
+                        self.logger.info(LONG_LINE)
+                        self.logger.info(h_receipt)
+                        args = h_receipt[0]['args']
+                        db.save_report_event(datetime.utcfromtimestamp(args['time']),
+                                             str(res['tx'].hex()), args['fromValidatorIndex'],
+                                             args['toNodeIndex'], args['downtime'], args['latency'],
+                                             receipt["gasUsed"])
+                    if receipt['status'] == 0:
+                        self.logger.info('The report was not sent - transaction failed')
+                        err_status = 1
+                    self.logger.debug(f'Receipt: {receipt}')
+                    self.logger.info(LONG_DOUBLE_LINE)
+            except Timeout:
+                self.logger.info('Another agent currently holds the lock')
+            except Exception as err:
+                self.logger.exception(f'Failed to send report. Error: {err}')
 
         return err_status
 
-    def job(self) -> None:
+    def monitor_job(self) -> None:
         """
-        Periodic job
+        Periodic job for monitoring nodes
         """
-        self.logger.debug('New periodic job started...')
+        self.logger.info('New monitor job started...')
         try:
-            nodes = self.get_validated_nodes()
+            self.nodes = self.get_validated_nodes()
         except Exception as err:
-            self.logger.error(f'Failed to get list of monitored nodes {str(err)}')
-            nodes = []
-        self.validate_nodes(nodes)
-        nodes_for_report = self.get_reported_nodes(nodes)
+            self.logger.error(f'Failed to get list of monitored nodes. Error: {err}')
+            self.logger.info('Monitoring nodes from previous job list')
+
+        self.validate_nodes(self.nodes)
+
+        self.logger.info('Monitor job finished...')
+
+    def report_job(self) -> None:
+        """
+        Periodic job for sending reports
+        """
+        self.logger.info('New report job started...')
+        nodes_for_report = self.get_reported_nodes(self.nodes)
 
         if len(nodes_for_report) > 0:
+            self.logger.info(f'Number of nodes for reporting: {len(nodes_for_report)}')
+            self.logger.info(f'The nodes to be reported on: {nodes_for_report}')
             self.send_reports(nodes_for_report)
+        else:
+            self.logger.info(f'- No nodes to be reported on')
 
-        self.logger.debug('Periodic job finished...')
+        self.logger.info('Report job finished...')
+
+    def run_threaded(self, job_func):
+        job_thread = threading.Thread(target=job_func)
+        job_thread.start()
+
+    def run(self) -> None:
+        """Starts agent"""
+        self.logger.debug(f'{self.agent_name} started')
+        self.run_threaded(self.monitor_job)
+        self.run_threaded(self.report_job)
+        schedule.every(MONITOR_PERIOD).minutes.do(self.run_threaded, self.monitor_job)
+        schedule.every(REPORT_PERIOD).minutes.do(self.run_threaded, self.report_job)
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
 
 
 if __name__ == '__main__':
 
-    if len(sys.argv) > 1 and sys.argv[1].isdecimal():
-        node_id = int(sys.argv[1])
-    else:
-        node_id = None
-
-    skale = init_skale()
-    monitor = Monitor(skale, node_id)
-    monitor.run()
+    run_agent(sys.argv, Monitor)

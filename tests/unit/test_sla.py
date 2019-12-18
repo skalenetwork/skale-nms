@@ -40,6 +40,7 @@ def monitor(request):
     return _validator
 
 
+# @pytest.mark.skip(reason="skip to save time")
 def test_get_validated_nodes(monitor):
     nodes = monitor.get_validated_nodes()
     print(f'nodes = {nodes}')
@@ -51,6 +52,7 @@ def test_get_validated_nodes(monitor):
     assert nodes[1]['id'] == 2
 
 
+# @pytest.mark.skip(reason="skip to save time")
 def test_get_reported_nodes(monitor):
     nodes = monitor.get_validated_nodes()
     reported_nodes = monitor.get_reported_nodes(nodes)
@@ -63,13 +65,15 @@ def test_get_reported_nodes(monitor):
     assert err_send_verdicts_status == 0
 
 
+# @pytest.mark.skip(reason="skip to save time")
 def test_report_saved_to_db(monitor):
     db.clear_all_reports()
     assert db.get_count_of_report_records() == 0
-    monitor.job()
+    monitor.monitor_job()
     assert db.get_count_of_report_records() == 2
 
 
+# @pytest.mark.skip(reason="skip to save time")
 def prepare_wallets(count):
     account_dict = {"address": "0x0",
                     "private_key": "0x0"}

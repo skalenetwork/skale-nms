@@ -56,7 +56,6 @@ class BountyEvent(BaseModel):
     downtime = IntegerField()
     latency = IntegerField()
     gas_used = IntegerField()
-    # stamp = DateTimeField()
 
     class Meta:
         db_table = 'bounty_event'
@@ -70,7 +69,6 @@ class ReportEvent(BaseModel):
     downtime = IntegerField()
     latency = IntegerField()
     gas_used = IntegerField()
-    # stamp = DateTimeField()
 
     class Meta:
         db_table = 'report_event'
@@ -88,6 +86,7 @@ class BountyStats(BaseModel):
         primary_key = CompositeKey('tx_hash')
 
 
+@dbhandle.connection_context()
 def save_metrics_to_db(my_id, target_id, is_offline, latency):
     """ Save metrics (downtime and latency) to database"""
     report = Report(my_id=my_id,
@@ -97,6 +96,7 @@ def save_metrics_to_db(my_id, target_id, is_offline, latency):
     report.save()
 
 
+@dbhandle.connection_context()
 def save_bounty_event(tx_dt, tx_hash, block_number, my_id, bounty, downtime, latency, gas_used):
     """ Save bounty events data to database"""
     data = BountyEvent(my_id=my_id,
@@ -111,6 +111,7 @@ def save_bounty_event(tx_dt, tx_hash, block_number, my_id, bounty, downtime, lat
     data.save()
 
 
+@dbhandle.connection_context()
 def save_report_event(tx_dt, tx_hash, my_id, target_id, downtime, latency, gas_used):
     """ Save bounty events data to database"""
     data = ReportEvent(my_id=my_id,
@@ -124,6 +125,7 @@ def save_report_event(tx_dt, tx_hash, my_id, target_id, downtime, latency, gas_u
     data.save()
 
 
+@dbhandle.connection_context()
 def save_bounty_stats(
         tx_hash,
         eth_bal_before,
@@ -140,15 +142,9 @@ def save_bounty_stats(
     data.save(force_insert=True)
 
 
+@dbhandle.connection_context()
 def get_month_metrics_for_node(my_id, target_id, start_date, end_date) -> dict:
     """ Returns a dict with aggregated month metrics - downtime and latency"""
-
-    # results = Report.select(fn.SUM(Report.is_offline).alias('sum'),
-    #                         fn.AVG(Report.latency).alias('avg')).where((
-    #                             Report.my_id == my_id) & (Report.target_id == target_id) & (
-    #                             Report.stamp >= start_date) & (Report.stamp <= end_date))
-    # downtime = int(results[0].sum) if results[0].sum is not None else 0
-    # latency = results[0].avg if results[0].avg is not None else 0
 
     downtime_results = Report.select(
         fn.SUM(
@@ -166,30 +162,36 @@ def get_month_metrics_for_node(my_id, target_id, start_date, end_date) -> dict:
             Report.stamp >= start_date) & (
             Report.stamp <= end_date) & (
             Report.latency >= 0))
-
+    if downtime_results[0].sum is None:
+        print(f'Sum result from db is None')
     downtime = int(
         downtime_results[0].sum) if downtime_results[0].sum is not None else 0
     latency = latency_results[0].avg if latency_results[0].avg is not None else 0
     return {'downtime': downtime, 'latency': latency}
 
 
+@dbhandle.connection_context()
 def clear_all_reports():
     nrows = Report.delete().execute()
     print(f'{nrows} records deleted')
 
 
+@dbhandle.connection_context()
 def clear_all_bounty_receipts():
     nrows = BountyStats.delete().execute()
     print(f'{nrows} records deleted')
 
 
+@dbhandle.connection_context()
 def get_count_of_bounty_receipt_records():
     return BountyStats.select().count()
 
 
+@dbhandle.connection_context()
 def get_count_of_report_records():
     return Report.select().count()
 
 
+@dbhandle.connection_context()
 def get_bounty_max_block_number():
     return BountyEvent.select(fn.MAX(BountyEvent.block_number)).scalar()
