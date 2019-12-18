@@ -50,7 +50,9 @@ class BountyCollector(base_agent.BaseAgent):
             self.logger.error(f'Error occurred while checking logs from blockchain: {err} ')
         end = time.time()
         self.logger.info(f'Check completed. Execution time = {end - start}')
-        self.scheduler = BackgroundScheduler(timezone='UTC')
+        self.scheduler = BackgroundScheduler(
+            timezone='UTC',
+            job_defaults={'misfire_grace_time': 365 * 24 * 60 * 60})
 
     def get_reward_date(self):
         reward_period = self.skale.validators_data.get_reward_period()
@@ -137,7 +139,6 @@ class BountyCollector(base_agent.BaseAgent):
                 receipt, errors=DISCARD)
             self.logger.info(LONG_LINE)
             self.logger.info(h_receipt)
-            # self.logger.info(LONG_LINE)
             args = h_receipt[0]['args']
             try:
                 db.save_bounty_event(datetime.utcfromtimestamp(args['time']), str(tx_hash),
