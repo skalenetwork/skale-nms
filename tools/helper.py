@@ -49,15 +49,15 @@ def init_skale(node_id=None):
     return skale
 
 
-def run_agent(args, agent):
+def run_agent(args, agent_class):
     if len(args) > 1 and args[1].isdecimal():
         node_id = int(args[1])
     else:
         node_id = None
 
     skale = init_skale(node_id)
-    bounty_collector = agent(skale, node_id)
-    bounty_collector.run()
+    agent = agent_class(skale, node_id)
+    agent.run()
 
 
 def get_local_wallet_filepath(node_id):
