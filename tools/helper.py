@@ -92,7 +92,7 @@ def get_containers_healthcheck(host, test_mode):
     url = 'http://' + host + ':' + PORT + HEALTH_REQ_URL
     print(url)
     try:
-        response = requests.get(url, timeout=10)
+        response = requests.get(url, timeout=15)
     except requests.exceptions.ConnectionError as err:
         logger.error(err)
         print(f'Could not connect to {url}')
