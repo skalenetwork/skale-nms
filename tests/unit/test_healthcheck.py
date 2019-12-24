@@ -14,16 +14,23 @@ def mocked_requests_get(*args, **kwargs):
         def json(self):
             return self.json_data
 
-    data1 = [{'state': {'Running': True}}]
-    data2 = [{'state': {'Running': False}}]
-    if args[0] == 'http://url_ok:3007/healthchecks/containers':
-        return MockResponse({'res': 1, 'data': data1}, 200)
-    if args[0] == 'http://url_bad1:3007/healthchecks/containers':
-        return MockResponse({'res': 1, 'data': data2}, 200)
-    if args[0] == 'http://url_bad2:3007/healthchecks/containers':
-        return MockResponse({'res': 0, 'data': data1, 'errors': ["Error1"]}, 200)
+    data_ok1 = [{'name': 'container_name', 'state': {'Running': True}},
+                {'name': 'skale_schain_name', 'state': {'Running': True}}]
+    data_ok2 = [{'name': 'container_name', 'state': {'Running': True}},
+                {'name': 'skale_schain_name', 'state': {'Running': False}}]
+    data_bad = [{'name': 'container_name', 'state': {'Running': False}},
+                {'name': 'skale_schain_name', 'state': {'Running': True}}]
+
+    if args[0] == 'http://url_ok1:3007/healthchecks/containers':
+        return MockResponse({'res': 1, 'data': data_ok1}, 200)
+    elif args[0] == 'http://url_bad1:3007/healthchecks/containers':
+        return MockResponse({'res': 1, 'data': data_bad}, 200)
+    elif args[0] == 'http://url_bad2:3007/healthchecks/containers':
+        return MockResponse({'res': 0, 'data': data_ok1, 'errors': ["Error1"]}, 200)
     elif args[0] == 'http://url_bad3:3007/healthchecks/containers':
-        return MockResponse({'res': 1, 'data': data1}, 500)
+        return MockResponse({'res': 1, 'data': data_ok1}, 500)
+    elif args[0] == 'http://url_ok2:3007/healthchecks/containers':
+        return MockResponse({'res': 1, 'data': data_ok2}, 200)
 
     return MockResponse(None, 404)
 
@@ -37,9 +44,15 @@ def unknown_error(*args, **kwargs):
 
 
 @mock.patch('tools.helper.requests.get', side_effect=mocked_requests_get)
-def test_healthcheck(mock_get):
-    res = get_containers_healthcheck('url_ok', False)
+def test_healthcheck_pos(mock_get):
+    res = get_containers_healthcheck('url_ok1', False)
     assert res == 0
+    res = get_containers_healthcheck('url_ok2', False)
+    assert res == 0
+
+
+@mock.patch('tools.helper.requests.get', side_effect=mocked_requests_get)
+def test_healthcheck_neg(mock_get):
     res = get_containers_healthcheck('url_bad1', False)
     assert res == 1
     res = get_containers_healthcheck('url_bad2', False)
