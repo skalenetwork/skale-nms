@@ -152,10 +152,13 @@ class Monitor(base_agent.BaseAgent):
                         self.logger.info(LONG_LINE)
                         self.logger.info(h_receipt)
                         args = h_receipt[0]['args']
-                        db.save_report_event(datetime.utcfromtimestamp(args['time']),
-                                             str(res['tx'].hex()), args['fromValidatorIndex'],
-                                             args['toNodeIndex'], args['downtime'], args['latency'],
-                                             receipt["gasUsed"])
+                        try:
+                            db.save_report_event(datetime.utcfromtimestamp(args['time']),
+                                                 str(tx_hash), args['fromValidatorIndex'],
+                                                 args['toNodeIndex'], args['downtime'],
+                                                 args['latency'], receipt["gasUsed"])
+                        except Exception as err:
+                            self.logger.exception(f'Failed to save report event data. {err}')
                     if receipt['status'] == 0:
                         self.logger.info('The report was not sent - transaction failed')
                         err_status = 1
