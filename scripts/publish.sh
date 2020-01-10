@@ -10,7 +10,7 @@ for NAME in "${NAMES[@]}"
 do
   echo "$NAME"
 
-REPO_NAME=skalelabshub/$NAME
+REPO_NAME=skalenetwork/$NAME
 IMAGE_NAME=$REPO_NAME:$VERSION
 LATEST_IMAGE_NAME=$REPO_NAME:latest
 
