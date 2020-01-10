@@ -114,7 +114,8 @@ def get_containers_healthcheck(host, test_mode):
     else:
         data = json['data']
     for container in data:
-        if not container['state']['Running'] and 'skale_schain_' not in container['name']:
+        if 'skale_schain_' not in container['name'] and 'skale_ima_' not in container['name'] and \
+                (not container['state']['Running'] or container['state']['Paused']):
             return 1
     return 0
 
