@@ -123,13 +123,13 @@ class Monitor(base_agent.BaseAgent):
             start_date = node['rep_date'] - reward_period
 
             try:
-                self.logger.info('Getting month metrics:')
+                self.logger.info(f'Getting month metrics for node id = {node["id"]}:')
                 self.logger.info(f'Start date: {datetime.utcfromtimestamp(start_date)}')
                 self.logger.info(f'End date: {datetime.utcfromtimestamp(node["rep_date"])}')
                 metrics = db.get_month_metrics_for_node(self.id, node['id'],
                                                         datetime.utcfromtimestamp(start_date),
                                                         datetime.utcfromtimestamp(node['rep_date']))
-                self.logger.info(f'Epoch metrics: {metrics}')
+                self.logger.info(f'Epoch metrics for node id = {node["id"]}: {metrics}')
                 ids.append(node['id'])
                 downtimes.append(metrics['downtime'])
                 latencies.append(metrics['latency'])
@@ -144,6 +144,7 @@ class Monitor(base_agent.BaseAgent):
                     res = self.skale.manager.send_verdicts(self.id, ids, downtimes,
                                                            latencies)
                     receipt = wait_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
+                    tx_hash = receipt['transactionHash'].hex()
                     if receipt['status'] == 1:
                         self.logger.info('The report was successfully sent')
                         h_receipt = self.skale.validators.contract.events.VerdictWasSent(
@@ -151,10 +152,13 @@ class Monitor(base_agent.BaseAgent):
                         self.logger.info(LONG_LINE)
                         self.logger.info(h_receipt)
                         args = h_receipt[0]['args']
-                        db.save_report_event(datetime.utcfromtimestamp(args['time']),
-                                             str(res['tx'].hex()), args['fromValidatorIndex'],
-                                             args['toNodeIndex'], args['downtime'], args['latency'],
-                                             receipt["gasUsed"])
+                        try:
+                            db.save_report_event(datetime.utcfromtimestamp(args['time']),
+                                                 str(tx_hash), args['fromValidatorIndex'],
+                                                 args['toNodeIndex'], args['downtime'],
+                                                 args['latency'], receipt["gasUsed"])
+                        except Exception as err:
+                            self.logger.exception(f'Failed to save report event data. {err}')
                     if receipt['status'] == 0:
                         self.logger.info('The report was not sent - transaction failed')
                         err_status = 1

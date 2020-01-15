@@ -14,21 +14,25 @@ def mocked_requests_get(*args, **kwargs):
         def json(self):
             return self.json_data
 
-    data_ok1 = [{'name': 'container_name', 'state': {'Running': True}},
-                {'name': 'skale_schain_name', 'state': {'Running': True}}]
-    data_ok2 = [{'name': 'container_name', 'state': {'Running': True}},
-                {'name': 'skale_schain_name', 'state': {'Running': False}}]
-    data_bad = [{'name': 'container_name', 'state': {'Running': False}},
-                {'name': 'skale_schain_name', 'state': {'Running': True}}]
+    data_ok1 = [{'name': 'container_name', 'state': {'Running': True, 'Paused': False}},
+                {'name': 'skale_schain_name', 'state': {'Running': True, 'Paused': False}}]
+    data_ok2 = [{'name': 'container_name', 'state': {'Running': True, 'Paused': False}},
+                {'name': 'skale_schain_name', 'state': {'Running': False, 'Paused': False}}]
+    data_bad1 = [{'name': 'container_name', 'state': {'Running': False, 'Paused': False}},
+                 {'name': 'skale_schain_name', 'state': {'Running': True, 'Paused': False}}]
+    data_bad2 = [{'name': 'container_name', 'state': {'Running': False, 'Paused': True}},
+                 {'name': 'skale_schain_name', 'state': {'Running': True, 'Paused': False}}]
 
     if args[0] == 'http://url_ok1:3007/healthchecks/containers':
         return MockResponse({'res': 1, 'data': data_ok1}, 200)
     elif args[0] == 'http://url_bad1:3007/healthchecks/containers':
-        return MockResponse({'res': 1, 'data': data_bad}, 200)
+        return MockResponse({'res': 1, 'data': data_bad1}, 200)
     elif args[0] == 'http://url_bad2:3007/healthchecks/containers':
         return MockResponse({'res': 0, 'data': data_ok1, 'errors': ["Error1"]}, 200)
     elif args[0] == 'http://url_bad3:3007/healthchecks/containers':
         return MockResponse({'res': 1, 'data': data_ok1}, 500)
+    elif args[0] == 'http://url_bad4:3007/healthchecks/containers':
+        return MockResponse({'res': 1, 'data': data_bad2}, 200)
     elif args[0] == 'http://url_ok2:3007/healthchecks/containers':
         return MockResponse({'res': 1, 'data': data_ok2}, 200)
 
@@ -60,6 +64,8 @@ def test_healthcheck_neg(mock_get):
     res = get_containers_healthcheck('url_bad3', False)
     assert res == 1
     res = get_containers_healthcheck('url_bad4', False)
+    assert res == 1
+    res = get_containers_healthcheck('url_bad5', False)
     assert res == 1
 
 
