@@ -42,7 +42,7 @@ def monitor(request):
 
 # @pytest.mark.skip(reason="skip to save time")
 def test_get_validated_nodes(monitor):
-    nodes = monitor.get_validated_nodes()
+    nodes = monitor.get_validated_nodes(monitor.skale)
     print(f'nodes = {nodes}')
     assert type(nodes) is list
     assert len(nodes) == 2
@@ -54,7 +54,7 @@ def test_get_validated_nodes(monitor):
 
 # @pytest.mark.skip(reason="skip to save time")
 def test_get_reported_nodes(monitor):
-    nodes = monitor.get_validated_nodes()
+    nodes = monitor.get_validated_nodes(monitor.skale)
     reported_nodes = monitor.get_reported_nodes(nodes)
     assert type(reported_nodes) is list
     print(f'rep nodes = {reported_nodes}')
