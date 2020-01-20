@@ -32,12 +32,13 @@ from datetime import datetime
 
 import schedule
 from filelock import FileLock, Timeout
+from skale.manager_client import spawn_skale_lib
 from skale.utils.web3_utils import wait_receipt
 
 from sla import ping
 from tools import base_agent, db
-from tools.configs import GOOD_IP, LOCK_FILEPATH, MONITOR_PERIOD, REPORT_PERIOD
-from tools.configs import LONG_DOUBLE_LINE, LONG_LINE
+from tools.configs import GOOD_IP, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE, \
+    MONITOR_PERIOD, REPORT_PERIOD
 from tools.helper import get_containers_healthcheck, run_agent
 
 
@@ -45,14 +46,14 @@ class Monitor(base_agent.BaseAgent):
 
     def __init__(self, skale, node_id=None):
         super().__init__(skale, node_id)
-        self.nodes = self.get_validated_nodes()
+        self.nodes = self.get_validated_nodes(skale)
 
-    def get_validated_nodes(self) -> list:
+    def get_validated_nodes(self, skale) -> list:
         """Returns a list of nodes to validate - node node_id, report date, ip address"""
 
         # get raw binary data list from SKALE Manager SC
         try:
-            nodes_in_bytes_array = self.skale.validators_data.get_validated_array(self.id)
+            nodes_in_bytes_array = skale.validators_data.get_validated_array(self.id)
         except Exception as err:
             self.logger.error(f'Cannot get a list of nodes for validating: {str(err)}',
                               exc_info=True)
@@ -177,9 +178,10 @@ class Monitor(base_agent.BaseAgent):
         """
         self.logger.info('New monitor job started...')
         try:
-            self.nodes = self.get_validated_nodes()
+            skale = spawn_skale_lib(self.skale)
+            self.nodes = self.get_validated_nodes(skale)
         except Exception as err:
-            self.logger.error(f'Failed to get list of monitored nodes. Error: {err}')
+            self.logger.exception(f'Failed to get list of monitored nodes. Error: {err}')
             self.logger.info('Monitoring nodes from previous job list')
 
         self.validate_nodes(self.nodes)
