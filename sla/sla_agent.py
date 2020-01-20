@@ -32,13 +32,14 @@ from datetime import datetime
 
 import schedule
 from filelock import FileLock, Timeout
+from skale.manager_client import spawn_skale_lib
 from skale.utils.web3_utils import wait_receipt
 
 from sla import ping
 from tools import base_agent, db
-from tools.configs import GOOD_IP, LOCK_FILEPATH, MONITOR_PERIOD, REPORT_PERIOD
-from tools.configs import LONG_DOUBLE_LINE, LONG_LINE
-from tools.helper import get_containers_healthcheck, run_agent, init_skale
+from tools.configs import GOOD_IP, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE, \
+    MONITOR_PERIOD, REPORT_PERIOD
+from tools.helper import get_containers_healthcheck, run_agent
 
 
 class Monitor(base_agent.BaseAgent):
@@ -177,10 +178,11 @@ class Monitor(base_agent.BaseAgent):
         """
         self.logger.info('New monitor job started...')
         try:
-            skale = init_skale()
+            # skale = init_skale()
+            skale = spawn_skale_lib(self.skale)
             self.nodes = self.get_validated_nodes(skale)
         except Exception as err:
-            self.logger.error(f'Failed to get list of monitored nodes. Error: {err}')
+            self.logger.exception(f'Failed to get list of monitored nodes. Error: {err}')
             self.logger.info('Monitoring nodes from previous job list')
 
         self.validate_nodes(self.nodes)
