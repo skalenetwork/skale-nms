@@ -178,7 +178,6 @@ class Monitor(base_agent.BaseAgent):
         """
         self.logger.info('New monitor job started...')
         try:
-            # skale = init_skale()
             skale = spawn_skale_lib(self.skale)
             self.nodes = self.get_validated_nodes(skale)
         except Exception as err:
