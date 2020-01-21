@@ -22,10 +22,10 @@ docker-compose up -d &&
 
 
 # Deploy SKALE manager
-cd $TRAVIS_BUILD_DIR &&
-git clone -b develop https://$GITHUB_TOKEN\@github.com/skalenetwork/skale-manager.git &&
-cd skale-manager &&
-yarn install &&
+#cd $TRAVIS_BUILD_DIR &&
+#git clone -b develop https://$GITHUB_TOKEN\@github.com/skalenetwork/skale-manager.git &&
+#cd skale-manager &&
+#yarn install &&
 
 echo "$PASSWORD" | docker login --username $USERNAME --password-stdin
 
@@ -33,9 +33,11 @@ export DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 docker run \
     -v $DIR/contracts_data:/usr/src/manager/data \
+    -e PRIVATE_KEY=$ETH_PRIVATE_KEY \
+    -e ENDPOINT=$ENDPOINT \
     --network host -it \
     skalenetwork/skale-manager:$MANAGER_BRANCH-latest \
-    PRIVATE_KEY=$ETH_PRIVATE_KEY ENDPOINT=$ENDPOINT npx truffle migrate --network unique
+    npx truffle migrate --network unique
 
 #PRIVATE_KEY=$ETH_PRIVATE_KEY ENDPOINT=$ENDPOINT  ./node_modules/.bin/truffle migrate --network unique
 
