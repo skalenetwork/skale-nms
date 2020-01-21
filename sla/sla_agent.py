@@ -136,7 +136,6 @@ class Monitor(base_agent.BaseAgent):
                 self.logger.error(f'Failed getting month metrics from db: {err}')
                 self.logger.info(f'Report on node id = {node["id"]} cannot be sent!')
         if len(ids) == len(downtimes) == len(latencies) and len(ids) != 0:
-            self.logger.debug('Acquiring lock')
             try:
                 res = self.skale.manager.send_verdicts(self.id, ids, downtimes,
                                                        latencies)

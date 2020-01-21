@@ -106,10 +106,8 @@ class BountyCollector(base_agent.BaseAgent):
         self.logger.info(f'ETH balance: {eth_bal_before}')
         self.logger.info(f'SKL balance: {skl_bal_before}')
         self.logger.info('--- Getting Bounty ---')
-        self.logger.debug('Acquiring lock')
         res = self.skale.manager.get_bounty(self.id)
         receipt = wait_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
-        self.logger.info('Another agent currently holds the lock')
         self.logger.debug('Waiting for receipt of tx...')
 
         tx_hash = receipt['transactionHash'].hex()
@@ -120,7 +118,7 @@ class BountyCollector(base_agent.BaseAgent):
         skl_bal = self.skale.token.get_balance(address)
         self.logger.info(f'ETH balance: {eth_bal}')
         self.logger.info(f'SKL balance: {skl_bal}')
-        self.logger.debug(f'ETH difference: {eth_bal - eth_bal_before}')
+        self.logger.info(f'ETH difference: {eth_bal - eth_bal_before}')
         try:
             db.save_bounty_stats(tx_hash, eth_bal_before, skl_bal_before, eth_bal, skl_bal)
         except Exception as err:

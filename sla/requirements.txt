@@ -5,4 +5,3 @@ schedule==0.6.0
 tenacity==6.0.0
 mysqlclient==1.4.5
 peewee==3.11.2
-filelock==3.0.12
