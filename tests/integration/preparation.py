@@ -32,7 +32,7 @@ DIR_ABI = '/skale_vol/contracts_info'
 TEST_EPOCH = 200
 TEST_DELTA = 100
 SKL_DEPOSIT = 100
-ETH_AMOUNT = 1
+ETH_AMOUNT = 2
 IP_BASE = '10.1.0.'
 TEST_PORT = 123
 
