@@ -31,14 +31,12 @@ import time
 from datetime import datetime
 
 import schedule
-from filelock import FileLock, Timeout
 from skale.manager_client import spawn_skale_lib
 from skale.utils.web3_utils import wait_receipt
 
 from sla import ping
 from tools import base_agent, db
-from tools.configs import GOOD_IP, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE, \
-    MONITOR_PERIOD, REPORT_PERIOD
+from tools.configs import GOOD_IP, LONG_DOUBLE_LINE, LONG_LINE, MONITOR_PERIOD, REPORT_PERIOD
 from tools.helper import get_containers_healthcheck, run_agent
 
 
@@ -138,37 +136,33 @@ class Monitor(base_agent.BaseAgent):
                 self.logger.error(f'Failed getting month metrics from db: {err}')
                 self.logger.info(f'Report on node id = {node["id"]} cannot be sent!')
         if len(ids) == len(downtimes) == len(latencies) and len(ids) != 0:
-            lock = FileLock(LOCK_FILEPATH, timeout=1)
             self.logger.debug('Acquiring lock')
             try:
-                with lock.acquire():
-                    res = self.skale.manager.send_verdicts(self.id, ids, downtimes,
-                                                           latencies)
-                    receipt = wait_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
-                    tx_hash = receipt['transactionHash'].hex()
-                    if receipt['status'] == 1:
-                        self.logger.info('The report was successfully sent')
-                        h_receipt = self.skale.validators.contract.events.VerdictWasSent(
-                        ).processReceipt(receipt)
-                        self.logger.info(LONG_LINE)
-                        self.logger.info(h_receipt)
-                        args = h_receipt[0]['args']
-                        try:
-                            db.save_report_event(datetime.utcfromtimestamp(args['time']),
-                                                 str(tx_hash), args['fromValidatorIndex'],
-                                                 args['toNodeIndex'], args['downtime'],
-                                                 args['latency'], receipt["gasUsed"])
-                        except Exception as err:
-                            self.logger.exception(f'Failed to save report event data. {err}')
-                    if receipt['status'] == 0:
-                        self.logger.info('The report was not sent - transaction failed')
-                        err_status = 1
-                    self.logger.debug(f'Receipt: {receipt}')
-                    self.logger.info(LONG_DOUBLE_LINE)
-            except Timeout:
-                self.logger.info('Another agent currently holds the lock')
+                res = self.skale.manager.send_verdicts(self.id, ids, downtimes,
+                                                       latencies)
+                receipt = wait_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
+                tx_hash = receipt['transactionHash'].hex()
+                if receipt['status'] == 1:
+                    self.logger.info('The report was successfully sent')
+                    h_receipt = self.skale.validators.contract.events.VerdictWasSent(
+                    ).processReceipt(receipt)
+                    self.logger.info(LONG_LINE)
+                    self.logger.info(h_receipt)
+                    args = h_receipt[0]['args']
+                    try:
+                        db.save_report_event(datetime.utcfromtimestamp(args['time']),
+                                             str(tx_hash), args['fromValidatorIndex'],
+                                             args['toNodeIndex'], args['downtime'],
+                                             args['latency'], receipt["gasUsed"])
+                    except Exception as err:
+                        self.logger.exception(f'Failed to save report event data. {err}')
+                if receipt['status'] == 0:
+                    self.logger.info('The report was not sent - transaction failed')
+                    err_status = 1
+                self.logger.debug(f'Receipt: {receipt}')
+                self.logger.info(LONG_DOUBLE_LINE)
             except Exception as err:
-                self.logger.exception(f'Failed to send report. Error: {err}')
+                self.logger.exception(f'An error occurred while sending report. Error: {err}')
 
         return err_status
 

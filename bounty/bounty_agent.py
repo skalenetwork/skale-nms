@@ -26,15 +26,14 @@ import time
 from datetime import datetime, timedelta
 
 import tenacity
-from filelock import FileLock, Timeout
 from skale.utils.web3_utils import wait_receipt
 from web3.logs import DISCARD
 
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
 from apscheduler.schedulers.background import BackgroundScheduler
 from tools import base_agent, db
-from tools.configs import BLOCK_STEP_SIZE, LOCK_FILEPATH, LONG_DOUBLE_LINE, LONG_LINE, \
-    REWARD_DELAY, MISFIRE_GRACE_TIME
+from tools.configs import (BLOCK_STEP_SIZE, LONG_DOUBLE_LINE, LONG_LINE, REWARD_DELAY,
+                           MISFIRE_GRACE_TIME)
 from tools.exceptions import GetBountyTxFailedException, IsNotTimeException
 from tools.helper import find_block_for_tx_stamp, run_agent
 
@@ -107,15 +106,10 @@ class BountyCollector(base_agent.BaseAgent):
         self.logger.info(f'ETH balance: {eth_bal_before}')
         self.logger.info(f'SKL balance: {skl_bal_before}')
         self.logger.info('--- Getting Bounty ---')
-        lock = FileLock(LOCK_FILEPATH, timeout=1)
         self.logger.debug('Acquiring lock')
-        try:
-            with lock.acquire():
-                res = self.skale.manager.get_bounty(self.id)
-                receipt = wait_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
-        except Timeout:
-            self.logger.info('Another agent currently holds the lock')
-            return 2
+        res = self.skale.manager.get_bounty(self.id)
+        receipt = wait_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
+        self.logger.info('Another agent currently holds the lock')
         self.logger.debug('Waiting for receipt of tx...')
 
         tx_hash = receipt['transactionHash'].hex()
