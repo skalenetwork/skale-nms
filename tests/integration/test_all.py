@@ -89,7 +89,7 @@ def test_check_node_id(bounty_collector):
 
 
 def test_get_validated_nodes(monitor):
-    nodes = monitor.get_validated_nodes()
+    nodes = monitor.get_validated_nodes(monitor.skale)
     print(f'\n Validated nodes = {nodes}')
     assert type(nodes) is list
     assert any(node.get('id') == cur_node_id + 1 for node in nodes)
@@ -97,7 +97,7 @@ def test_get_validated_nodes(monitor):
 
 def test_get_reported_nodes_neg(monitor):
 
-    nodes = monitor.get_validated_nodes()
+    nodes = monitor.get_validated_nodes(monitor.skale)
     reported_nodes = monitor.get_reported_nodes(nodes)
     assert type(reported_nodes) is list
     print(f'\nrep nodes = {reported_nodes}')
@@ -124,7 +124,7 @@ def test_get_bounty_neg(bounty_collector):
 def test_get_reported_nodes_pos(monitor):
     print(f'Sleep for {TEST_EPOCH - TEST_DELTA} sec')
     time.sleep(TEST_EPOCH - TEST_DELTA)
-    nodes = monitor.get_validated_nodes()
+    nodes = monitor.get_validated_nodes(monitor.skale)
     print(LONG_LINE)
     print(f'report date: {datetime.utcfromtimestamp(nodes[0]["rep_date"])}')
     print(f'now: {datetime.utcnow()}')

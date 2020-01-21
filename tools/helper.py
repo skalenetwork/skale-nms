@@ -68,6 +68,7 @@ def get_local_wallet_filepath(node_id):
 
 
 def find_block_for_tx_stamp(skale, tx_stamp, lo=0, hi=None):
+    """Return nearest block number to given transaction timestamp"""
     count = 0
     if hi is None:
         hi = skale.web3.eth.blockNumber
@@ -87,6 +88,7 @@ def find_block_for_tx_stamp(skale, tx_stamp, lo=0, hi=None):
 
 
 def get_containers_healthcheck(host, test_mode):
+    """Return 0 if OK or 1 if failed"""
     if test_mode:
         return 0
     url = 'http://' + host + ':' + PORT + HEALTH_REQ_URL
