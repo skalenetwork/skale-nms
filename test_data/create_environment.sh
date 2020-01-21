@@ -26,15 +26,13 @@ export DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # Deploy SKALE manager
 docker run \
     -v $DIR/contracts_data:/usr/src/manager/data \
-    -e PRIVATE_KEY=$ETH_PRIVATE_KEY \
-    -e ENDPOINT=$ENDPOINT \
     --network host -it \
     skalenetwork/skale-manager:$MANAGER_BRANCH-latest \
-    npx truffle migrate --network unique
+    npx truffle migrate --network test
 
 # Prepare directories
 sudo mkdir -p /skale_vol/contracts_info
 sudo chown -R travis:travis /skale_vol
 sudo mkdir -p /skale_node_data
 sudo chown -R travis:travis /skale_node_data
-yes |sudo cp $DIR/contracts_data/unique.json /skale_vol/contracts_info/manager.json
+yes |sudo cp $DIR/contracts_data/test.json /skale_vol/contracts_info/manager.json
