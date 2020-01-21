@@ -96,6 +96,9 @@ def test_get_validated_nodes(monitor):
 
 
 def test_get_reported_nodes_neg(monitor):
+    print(f'--- Gas Price = {monitor.skale.web3.eth.gasPrice}')
+    print(f'ETH balance of account : '
+          f'{monitor.skale.web3.eth.getBalance(monitor.skale.wallet.address)}')
 
     nodes = monitor.get_validated_nodes(monitor.skale)
     reported_nodes = monitor.get_reported_nodes(nodes)
@@ -117,11 +120,16 @@ def test_get_reported_nodes_neg(monitor):
 
 
 def test_get_bounty_neg(bounty_collector):
+    print(f'--- Gas Price = {bounty_collector.skale.web3.eth.gasPrice}')
+    print(f'ETH balance of account : '
+          f'{bounty_collector.skale.web3.eth.getBalance(bounty_collector.skale.wallet.address)}')
+
     with pytest.raises(GetBountyTxFailedException):
         bounty_collector.get_bounty()
 
 
 def test_get_reported_nodes_pos(monitor):
+
     print(f'Sleep for {TEST_EPOCH - TEST_DELTA} sec')
     time.sleep(TEST_EPOCH - TEST_DELTA)
     nodes = monitor.get_validated_nodes(monitor.skale)
@@ -138,6 +146,10 @@ def test_get_reported_nodes_pos(monitor):
 
 
 def test_send_reports_pos(monitor):
+    print(f'--- Gas Price = {monitor.skale.web3.eth.gasPrice}')
+    print(f'ETH balance of account : '
+          f'{monitor.skale.web3.eth.getBalance(monitor.skale.wallet.address)}')
+
     reported_nodes = monitor.get_reported_nodes(monitor.nodes)
     db.clear_all_reports()
     assert monitor.send_reports(reported_nodes) == 0
@@ -146,6 +158,10 @@ def test_send_reports_pos(monitor):
 
 
 def test_bounty_job_saves_data(bounty_collector):
+    print(f'--- Gas Price = {bounty_collector.skale.web3.eth.gasPrice}')
+    print(f'ETH balance of account : '
+          f'{bounty_collector.skale.web3.eth.getBalance(bounty_collector.skale.wallet.address)}')
+
     print(f'\nSleep for {TEST_DELTA} sec')
     time.sleep(TEST_DELTA + 60)  # Added temporarily delay to wait next block after end of epoch
     db.clear_all_bounty_receipts()
@@ -155,6 +171,10 @@ def test_bounty_job_saves_data(bounty_collector):
 
 @pytest.mark.skip(reason="skip to save time")
 def test_get_bounty_pos(bounty_collector):
+    print(f'--- Gas Price = {bounty_collector.skale.web3.eth.gasPrice}')
+    print(f'ETH balance of account : '
+          f'{bounty_collector.skale.web3.eth.getBalance(bounty_collector.skale.wallet.address)}')
+
     print(f'\nSleep for {TEST_EPOCH} sec')
     time.sleep(TEST_EPOCH)
     db.clear_all_bounty_receipts()
@@ -164,6 +184,10 @@ def test_get_bounty_pos(bounty_collector):
 
 
 def test_get_bounty_second_time(bounty_collector):
+    print(f'--- Gas Price = {bounty_collector.skale.web3.eth.gasPrice}')
+    print(f'ETH balance of account : '
+          f'{bounty_collector.skale.web3.eth.getBalance(bounty_collector.skale.wallet.address)}')
+
     db.clear_all_bounty_receipts()
     skale = bounty_collector.skale
     bounty_collector2 = bounty_agent.BountyCollector(skale, cur_node_id)

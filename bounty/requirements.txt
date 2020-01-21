@@ -1,8 +1,7 @@
 docker==3.2.1
-skale-py==2.1dev12
+skale-py==2.1dev14
 schedule==0.6.0
 tenacity==6.0.0
 mysqlclient==1.4.5
 peewee==3.7.1
-filelock==3.0.12
 apscheduler==3.6.3
