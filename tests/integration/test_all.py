@@ -25,8 +25,8 @@ import pytest
 from bounty import bounty_agent
 from sla import sla_agent as sla
 from tests.integration.preparation import (
-    TEST_DELTA, TEST_EPOCH, accelerate_skale_manager, create_dirs, create_set_of_nodes,
-    get_active_ids, init_skale)
+    TEST_DELTA, TEST_EPOCH, TEST_BOUNTY_DELAY, accelerate_skale_manager, create_dirs,
+    create_set_of_nodes, get_active_ids, init_skale)
 from tools import db
 from tools.config_storage import ConfigStorage
 from tools.exceptions import GetBountyTxFailedException
@@ -95,7 +95,7 @@ def test_get_validated_nodes(monitor):
     assert any(node.get('id') == cur_node_id + 1 for node in nodes)
 
 
-def test_get_reported_nodes_neg(monitor):
+def test_send_reports_neg(monitor):
     print(f'--- Gas Price = {monitor.skale.web3.eth.gasPrice}')
     print(f'ETH balance of account : '
           f'{monitor.skale.web3.eth.getBalance(monitor.skale.wallet.address)}')
@@ -108,7 +108,7 @@ def test_get_reported_nodes_neg(monitor):
 
     print(LONG_LINE)
     print(f'report date: {datetime.utcfromtimestamp(nodes[0]["rep_date"])}')
-    print('now: {datetime.utcnow()}')
+    print(f'now: {datetime.utcnow()}')
 
     fake_nodes = [{'id': 1, 'ip': FAKE_IP, 'rep_date': FAKE_REPORT_DATE}]
     err_status = monitor.send_reports(fake_nodes)
@@ -163,7 +163,7 @@ def test_bounty_job_saves_data(bounty_collector):
           f'{bounty_collector.skale.web3.eth.getBalance(bounty_collector.skale.wallet.address)}')
 
     print(f'\nSleep for {TEST_DELTA} sec')
-    time.sleep(TEST_DELTA + 60)  # Added temporarily delay to wait next block after end of epoch
+    time.sleep(TEST_DELTA + TEST_BOUNTY_DELAY)  # plus delay to wait next block after end of epoch
     db.clear_all_bounty_receipts()
     bounty_collector.job()
     assert db.get_count_of_bounty_receipt_records() == 1
@@ -192,7 +192,7 @@ def test_get_bounty_second_time(bounty_collector):
     skale = bounty_collector.skale
     bounty_collector2 = bounty_agent.BountyCollector(skale, cur_node_id)
     print(f'\nSleep for {TEST_EPOCH} sec')
-    time.sleep(TEST_EPOCH + 60)  # Added temporarily delay to wait next block after end of epoch
+    time.sleep(TEST_EPOCH + TEST_BOUNTY_DELAY)  # plus delay to wait next block after end of epoch
     bounty_collector2.job()
     assert db.get_count_of_bounty_receipt_records() == 1
 
