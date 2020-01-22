@@ -1,4 +1,4 @@
-skale-py==2.1dev12
+skale-py==2.1dev14
 schedule==0.6.0
 tenacity==5.0.3
 mysqlclient==1.4.2.post1
@@ -6,6 +6,5 @@ peewee==3.7.1
 pingparsing==0.13.2
 pytest-cov==2.6.1
 codecov==2.0.15
-filelock==3.0.12
 flake8==3.7.8
 apscheduler==3.6.1
