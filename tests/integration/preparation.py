@@ -29,12 +29,13 @@ from tools.helper import init_skale
 
 DIR_LOG = '/skale_node_data/log'
 DIR_ABI = '/skale_vol/contracts_info'
-TEST_EPOCH = 200
-TEST_DELTA = 100
+TEST_EPOCH = 40
+TEST_DELTA = 10
 SKL_DEPOSIT = 100
 ETH_AMOUNT = 10
 IP_BASE = '10.1.0.'
 TEST_PORT = 123
+TEST_BOUNTY_DELAY = 0  # for using on geth > 0
 
 
 def generate_local_wallet(node_id):
