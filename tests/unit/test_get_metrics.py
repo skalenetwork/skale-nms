@@ -18,7 +18,7 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from sla import ping
+from sla.metrics import get_ping_node_results
 
 ID = 0
 IP_GOOD = '8.8.8.8'
@@ -27,7 +27,7 @@ IP_BAD = '192.0.2.0'
 
 def test_get_node_metrics_pos():
     ip = IP_GOOD
-    metrics_ok = ping.get_node_metrics(ip)
+    metrics_ok = get_ping_node_results(ip)
     latency = metrics_ok['latency']
     downtime = metrics_ok['is_offline']
     print(metrics_ok)
@@ -39,7 +39,7 @@ def test_get_node_metrics_pos():
 
 def test_get_node_metrics_neg():
     ip = IP_BAD
-    metrics_ok = ping.get_node_metrics(ip)
+    metrics_ok = get_ping_node_results(ip)
     latency = metrics_ok['latency']
     downtime = metrics_ok['is_offline']
     print(metrics_ok)
