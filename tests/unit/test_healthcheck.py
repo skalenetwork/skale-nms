@@ -47,7 +47,7 @@ def unknown_error(*args, **kwargs):
     raise Exception
 
 
-@mock.patch('tools.helper.requests.get', side_effect=mocked_requests_get)
+@mock.patch('sla.metrics.requests.get', side_effect=mocked_requests_get)
 def test_healthcheck_pos(mock_get):
     res = get_containers_healthcheck('url_ok1', False)
     assert res == 0
@@ -55,7 +55,7 @@ def test_healthcheck_pos(mock_get):
     assert res == 0
 
 
-@mock.patch('tools.helper.requests.get', side_effect=mocked_requests_get)
+@mock.patch('sla.metrics.requests.get', side_effect=mocked_requests_get)
 def test_healthcheck_neg(mock_get):
     res = get_containers_healthcheck('url_bad1', False)
     assert res == 1
@@ -69,13 +69,13 @@ def test_healthcheck_neg(mock_get):
     assert res == 1
 
 
-@mock.patch('tools.helper.requests.get', side_effect=connection_error)
+@mock.patch('sla.metrics.requests.get', side_effect=connection_error)
 def test_healthcheck_connection_error(mock_get):
     res = get_containers_healthcheck('url_ok', False)
     assert res == 1
 
 
-@mock.patch('tools.helper.requests.get', side_effect=unknown_error)
+@mock.patch('sla.metrics.requests.get', side_effect=unknown_error)
 def test_healthcheck_unknown_error(mock_get):
     res = get_containers_healthcheck('url_ok', False)
     assert res == 1
