@@ -1,18 +1,17 @@
+import pingparsing
 import requests
 from skale.dataclasses.skaled_ports import SkaledPorts
 from skale.schain_config.ports_allocation import calc_schain_base_port
 
-from sla import ping
 from tools.configs import GOOD_IP
-from tools.helper import HEALTH_REQ_URL, PORT, init_skale, logger
+from tools.helper import HEALTH_REQ_URL, PORT, logger
 
 
 def get_metrics_for_node(skale, node, is_test_mode):
     host = GOOD_IP if is_test_mode else node['ip']
-    metrics = ping.get_node_metrics(host)
-    # metrics = sim.generate_node_metrics()  # use to simulate metrics for some tests
+    metrics = get_ping_node_results(host)
     if not is_test_mode:
-        healthcheck = get_containers_healthcheck(host, is_test_mode)
+        healthcheck = get_containers_healthcheck(host)
         schains_check = check_schains_for_node(skale, node['id'])
         metrics['is_offline'] = metrics['is_offline'] | healthcheck | schains_check
 
@@ -54,10 +53,8 @@ def check_schains_for_node(skale, node_id):
     return 0
 
 
-def get_containers_healthcheck(host, test_mode):
+def get_containers_healthcheck(host):
     """Return 0 if OK or 1 if failed"""
-    if test_mode:
-        return 0
     url = 'http://' + host + ':' + PORT + HEALTH_REQ_URL
     logger.info(f'Checking: {url}')
     try:
@@ -89,11 +86,25 @@ def get_containers_healthcheck(host, test_mode):
     return 0
 
 
-if __name__ == '__main__':
-    import socket
-    skale = init_skale()
-    node_id = 2
-    node = {'id': node_id, 'ip': socket.inet_ntoa(b'\xb2\x80\xfc\xf1')}
-    # check = check_schains_for_node(skale, node_id)
-    metrics = get_metrics_for_node(skale, node, False)
-    print(f'Check = {metrics}')
+def get_ping_node_results(host) -> dict:
+    """Returns a node host metrics (downtime and latency)"""
+
+    ping_parser = pingparsing.PingParsing()
+    transmitter = pingparsing.PingTransmitter()
+    transmitter.destination_host = host
+    transmitter.ping_option = '-w1'
+    transmitter.count = 3
+    result = transmitter.ping()
+
+    if ping_parser.parse(
+            result).as_dict()['rtt_avg'] is None or ping_parser.parse(
+                result).as_dict()['packet_loss_count'] > 0:
+        is_offline = True
+        latency = -1
+        print('No connection to host!')
+    else:
+        is_offline = False
+        latency = int((ping_parser.parse(result).as_dict()['rtt_avg']) * 1000)
+        # print('Ping ok!')
+
+    return {'is_offline': is_offline, 'latency': latency}
