@@ -21,7 +21,6 @@ import logging
 import os
 from datetime import datetime
 
-import requests
 from skale import Skale
 from skale.utils.web3_utils import init_web3
 from skale.wallets import RPCWallet, Web3Wallet
@@ -85,41 +84,6 @@ def find_block_for_tx_stamp(skale, tx_stamp, lo=0, hi=None):
         count += 1
     print(f'Number of iterations = {count}')
     return lo
-
-
-def get_containers_healthcheck(host, test_mode):
-    """Return 0 if OK or 1 if failed"""
-    if test_mode:
-        return 0
-    url = 'http://' + host + ':' + PORT + HEALTH_REQ_URL
-    logger.info(f'Checking: {url}')
-    try:
-        response = requests.get(url, timeout=15)
-    except requests.exceptions.ConnectionError as err:
-        logger.error(err)
-        print(f'Could not connect to {url}')
-        return 1
-    except Exception as err:
-        logger.error(err)
-        print(f'Could not get data from {url}')
-        return 1
-
-    if response.status_code != requests.codes.ok:
-        print('Request failed, status code:', response.status_code)
-        return 1
-
-    json = response.json()
-    if json['res'] != 1:
-        for error in response.json()['errors']:
-            print(error)
-        return 1
-    else:
-        data = json['data']
-    for container in data:
-        if 'skale_schain_' not in container['name'] and 'skale_ima_' not in container['name'] and \
-                (not container['state']['Running'] or container['state']['Paused']):
-            return 1
-    return 0
 
 
 def check_node_id(skale, node_id):

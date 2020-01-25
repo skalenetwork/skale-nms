@@ -1,6 +1,6 @@
 import unittest
 from unittest import mock
-from tools.helper import get_containers_healthcheck  # MyGreatClass
+from sla.metrics import get_containers_healthcheck
 import requests
 
 
