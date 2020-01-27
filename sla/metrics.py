@@ -5,6 +5,7 @@ from skale.schain_config.ports_allocation import calc_schain_base_port
 
 from tools.configs import GOOD_IP
 from tools.helper import HEALTH_REQ_URL, PORT, logger
+from web3 import Web3, HTTPProvider
 
 
 def get_metrics_for_node(skale, node, is_test_mode):
@@ -19,14 +20,19 @@ def get_metrics_for_node(skale, node, is_test_mode):
     return metrics
 
 
-def check_schain(skale, schain, node_ip):
-    name = schain['name']
-    addr = "http://" + node_ip + ":" + str(schain['http_rpc_port'])
-    logger.info(f'\nChecking {name}, {addr}')
+def get_schain_endpoint(node_ip, rpc_port):
+    return 'http://' + node_ip + ':' + str(rpc_port)
+
+
+def check_schain(schain, node_ip):
+    schain_name = schain['name']
+    schain_endpoint = get_schain_endpoint(node_ip, schain['http_rpc_port'])
+    logger.info(f'\nChecking {schain_name}: {schain_endpoint}')
 
     try:
-        block_number = skale.web3.eth.blockNumber
-        logger.debug(f"Current block number = {block_number}")
+        web3 = Web3(HTTPProvider(schain_endpoint))
+        block_number = web3.eth.blockNumber
+        logger.debug(f"Current block number for {schain_name} = {block_number}")
         return 0
     except Exception as err:
         logger.exception(f'Error occurred while getting block number : {err}')
@@ -53,9 +59,13 @@ def check_schains_for_node(skale, node_id):
     return 0
 
 
+def get_containers_healthcheck_url(host):
+    return 'http://' + host + ':' + PORT + HEALTH_REQ_URL
+
+
 def get_containers_healthcheck(host):
     """Return 0 if OK or 1 if failed"""
-    url = 'http://' + host + ':' + PORT + HEALTH_REQ_URL
+    url = get_containers_healthcheck_url(host)
     logger.info(f'Checking: {url}')
     try:
         response = requests.get(url, timeout=15)
@@ -105,6 +115,5 @@ def get_ping_node_results(host) -> dict:
     else:
         is_offline = False
         latency = int((ping_parser.parse(result).as_dict()['rtt_avg']) * 1000)
-        # print('Ping ok!')
 
     return {'is_offline': is_offline, 'latency': latency}

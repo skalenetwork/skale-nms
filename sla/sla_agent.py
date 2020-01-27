@@ -23,7 +23,6 @@ from SC, checks its health metrics and sends transactions with average metrics t
 to send it
 """
 
-import os
 import socket
 import sys
 import threading
@@ -34,10 +33,10 @@ import schedule
 from skale.manager_client import spawn_skale_lib
 from skale.utils.web3_utils import wait_receipt
 
+from sla.metrics import get_metrics_for_node, get_ping_node_results
 from tools import base_agent, db
 from tools.configs import GOOD_IP, LONG_DOUBLE_LINE, LONG_LINE, MONITOR_PERIOD, REPORT_PERIOD
 from tools.helper import run_agent
-from sla.metrics import get_metrics_for_node
 
 
 class Monitor(base_agent.BaseAgent):
@@ -76,7 +75,7 @@ class Monitor(base_agent.BaseAgent):
             self.logger.info(f'The nodes to be monitored : {nodes}')
 
         for node in nodes:
-            if os.system("ping -c 1 " + GOOD_IP + " > /dev/null") == 0:
+            if not get_ping_node_results(GOOD_IP)['is_offline']:
                 metrics = get_metrics_for_node(skale, node, self.is_test_mode)
                 self.logger.info(f'Received metrics from node ID = {node["id"]}: {metrics}')
                 try:
