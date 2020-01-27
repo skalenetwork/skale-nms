@@ -22,14 +22,14 @@ def get_metrics_for_node(skale, node, is_test_mode):
 def check_schain(skale, schain, node_ip):
     name = schain['name']
     addr = "http://" + node_ip + ":" + str(schain['http_rpc_port'])
-    print(f'\nChecking {name}, {addr}')
+    logger.info(f'\nChecking {name}, {addr}')
 
     try:
         block_number = skale.web3.eth.blockNumber
-        print(f"Current block number = {block_number}")
+        logger.debug(f"Current block number = {block_number}")
         return 0
     except Exception as err:
-        print(f'Error occurred while getting block number : {err}')
+        logger.exception(f'Error occurred while getting block number : {err}')
         return 1
 
 
@@ -45,7 +45,7 @@ def check_schains_for_node(skale, node_id):
                 'http_rpc_port': calc_schain_base_port(
                     node_base_port, schain['index']) + SkaledPorts.HTTP_JSON.value}
                for schain in raw_schains]
-    print(f'schains = {schains}')
+    logger.debug(f'schains = {schains}')
     for schain in schains:
         if check_schain(skale, schain, node_ip) == 1:
             return 1
@@ -60,22 +60,22 @@ def get_containers_healthcheck(host):
     try:
         response = requests.get(url, timeout=15)
     except requests.exceptions.ConnectionError as err:
+        logger.info(f'Could not connect to {url}')
         logger.error(err)
-        print(f'Could not connect to {url}')
         return 1
     except Exception as err:
+        logger.info(f'Could not get data from {url}')
         logger.error(err)
-        print(f'Could not get data from {url}')
         return 1
 
     if response.status_code != requests.codes.ok:
-        print('Request failed, status code:', response.status_code)
+        logger.info('Request failed, status code:', response.status_code)
         return 1
 
     json = response.json()
     if json['res'] != 1:
         for error in response.json()['errors']:
-            print(error)
+            logger.info(error)
         return 1
     else:
         data = json['data']
@@ -101,7 +101,7 @@ def get_ping_node_results(host) -> dict:
                 result).as_dict()['packet_loss_count'] > 0:
         is_offline = True
         latency = -1
-        print('No connection to host!')
+        logger.info('No connection to host!')
     else:
         is_offline = False
         latency = int((ping_parser.parse(result).as_dict()['rtt_avg']) * 1000)
