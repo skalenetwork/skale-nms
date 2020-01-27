@@ -1,6 +1,6 @@
 import unittest
 from unittest import mock
-from tools.helper import get_containers_healthcheck  # MyGreatClass
+from sla.metrics import get_containers_healthcheck
 import requests
 
 
@@ -47,37 +47,37 @@ def unknown_error(*args, **kwargs):
     raise Exception
 
 
-@mock.patch('tools.helper.requests.get', side_effect=mocked_requests_get)
+@mock.patch('sla.metrics.requests.get', side_effect=mocked_requests_get)
 def test_healthcheck_pos(mock_get):
-    res = get_containers_healthcheck('url_ok1', False)
+    res = get_containers_healthcheck('url_ok1')
     assert res == 0
-    res = get_containers_healthcheck('url_ok2', False)
+    res = get_containers_healthcheck('url_ok2')
     assert res == 0
 
 
-@mock.patch('tools.helper.requests.get', side_effect=mocked_requests_get)
+@mock.patch('sla.metrics.requests.get', side_effect=mocked_requests_get)
 def test_healthcheck_neg(mock_get):
-    res = get_containers_healthcheck('url_bad1', False)
+    res = get_containers_healthcheck('url_bad1')
     assert res == 1
-    res = get_containers_healthcheck('url_bad2', False)
+    res = get_containers_healthcheck('url_bad2')
     assert res == 1
-    res = get_containers_healthcheck('url_bad3', False)
+    res = get_containers_healthcheck('url_bad3')
     assert res == 1
-    res = get_containers_healthcheck('url_bad4', False)
+    res = get_containers_healthcheck('url_bad4')
     assert res == 1
-    res = get_containers_healthcheck('url_bad5', False)
+    res = get_containers_healthcheck('url_bad5')
     assert res == 1
 
 
-@mock.patch('tools.helper.requests.get', side_effect=connection_error)
+@mock.patch('sla.metrics.requests.get', side_effect=connection_error)
 def test_healthcheck_connection_error(mock_get):
-    res = get_containers_healthcheck('url_ok', False)
+    res = get_containers_healthcheck('url_ok')
     assert res == 1
 
 
-@mock.patch('tools.helper.requests.get', side_effect=unknown_error)
+@mock.patch('sla.metrics.requests.get', side_effect=unknown_error)
 def test_healthcheck_unknown_error(mock_get):
-    res = get_containers_healthcheck('url_ok', False)
+    res = get_containers_healthcheck('url_ok')
     assert res == 1
 
 

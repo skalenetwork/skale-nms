@@ -23,7 +23,6 @@ from SC, checks its health metrics and sends transactions with average metrics t
 to send it
 """
 
-import os
 import socket
 import sys
 import threading
@@ -34,10 +33,10 @@ import schedule
 from skale.manager_client import spawn_skale_lib
 from skale.utils.web3_utils import wait_receipt
 
-from sla import ping
+from sla.metrics import get_metrics_for_node, get_ping_node_results
 from tools import base_agent, db
 from tools.configs import GOOD_IP, LONG_DOUBLE_LINE, LONG_LINE, MONITOR_PERIOD, REPORT_PERIOD
-from tools.helper import get_containers_healthcheck, run_agent
+from tools.helper import run_agent
 
 
 class Monitor(base_agent.BaseAgent):
@@ -66,7 +65,7 @@ class Monitor(base_agent.BaseAgent):
             nodes.append({'id': node_id, 'ip': node_ip, 'rep_date': report_date})
         return nodes
 
-    def validate_nodes(self, nodes):
+    def validate_nodes(self, skale, nodes):
         """Validate nodes and returns a list of nodes to be reported"""
         self.logger.info(LONG_LINE)
         if len(nodes) == 0:
@@ -76,13 +75,8 @@ class Monitor(base_agent.BaseAgent):
             self.logger.info(f'The nodes to be monitored : {nodes}')
 
         for node in nodes:
-            host = GOOD_IP if self.is_test_mode else node['ip']
-            if os.system("ping -c 1 " + GOOD_IP + " > /dev/null") == 0:
-                metrics = ping.get_node_metrics(host)
-                # metrics = sim.generate_node_metrics()  # use to simulate metrics for some tests
-                healthcheck = get_containers_healthcheck(host, self.is_test_mode)
-                if healthcheck:
-                    metrics['is_offline'] = True
+            if not get_ping_node_results(GOOD_IP)['is_offline']:
+                metrics = get_metrics_for_node(skale, node, self.is_test_mode)
                 self.logger.info(f'Received metrics from node ID = {node["id"]}: {metrics}')
                 try:
                     db.save_metrics_to_db(self.id, node['id'],
@@ -170,14 +164,14 @@ class Monitor(base_agent.BaseAgent):
         Periodic job for monitoring nodes
         """
         self.logger.info('New monitor job started...')
+        skale = spawn_skale_lib(self.skale)
         try:
-            skale = spawn_skale_lib(self.skale)
             self.nodes = self.get_validated_nodes(skale)
         except Exception as err:
             self.logger.exception(f'Failed to get list of monitored nodes. Error: {err}')
             self.logger.info('Monitoring nodes from previous job list')
 
-        self.validate_nodes(self.nodes)
+        self.validate_nodes(skale, self.nodes)
 
         self.logger.info('Monitor job finished...')
 
