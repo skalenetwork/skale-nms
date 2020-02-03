@@ -32,4 +32,4 @@ REWARD_DELAY = 60  # in seconds
 MISFIRE_GRACE_TIME = 365 * 24 * 60 * 60
 
 WATCHDOG_PORT = '3009'
-WATCHDOG_URL = 'status/all'
+WATCHDOG_URL = 'status/core'
