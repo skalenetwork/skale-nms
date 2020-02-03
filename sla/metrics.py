@@ -2,10 +2,10 @@ import pingparsing
 import requests
 from skale.dataclasses.skaled_ports import SkaledPorts
 from skale.schain_config.ports_allocation import calc_schain_base_port
+from web3 import HTTPProvider, Web3
 
-from tools.configs import GOOD_IP
-from tools.helper import HEALTH_REQ_URL, PORT, logger
-from web3 import Web3, HTTPProvider
+from tools.configs import GOOD_IP, WATCHDOG_PORT, WATCHDOG_URL
+from tools.helper import logger
 
 
 def get_metrics_for_node(skale, node, is_test_mode):
@@ -60,7 +60,7 @@ def check_schains_for_node(skale, node_id):
 
 
 def get_containers_healthcheck_url(host):
-    return 'http://' + host + ':' + PORT + HEALTH_REQ_URL
+    return f'http://{host}:{WATCHDOG_PORT}/{WATCHDOG_URL}'
 
 
 def get_containers_healthcheck(host):

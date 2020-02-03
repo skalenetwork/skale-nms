@@ -29,9 +29,6 @@ from tools.config_storage import ConfigStorage
 from tools.configs import ENV, LOCAL_WALLET_FILEPATH
 from tools.configs.web3 import ABI_FILEPATH, ENDPOINT
 
-PORT = '3007'
-HEALTH_REQ_URL = '/healthchecks/containers'
-
 logger = logging.getLogger(__name__)
 
 
