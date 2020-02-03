@@ -1,7 +1,13 @@
-import unittest
 from unittest import mock
-from sla.metrics import get_containers_healthcheck
+
 import requests
+
+from sla.metrics import get_containers_healthcheck
+from tools.configs import WATCHDOG_PORT, WATCHDOG_URL
+
+
+def get_test_url(base):
+    return f'http://{base}:{WATCHDOG_PORT}/{WATCHDOG_URL}'
 
 
 # This method will be used by the mock to replace requests.get
@@ -23,17 +29,17 @@ def mocked_requests_get(*args, **kwargs):
     data_bad2 = [{'name': 'container_name', 'state': {'Running': False, 'Paused': True}},
                  {'name': 'skale_schain_name', 'state': {'Running': True, 'Paused': False}}]
 
-    if args[0] == 'http://url_ok1:3007/healthchecks/containers':
+    if args[0] == get_test_url('url_ok1'):
         return MockResponse({'res': 1, 'data': data_ok1}, 200)
-    elif args[0] == 'http://url_bad1:3007/healthchecks/containers':
+    elif args[0] == get_test_url('url_bad1'):
         return MockResponse({'res': 1, 'data': data_bad1}, 200)
-    elif args[0] == 'http://url_bad2:3007/healthchecks/containers':
+    elif args[0] == get_test_url('url_bad2'):
         return MockResponse({'res': 0, 'data': data_ok1, 'errors': ["Error1"]}, 200)
-    elif args[0] == 'http://url_bad3:3007/healthchecks/containers':
+    elif args[0] == get_test_url('url_bad3'):
         return MockResponse({'res': 1, 'data': data_ok1}, 500)
-    elif args[0] == 'http://url_bad4:3007/healthchecks/containers':
+    elif args[0] == get_test_url('url_bad4'):
         return MockResponse({'res': 1, 'data': data_bad2}, 200)
-    elif args[0] == 'http://url_ok2:3007/healthchecks/containers':
+    elif args[0] == get_test_url('url_ok2'):
         return MockResponse({'res': 1, 'data': data_ok2}, 200)
 
     return MockResponse(None, 404)
@@ -79,7 +85,3 @@ def test_healthcheck_connection_error(mock_get):
 def test_healthcheck_unknown_error(mock_get):
     res = get_containers_healthcheck('url_ok')
     assert res == 1
-
-
-if __name__ == '__main__':
-    unittest.main()
