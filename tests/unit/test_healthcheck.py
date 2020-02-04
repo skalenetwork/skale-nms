@@ -39,14 +39,9 @@ def mocked_requests_get(*args, **kwargs):
         def json(self):
             return self.json_data
 
-    data_ok1 = [{'name': 'container_name', 'state': {'Running': True, 'Paused': False}},
-                {'name': 'skale_schain_name', 'state': {'Running': True, 'Paused': False}}]
-    data_ok2 = [{'name': 'container_name', 'state': {'Running': True, 'Paused': False}},
-                {'name': 'skale_schain_name', 'state': {'Running': False, 'Paused': False}}]
-    data_bad1 = [{'name': 'container_name', 'state': {'Running': False, 'Paused': False}},
-                 {'name': 'skale_schain_name', 'state': {'Running': True, 'Paused': False}}]
-    data_bad2 = [{'name': 'container_name', 'state': {'Running': False, 'Paused': True}},
-                 {'name': 'skale_schain_name', 'state': {'Running': True, 'Paused': False}}]
+    data_ok1 = [{'name': 'container_name', 'state': {'Running': True, 'Paused': False}}]
+    data_bad1 = [{'name': 'container_name', 'state': {'Running': False, 'Paused': False}}]
+    data_bad2 = [{'name': 'container_name', 'state': {'Running': False, 'Paused': True}}]
 
     if args[0] == get_test_url('url_ok1'):
         return MockResponse({'res': 1, 'data': data_ok1}, 200)
@@ -58,8 +53,6 @@ def mocked_requests_get(*args, **kwargs):
         return MockResponse({'res': 1, 'data': data_ok1}, 500)
     elif args[0] == get_test_url('url_bad4'):
         return MockResponse({'res': 1, 'data': data_bad2}, 200)
-    elif args[0] == get_test_url('url_ok2'):
-        return MockResponse({'res': 1, 'data': data_ok2}, 200)
 
     return MockResponse(None, 404)
 
@@ -75,8 +68,6 @@ def unknown_error(*args, **kwargs):
 @mock.patch('sla.metrics.requests.get', side_effect=mocked_requests_get)
 def test_healthcheck_pos(mock_get):
     res = get_containers_healthcheck('url_ok1')
-    assert res == 0
-    res = get_containers_healthcheck('url_ok2')
     assert res == 0
 
 
