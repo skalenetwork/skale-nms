@@ -72,7 +72,7 @@ def check_schains_for_node(skale, node_id):
                for schain in raw_schains]
     logger.debug(f'schains = {schains}')
     for schain in schains:
-        if check_schain(skale, schain, node_ip) == 1:
+        if check_schain(schain, node_ip) == 1:
             return 1
 
     return 0
@@ -98,7 +98,7 @@ def get_containers_healthcheck(host):
         return 1
 
     if response.status_code != requests.codes.ok:
-        logger.info('Request failed, status code:', response.status_code)
+        logger.info(f'Request failed, status code: {response.status_code}')
         return 1
 
     json = response.json()
