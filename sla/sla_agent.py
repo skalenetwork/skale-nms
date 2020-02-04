@@ -2,7 +2,7 @@
 #
 #   This file is part of SKALE-NMS
 #
-#   Copyright (C) 2019 SKALE Labs
+#   Copyright (C) 2019-2020 SKALE Labs
 #
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU Affero General Public License as published
@@ -16,7 +16,7 @@
 #
 #   You should have received a copy of the GNU Affero General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 """
 SLA agent runs on every node of SKALE network, periodically gets a list of nodes to validate
 from SC, checks its health metrics and sends transactions with average metrics to CS when it's time

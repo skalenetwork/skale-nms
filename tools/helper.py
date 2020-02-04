@@ -2,7 +2,7 @@
 #
 #   This file is part of SKALE-NMS
 #
-#   Copyright (C) 2019 SKALE Labs
+#   Copyright (C) 2019-2020 SKALE Labs
 #
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU Affero General Public License as published
@@ -28,9 +28,6 @@ from skale.wallets import RPCWallet, Web3Wallet
 from tools.config_storage import ConfigStorage
 from tools.configs import ENV, LOCAL_WALLET_FILEPATH
 from tools.configs.web3 import ABI_FILEPATH, ENDPOINT
-
-PORT = '3007'
-HEALTH_REQ_URL = '/healthchecks/containers'
 
 logger = logging.getLogger(__name__)
 

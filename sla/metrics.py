@@ -1,11 +1,30 @@
+#   -*- coding: utf-8 -*-
+#
+#   This file is part of SKALE-NMS
+#
+#   Copyright (C) 2020 SKALE Labs
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU Affero General Public License as published
+#   by the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU Affero General Public License for more details.
+#
+#   You should have received a copy of the GNU Affero General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import pingparsing
 import requests
 from skale.dataclasses.skaled_ports import SkaledPorts
 from skale.schain_config.ports_allocation import calc_schain_base_port
+from web3 import HTTPProvider, Web3
 
-from tools.configs import GOOD_IP
-from tools.helper import HEALTH_REQ_URL, PORT, logger
-from web3 import Web3, HTTPProvider
+from tools.configs import GOOD_IP, WATCHDOG_PORT, WATCHDOG_URL
+from tools.helper import logger
 
 
 def get_metrics_for_node(skale, node, is_test_mode):
@@ -53,14 +72,14 @@ def check_schains_for_node(skale, node_id):
                for schain in raw_schains]
     logger.debug(f'schains = {schains}')
     for schain in schains:
-        if check_schain(skale, schain, node_ip) == 1:
+        if check_schain(schain, node_ip) == 1:
             return 1
 
     return 0
 
 
 def get_containers_healthcheck_url(host):
-    return 'http://' + host + ':' + PORT + HEALTH_REQ_URL
+    return f'http://{host}:{WATCHDOG_PORT}/{WATCHDOG_URL}'
 
 
 def get_containers_healthcheck(host):
@@ -79,7 +98,7 @@ def get_containers_healthcheck(host):
         return 1
 
     if response.status_code != requests.codes.ok:
-        logger.info('Request failed, status code:', response.status_code)
+        logger.info(f'Request failed, status code: {response.status_code}')
         return 1
 
     json = response.json()
@@ -90,8 +109,7 @@ def get_containers_healthcheck(host):
     else:
         data = json['data']
     for container in data:
-        if 'skale_schain_' not in container['name'] and 'skale_ima_' not in container['name'] and \
-                (not container['state']['Running'] or container['state']['Paused']):
+        if not container['state']['Running'] or container['state']['Paused']:
             return 1
     return 0
 
