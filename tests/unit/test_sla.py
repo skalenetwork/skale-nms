@@ -2,7 +2,7 @@
 #
 #   This file is part of SKALE-NMS
 #
-#   Copyright (C) 2019 SKALE Labs
+#   Copyright (C) 2019-2020 SKALE Labs
 #
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU Affero General Public License as published
@@ -65,7 +65,7 @@ def test_get_reported_nodes(monitor):
     assert err_send_verdicts_status == 0
 
 
-# @pytest.mark.skip(reason="skip to save time")
+@pytest.mark.skip(reason="skip because of not all Skale functions are mocked")
 def test_report_saved_to_db(monitor):
     db.clear_all_reports()
     assert db.get_count_of_report_records() == 0
