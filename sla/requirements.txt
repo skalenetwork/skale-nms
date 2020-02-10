@@ -1,4 +1,4 @@
-docker==3.2.1
+docker==4.2.0
 skale-py==2.1dev14
 pingparsing==0.18.2
 schedule==0.6.0
