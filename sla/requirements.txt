@@ -1,6 +1,6 @@
 docker==3.2.1
 skale-py==2.1dev14
-pingparsing==0.13.2
+pingparsing==0.18.2
 schedule==0.6.0
 tenacity==6.0.0
 mysqlclient==1.4.6
