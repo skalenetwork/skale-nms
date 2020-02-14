@@ -44,15 +44,15 @@ def mocked_requests_get(*args, **kwargs):
     data_bad2 = [{'name': 'container_name', 'state': {'Running': False, 'Paused': True}}]
 
     if args[0] == get_test_url('url_ok1'):
-        return MockResponse({'res': 1, 'data': data_ok1}, 200)
+        return MockResponse({'error': None, 'data': data_ok1}, 200)
     elif args[0] == get_test_url('url_bad1'):
-        return MockResponse({'res': 1, 'data': data_bad1}, 200)
+        return MockResponse({'error': None, 'data': data_bad1}, 200)
     elif args[0] == get_test_url('url_bad2'):
-        return MockResponse({'res': 0, 'data': data_ok1, 'errors': ["Error1"]}, 200)
+        return MockResponse({'error': 'any_error', 'data': data_ok1}, 200)
     elif args[0] == get_test_url('url_bad3'):
-        return MockResponse({'res': 1, 'data': data_ok1}, 500)
+        return MockResponse({'error': None, 'data': data_ok1}, 500)
     elif args[0] == get_test_url('url_bad4'):
-        return MockResponse({'res': 1, 'data': data_bad2}, 200)
+        return MockResponse({'error': None, 'data': data_bad2}, 200)
 
     return MockResponse(None, 404)
 
