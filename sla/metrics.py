@@ -102,14 +102,14 @@ def get_containers_healthcheck(host):
         return 1
 
     json = response.json()
-    if json['res'] != 1:
-        for error in response.json()['errors']:
-            logger.info(error)
+    if json['error'] is not None:
+        logger.info(json['error'])
         return 1
     else:
         data = json['data']
     for container in data:
         if not container['state']['Running'] or container['state']['Paused']:
+            logger.info(f'{container["name"]} is not running or paused')
             return 1
     return 0
 
