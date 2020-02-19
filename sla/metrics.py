@@ -101,12 +101,15 @@ def get_containers_healthcheck(host):
         logger.info(f'Request failed, status code: {response.status_code}')
         return 1
 
-    json = response.json()
-    if json['error'] is not None:
-        logger.info(json['error'])
+    res = response.json()
+    if res.get('error') is not None:
+        logger.info(res['error'])
         return 1
-    else:
-        data = json['data']
+    data = res.get('data')
+    if data is None:
+        logger.info(f'No data found checking {url}')
+        return 1
+
     for container in data:
         if not container['state']['Running'] or container['state']['Paused']:
             logger.info(f'{container["name"]} is not running or paused')
