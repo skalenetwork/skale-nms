@@ -53,6 +53,8 @@ def mocked_requests_get(*args, **kwargs):
         return MockResponse({'error': None, 'data': data_ok1}, 500)
     elif args[0] == get_test_url('url_bad4'):
         return MockResponse({'error': None, 'data': data_bad2}, 200)
+    elif args[0] == get_test_url('url_bad5'):
+        return MockResponse({'error': None}, 200)
 
     return MockResponse(None, 404)
 
@@ -82,6 +84,8 @@ def test_healthcheck_neg(mock_get):
     res = get_containers_healthcheck('url_bad4')
     assert res == 1
     res = get_containers_healthcheck('url_bad5')
+    assert res == 1
+    res = get_containers_healthcheck('url_bad6')
     assert res == 1
 
 
