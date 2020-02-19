@@ -1,7 +1,7 @@
-docker==3.2.1
+docker==4.2.0
 skale-py==2.1dev14
-pingparsing==0.13.2
+pingparsing==0.18.2
 schedule==0.6.0
 tenacity==6.0.0
-mysqlclient==1.4.5
-peewee==3.11.2
+mysqlclient==1.4.6
+peewee==3.13.1
