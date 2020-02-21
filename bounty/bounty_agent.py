@@ -26,7 +26,7 @@ import time
 from datetime import datetime, timedelta
 
 import tenacity
-from skale.utils.web3_utils import wait_receipt
+# from skale.utils.web3_utils import wait_receipt
 from web3.logs import DISCARD
 
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
@@ -55,7 +55,7 @@ class BountyCollector(base_agent.BaseAgent):
             job_defaults={'coalesce': True, 'misfire_grace_time': MISFIRE_GRACE_TIME})
 
     def get_reward_date(self):
-        reward_period = self.skale.validators_data.get_reward_period()
+        reward_period = self.skale.monitors_data.get_reward_period()
         reward_date = self.skale.nodes_data.get(
             self.id)['last_reward_date'] + reward_period
         return datetime.utcfromtimestamp(reward_date) + timedelta(seconds=REWARD_DELAY)
@@ -105,14 +105,13 @@ class BountyCollector(base_agent.BaseAgent):
         skl_bal_before = self.skale.token.get_balance(address)
         self.logger.info(f'ETH balance: {eth_bal_before}')
         self.logger.info(f'SKL balance: {skl_bal_before}')
-        self.logger.info('--- Getting Bounty ---')
-        res = self.skale.manager.get_bounty(self.id)
-        receipt = wait_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
-        self.logger.debug('Waiting for receipt of tx...')
 
-        tx_hash = receipt['transactionHash'].hex()
+        self.logger.info('--- Getting Bounty ---')
+        res_tx = self.skale.manager.get_bounty(self.id, wait_for=True)
+
+        tx_hash = res_tx.receipt['transactionHash'].hex()
         self.logger.info(f'tx hash: {tx_hash}')
-        self.logger.debug(f'Receipt: {receipt}')
+        self.logger.debug(f'Receipt: {res_tx.receipt}')
 
         eth_bal = self.skale.web3.eth.getBalance(address)
         skl_bal = self.skale.token.get_balance(address)
@@ -126,18 +125,18 @@ class BountyCollector(base_agent.BaseAgent):
 
         self.logger.info(LONG_DOUBLE_LINE)
 
-        if receipt['status'] == 1:
+        if res_tx.receipt['status'] == 1:
             self.logger.info('The bounty was successfully received')
             h_receipt = self.skale.manager.contract.events.BountyGot().processReceipt(
-                receipt, errors=DISCARD)
+                res_tx.receipt, errors=DISCARD)
             self.logger.info(LONG_LINE)
             self.logger.info(h_receipt)
             args = h_receipt[0]['args']
             try:
                 db.save_bounty_event(datetime.utcfromtimestamp(args['time']), str(tx_hash),
-                                     receipt['blockNumber'], args['nodeIndex'], args['bounty'],
-                                     args['averageDowntime'], args['averageLatency'],
-                                     receipt['gasUsed'])
+                                     res_tx.receipt['blockNumber'], args['nodeIndex'],
+                                     args['bounty'], args['averageDowntime'],
+                                     args['averageLatency'], res_tx.receipt['gasUsed'])
             except Exception as err:
                 self.logger.error(f'Cannot save getBounty event. Error: {err}')
         else:
@@ -145,7 +144,7 @@ class BountyCollector(base_agent.BaseAgent):
             # TODO: notify Skale Admin
             raise GetBountyTxFailedException
 
-        return receipt['status']
+        return res_tx.receipt['status']
 
     @tenacity.retry(wait=tenacity.wait_fixed(60),
                     retry=tenacity.retry_if_exception_type(IsNotTimeException))

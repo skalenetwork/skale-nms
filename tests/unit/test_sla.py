@@ -40,7 +40,7 @@ def monitor(request):
     return _validator
 
 
-# @pytest.mark.skip(reason="skip to save time")
+@pytest.mark.skip(reason="skip to save time")
 def test_get_validated_nodes(monitor):
     nodes = monitor.get_validated_nodes(monitor.skale)
     print(f'nodes = {nodes}')
@@ -52,7 +52,7 @@ def test_get_validated_nodes(monitor):
     assert nodes[1]['id'] == 2
 
 
-# @pytest.mark.skip(reason="skip to save time")
+@pytest.mark.skip(reason="skip to save time")
 def test_get_reported_nodes(monitor):
     nodes = monitor.get_validated_nodes(monitor.skale)
     reported_nodes = monitor.get_reported_nodes(nodes)

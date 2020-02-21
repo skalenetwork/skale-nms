@@ -31,7 +31,7 @@ from datetime import datetime
 
 import schedule
 from skale.manager_client import spawn_skale_lib
-from skale.utils.web3_utils import wait_receipt
+# from skale.utils.web3_utils import wait_receipt
 
 from sla.metrics import get_metrics_for_node, get_ping_node_results
 from tools import base_agent, db
@@ -50,7 +50,7 @@ class Monitor(base_agent.BaseAgent):
 
         # get raw binary data list from SKALE Manager SC
         try:
-            nodes_in_bytes_array = skale.validators_data.get_validated_array(self.id)
+            nodes_in_bytes_array = skale.monitors_data.get_validated_array(self.id)
         except Exception as err:
             self.logger.error(f'Cannot get a list of nodes for validating: {str(err)}',
                               exc_info=True)
@@ -112,7 +112,7 @@ class Monitor(base_agent.BaseAgent):
         downtimes = []
 
         for node in nodes_for_report:
-            reward_period = self.skale.validators_data.get_reward_period()
+            reward_period = self.skale.monitors_data.get_reward_period()
             start_date = node['rep_date'] - reward_period
 
             try:
@@ -131,14 +131,13 @@ class Monitor(base_agent.BaseAgent):
                 self.logger.info(f'Report on node id = {node["id"]} cannot be sent!')
         if len(ids) == len(downtimes) == len(latencies) and len(ids) != 0:
             try:
-                res = self.skale.manager.send_verdicts(self.id, ids, downtimes,
-                                                       latencies)
-                receipt = wait_receipt(self.skale.web3, res['tx'], retries=30, timeout=6)
-                tx_hash = receipt['transactionHash'].hex()
-                if receipt['status'] == 1:
+                res_tx = self.skale.manager.send_verdicts(self.id, ids, downtimes,
+                                                          latencies, wait_for=True)
+                tx_hash = res_tx.receipt['transactionHash'].hex()
+                if res_tx.receipt['status'] == 1:
                     self.logger.info('The report was successfully sent')
-                    h_receipt = self.skale.validators.contract.events.VerdictWasSent(
-                    ).processReceipt(receipt)
+                    h_receipt = self.skale.monitors.contract.events.VerdictWasSent(
+                    ).processReceipt(res_tx.receipt)
                     self.logger.info(LONG_LINE)
                     self.logger.info(h_receipt)
                     args = h_receipt[0]['args']
@@ -146,13 +145,13 @@ class Monitor(base_agent.BaseAgent):
                         db.save_report_event(datetime.utcfromtimestamp(args['time']),
                                              str(tx_hash), args['fromValidatorIndex'],
                                              args['toNodeIndex'], args['downtime'],
-                                             args['latency'], receipt["gasUsed"])
+                                             args['latency'], res_tx.receipt["gasUsed"])
                     except Exception as err:
                         self.logger.exception(f'Failed to save report event data. {err}')
-                if receipt['status'] == 0:
+                if res_tx.receipt['status'] == 0:
                     self.logger.info('The report was not sent - transaction failed')
                     err_status = 1
-                self.logger.debug(f'Receipt: {receipt}')
+                self.logger.debug(f'Receipt: {res_tx.receipt}')
                 self.logger.info(LONG_DOUBLE_LINE)
             except Exception as err:
                 self.logger.exception(f'An error occurred while sending report. Error: {err}')
