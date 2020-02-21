@@ -1,4 +1,4 @@
-skale-py==2.1dev14
+skale-py==3.0dev4
 schedule==0.6.0
 tenacity==5.0.3
 mysqlclient==1.4.2.post1
