@@ -32,7 +32,7 @@ def get_metrics_for_node(skale, node, is_test_mode):
     metrics = get_ping_node_results(host)
     if not is_test_mode:
         healthcheck = get_containers_healthcheck(host)
-        schains_check = check_schains_for_node(skale, node['id'])
+        schains_check = check_schains_for_node(skale, node['id'], host)
         metrics['is_offline'] = metrics['is_offline'] | healthcheck | schains_check
 
     logger.info(f'Received metrics from node ID = {node["id"]}: {metrics}')
@@ -51,19 +51,18 @@ def check_schain(schain, node_ip):
     try:
         web3 = Web3(HTTPProvider(schain_endpoint))
         block_number = web3.eth.blockNumber
-        logger.debug(f"Current block number for {schain_name} = {block_number}")
+        logger.info(f"Current block number for {schain_name} = {block_number}")
         return 0
     except Exception as err:
-        logger.exception(f'Error occurred while getting block number : {err}')
+        logger.error(f'Error occurred while getting block number : {err}')
         return 1
 
 
-def check_schains_for_node(skale, node_id):
+def check_schains_for_node(skale, node_id, node_ip):
     raw_schains = skale.schains_data.get_schains_for_node(node_id)
 
     node_info = skale.nodes_data.get(node_id)
     node_base_port = node_info['port']
-    node_ip = str(node_info['ip'])
 
     schains = [{'name': schain['name'],
                 'index': schain['index'],
