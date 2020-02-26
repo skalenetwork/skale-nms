@@ -53,7 +53,7 @@ def generate_random_hash():
 
 
 class ValidatorsData:
-    def get_validated_array(self, node_id=None, account=None):
+    def get_checked_array(self, node_id=None, account=None):
         # now = datetime.utcnow().timestamp()
         now = int(datetime.utcnow().replace(tzinfo=timezone.utc).timestamp())
         rep_date0 = now

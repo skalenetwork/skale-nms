@@ -32,7 +32,7 @@ MIN_NODES_IN_SCHAIN = 2
 N_TEST_WALLETS = 2
 
 ENDPOINT = os.environ['ENDPOINT']
-TEST_ABI_FILEPATH = os.path.join(DIR_PATH, os.pardir, 'test_abi.json')
+TEST_ABI_FILEPATH = os.path.join(DIR_PATH, 'test_abi.json')
 ETH_PRIVATE_KEY = os.environ['ETH_PRIVATE_KEY']
 
 # constants contract
@@ -58,3 +58,7 @@ D_DELEGATION_PERIOD = 3
 D_DELEGATION_INFO = 'test'
 
 NOT_EXISTING_ID = 123123
+
+
+TEST_EPOCH = 40
+TEST_DELTA = 10

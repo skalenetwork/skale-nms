@@ -1,13 +1,27 @@
-# from skale import Skale
-# from skale.wallets import Web3Wallet
-# from skale.utils.web3_utils import init_web3
-# from skale.utils.helper import init_default_logger
+from skale import Skale
+from skale.wallets import Web3Wallet
+from skale.utils.web3_utils import init_web3
 from skale.utils.web3_utils import check_receipt
 from tests.constants import (
-    # DEFAULT_SCHAIN_NAME, DEFAULT_NODE_NAME, ENDPOINT, SECOND_NODE_NAME, TEST_ABI_FILEPATH,
+    ENDPOINT, TEST_ABI_FILEPATH, ETH_PRIVATE_KEY,
     D_VALIDATOR_ID, D_VALIDATOR_NAME, D_VALIDATOR_DESC, D_VALIDATOR_FEE,
-    D_VALIDATOR_MIN_DEL, D_DELEGATION_PERIOD, D_DELEGATION_INFO
+    D_VALIDATOR_MIN_DEL, D_DELEGATION_PERIOD, D_DELEGATION_INFO, TEST_EPOCH, TEST_DELTA
 )
+import os
+
+IP_BASE = '10.1.0.'
+TEST_PORT = 123
+DIR_LOG = '/skale_node_data/log'
+DIR_ABI = '/skale_vol/contracts_info'
+TEST_BOUNTY_DELAY = 0  # for using on geth > 0
+
+
+def create_dirs():
+
+    if not os.path.exists(DIR_LOG):
+        os.makedirs(DIR_LOG)
+    if not os.path.exists(DIR_ABI):
+        os.makedirs(DIR_ABI)
 
 
 def cleanup_nodes_schains(skale):
@@ -38,6 +52,22 @@ def setup_validator(skale):
     delegate_to_validator(skale)
     accept_pending_delegation(skale, delegation_id)
     skip_delegation_delay(skale, delegation_id)
+    accelerate_skale_manager(skale)
+
+
+def accelerate_skale_manager(skale):
+
+    reward_period = skale.constants_holder.get_reward_period()
+    delta_period = skale.constants_holder.get_delta_period()
+    print(f'Existing times for SM: {reward_period}, {delta_period}')
+
+    tx_res = skale.constants_holder.set_periods(TEST_EPOCH, TEST_DELTA, wait_for=True)
+    assert tx_res.receipt['status'] == 1
+    print(tx_res.receipt)
+    print("-------------------------")
+    reward_period = skale.constants_holder.get_reward_period()
+    delta_period = skale.constants_holder.get_delta_period()
+    print(f'New times for SM: {reward_period}, {delta_period}')
 
 
 def link_address_to_validator(skale):
@@ -107,3 +137,42 @@ def create_validator(skale):
         wait_for=True
     )
     check_receipt(tx_res.receipt)
+
+
+def create_node(skale, node_id):
+    res_tx = skale.manager.create_node(IP_BASE + str(node_id), TEST_PORT,
+                                       'node_' + str(node_id), wait_for=True)
+
+    if res_tx.receipt['status'] == 1:
+        print(f'Node with ID = {node_id} was successfully created')
+
+
+def get_active_ids(skale):
+    return skale.nodes_data.get_active_node_ids()
+
+
+def create_set_of_nodes(skale, first_node_id, nodes_number=2):
+
+    active_ids = get_active_ids(skale)
+    print(active_ids)
+
+    if first_node_id not in active_ids:
+
+        print(f'Starting creating {nodes_number} nodes from id = {first_node_id}:')
+        for node_id in range(first_node_id, first_node_id + nodes_number):
+            print(f'--- creating node, id = {node_id}')
+            create_node(skale, node_id)
+    else:
+        print(f'Node with id = {first_node_id} is already exists! Try another start id...')
+
+
+def init_skale():
+    web3 = init_web3(ENDPOINT)
+    wallet = Web3Wallet(ETH_PRIVATE_KEY, web3)
+    return Skale(ENDPOINT, TEST_ABI_FILEPATH, wallet)
+
+
+if __name__ == "__main__":
+    skale = init_skale()
+    setup_validator(skale)
+    # create_set_of_nodes(skale, 0)

@@ -66,47 +66,15 @@ def create_node(skale, node_id):
 
     if res_tx.receipt['status'] == 1:
         print(f'Node with ID = {node_id} was successfully created')
-    # generate_local_wallet(node_id)
-    #
-    # base_skale = init_skale_with_base_wallet()
-    # sender_wallet = base_skale.wallet
-    #
-    # eth_base_bal = base_skale.web3.eth.getBalance(sender_wallet.address)
-    # skl_base_bal = base_skale.token.contract.functions.balanceOf(sender_wallet.address).call()
-    #
-    # print(f'ETH balance of etherbase account : {eth_base_bal}')
-    # print(f'SKL balance of etherbase account: {skl_base_bal}')
-    #
-    # if eth_base_bal > ETH_AMOUNT and skl_base_bal > SKL_DEPOSIT:
-    #     skale = init_skale(node_id)
-    #     wallet = ConfigStorage(LOCAL_WALLET_FILEPATH + str(node_id))
-    #     address = wallet['address']
-    #
-    #     # transfer ETH and SKL
-    #     send_ether(base_skale.web3, sender_wallet, address, ETH_AMOUNT)
-    #     print(f'ETH balance after: {skale.web3.eth.getBalance(address)}')
-    #
-    #     send_tokens(base_skale, sender_wallet, address, SKL_DEPOSIT)
-    #     print(f'SKL balance after: {skale.token.contract.functions.balanceOf(address).call()}')
-    #
-    #     # create node
-    #     res_tx = skale.manager.create_node(IP_BASE + str(node_id), TEST_PORT,
-    #                                        'node_' + str(node_id), wait_for=True)
-    #
-    #     print(f'create_node receipt: {res_tx.receipt}')
-    #
-    # else:
-    #     print('Insufficient funds on sender account!')
 
 
-def get_active_ids():
-    skale = init_skale()
+def get_active_ids(skale):
     return skale.nodes_data.get_active_node_ids()
 
 
-def create_set_of_nodes(first_node_id, nodes_number):
+def create_set_of_nodes(skale, first_node_id, nodes_number=2):
 
-    active_ids = get_active_ids()
+    active_ids = get_active_ids(skale)
     print(active_ids)
 
     if first_node_id not in active_ids:
@@ -114,7 +82,7 @@ def create_set_of_nodes(first_node_id, nodes_number):
         print(f'Starting creating {nodes_number} nodes from id = {first_node_id}:')
         for node_id in range(first_node_id, first_node_id + nodes_number):
             print(f'--- creating node, id = {node_id}')
-            create_node(node_id)
+            create_node(skale, node_id)
     else:
         print(f'Node with id = {first_node_id} is already exists! Try another start id...')
 
@@ -145,12 +113,13 @@ def create_dirs():
 
 if __name__ == '__main__':
 
-    accelerate_skale_manager()
-    global cur_node_id
-    global nodes_count_before, nodes_count_to_add
-    ids = get_active_ids()
-    print(f'ids = {ids}')
-    nodes_count_before = len(ids)
-    cur_node_id = max(ids) + 1 if nodes_count_before else 0
-    nodes_count_to_add = 2
-    create_set_of_nodes(cur_node_id, nodes_count_to_add)
+    # accelerate_skale_manager()
+    # global cur_node_id
+    # global nodes_count_before, nodes_count_to_add
+    # ids = get_active_ids()
+    # print(f'ids = {ids}')
+    # nodes_count_before = len(ids)
+    # cur_node_id = max(ids) + 1 if nodes_count_before else 0
+    # nodes_count_to_add = 2
+    skale = init_skale_with_base_wallet()
+    create_set_of_nodes(0)
