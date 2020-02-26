@@ -25,7 +25,6 @@ from skale import Skale
 from skale.utils.web3_utils import init_web3
 from skale.wallets import RPCWallet, Web3Wallet
 
-from tools.config_storage import ConfigStorage
 from tools.configs import ENV, LOCAL_WALLET_FILEPATH
 from tools.configs.web3 import ABI_FILEPATH, ENDPOINT
 
@@ -36,13 +35,10 @@ def init_skale(node_id=None):
     if node_id is None:
         wallet = RPCWallet(os.environ['TM_URL']) if ENV != 'DEV' else None
     else:
-        local_wallet_filepath = get_local_wallet_filepath(node_id)
-        local_wallet = ConfigStorage(local_wallet_filepath)
-        private_key = local_wallet['private_key']
+        ETH_PRIVATE_KEY = os.environ['ETH_PRIVATE_KEY']
         web3 = init_web3(ENDPOINT)
-        wallet = Web3Wallet(private_key, web3)
-    skale = Skale(ENDPOINT, ABI_FILEPATH, wallet)
-    return skale
+        wallet = Web3Wallet(ETH_PRIVATE_KEY, web3)
+    return Skale(ENDPOINT, ABI_FILEPATH, wallet)
 
 
 def run_agent(args, agent_class):

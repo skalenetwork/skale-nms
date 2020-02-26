@@ -55,7 +55,7 @@ class BountyCollector(base_agent.BaseAgent):
             job_defaults={'coalesce': True, 'misfire_grace_time': MISFIRE_GRACE_TIME})
 
     def get_reward_date(self):
-        reward_period = self.skale.monitors_data.get_reward_period()
+        reward_period = self.skale.constants_holder.get_reward_period()
         reward_date = self.skale.nodes_data.get(
             self.id)['last_reward_date'] + reward_period
         return datetime.utcfromtimestamp(reward_date) + timedelta(seconds=REWARD_DELAY)

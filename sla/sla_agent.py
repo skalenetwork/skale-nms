@@ -22,7 +22,7 @@ SLA agent runs on every node of SKALE network, periodically gets a list of nodes
 from SC, checks its health metrics and sends transactions with average metrics to CS when it's time
 to send it
 """
-
+from skale.utils.web3_utils import TransactionFailedError
 import socket
 import sys
 import threading
@@ -31,7 +31,6 @@ from datetime import datetime
 
 import schedule
 from skale.manager_client import spawn_skale_lib
-# from skale.utils.web3_utils import wait_receipt
 
 from sla.metrics import get_metrics_for_node, get_ping_node_results
 from tools import base_agent, db
@@ -50,7 +49,7 @@ class Monitor(base_agent.BaseAgent):
 
         # get raw binary data list from SKALE Manager SC
         try:
-            nodes_in_bytes_array = skale.monitors_data.get_validated_array(self.id)
+            nodes_in_bytes_array = skale.monitors_data.get_checked_array(self.id)
         except Exception as err:
             self.logger.error(f'Cannot get a list of nodes for validating: {str(err)}',
                               exc_info=True)
@@ -112,7 +111,7 @@ class Monitor(base_agent.BaseAgent):
         downtimes = []
 
         for node in nodes_for_report:
-            reward_period = self.skale.monitors_data.get_reward_period()
+            reward_period = self.skale.constants_holder.get_reward_period()
             start_date = node['rep_date'] - reward_period
 
             try:
@@ -153,6 +152,9 @@ class Monitor(base_agent.BaseAgent):
                     err_status = 1
                 self.logger.debug(f'Receipt: {res_tx.receipt}')
                 self.logger.info(LONG_DOUBLE_LINE)
+            except TransactionFailedError as err:
+                self.logger.info(f'An error occurred while sending report. Error: {err}')
+                raise
             except Exception as err:
                 self.logger.exception(f'An error occurred while sending report. Error: {err}')
 
