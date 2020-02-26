@@ -25,16 +25,15 @@ from skale.utils.web3_utils import TransactionFailedError
 
 from bounty import bounty_agent
 from sla import sla_agent as sla
+from tests.constants import FAKE_IP, FAKE_REPORT_DATE, N_TEST_NODES
 from tests.integration.prepare_validator import (
     TEST_BOUNTY_DELAY, TEST_DELTA, TEST_EPOCH, create_dirs, create_set_of_nodes,
-    get_active_ids, init_skale)
+    get_active_ids, init_skale
+)
 from tools import db
+from tools.config_storage import ConfigStorage
 from tools.configs import LONG_LINE
 from tools.helper import check_node_id
-
-FAKE_IP = '10.1.0.1'
-FAKE_REPORT_DATE = 1567690544
-
 
 skale = init_skale()
 
@@ -47,7 +46,7 @@ def setup_module(module):
     print(f'ids = {ids}')
     nodes_count_before = len(ids)
     cur_node_id = max(ids) + 1 if nodes_count_before else 0
-    nodes_count_to_add = 2
+    nodes_count_to_add = N_TEST_NODES
     create_set_of_nodes(skale, cur_node_id, nodes_count_to_add)
     print(f'Time just after nodes creation: {datetime.utcnow()}')
 
@@ -102,8 +101,8 @@ def test_send_reports_neg(monitor):
     assert len(reported_nodes) == 0
 
     print(LONG_LINE)
-    print(f'report date: {datetime.utcfromtimestamp(nodes[0]["rep_date"])}')
-    print(f'now: {datetime.utcnow()}')
+    print(f'Report date: {datetime.utcfromtimestamp(nodes[0]["rep_date"])}')
+    print(f'Now date: {datetime.utcnow()}')
 
     fake_nodes = [{'id': 1, 'ip': FAKE_IP, 'rep_date': FAKE_REPORT_DATE}]
     with pytest.raises(TransactionFailedError):
@@ -126,7 +125,6 @@ def test_get_bounty_neg(bounty_collector):
     print(f'ETH balance of account : '
           f'{bounty_collector.skale.web3.eth.getBalance(bounty_collector.skale.wallet.address)}')
 
-    # with pytest.raises(GetBountyTxFailedException):
     with pytest.raises(TransactionFailedError):
         bounty_collector.get_bounty()
 
@@ -143,8 +141,6 @@ def test_get_reported_nodes_pos(monitor):
     assert type(reported_nodes) is list
     print(f'rep nodes = {reported_nodes}')
 
-    # assert len(reported_nodes) == 1
-    # assert reported_nodes[0]['id'] == 1
     assert any(node.get('id') == cur_node_id + 1 for node in reported_nodes)
 
 
@@ -213,10 +209,10 @@ def test_get_bounty_second_time(bounty_collector):
     assert db.get_count_of_bounty_receipt_records() == 1
 
 
-# def test_get_id_from_config(monitor):
-#     config_file_name = 'test_node_config'
-#     node_index = 1
-#     config_node = ConfigStorage(config_file_name)
-#     config_node.update({'node_id': node_index})
-#     node_id = monitor.get_id_from_config(config_file_name)
-#     assert node_id == node_index
+def test_get_id_from_config(monitor):
+    config_file_name = 'test_node_config'
+    node_index = 1
+    config_node = ConfigStorage(config_file_name)
+    config_node.update({'node_id': node_index})
+    node_id = monitor.get_id_from_config(config_file_name)
+    assert node_id == node_index

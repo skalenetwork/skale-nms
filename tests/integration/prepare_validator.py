@@ -9,7 +9,8 @@ from skale.wallets import Web3Wallet
 from tests.constants import (
     D_DELEGATION_INFO, D_DELEGATION_PERIOD, D_VALIDATOR_DESC, D_VALIDATOR_FEE, D_VALIDATOR_ID,
     D_VALIDATOR_MIN_DEL, D_VALIDATOR_NAME, ENDPOINT, ETH_PRIVATE_KEY, TEST_ABI_FILEPATH,
-    TEST_DELTA, TEST_EPOCH)
+    TEST_DELTA, TEST_EPOCH
+)
 
 IP_BASE = '10.1.0.'
 TEST_PORT = 123
@@ -19,24 +20,10 @@ TEST_BOUNTY_DELAY = 0  # for using on geth > 0
 
 
 def create_dirs():
-
     if not os.path.exists(DIR_LOG):
         os.makedirs(DIR_LOG)
     if not os.path.exists(DIR_ABI):
         os.makedirs(DIR_ABI)
-
-
-def cleanup_nodes_schains(skale):
-    print('Cleanup nodes and schains')
-    for schain_id in skale.schains_data.get_all_schains_ids():
-        schain_data = skale.schains_data.get(schain_id)
-        schain_name = schain_data.get('name', None)
-        if schain_name is not None:
-            tx_res = skale.manager.delete_schain(schain_name, wait_for=True)
-            check_receipt(tx_res.receipt)
-    for node_id in skale.nodes_data.get_active_node_ids():
-        tx_res = skale.manager.deregister(node_id, wait_for=True)
-        check_receipt(tx_res.receipt)
 
 
 def validator_exist(skale):
@@ -66,7 +53,6 @@ def accelerate_skale_manager(skale):
     tx_res = skale.constants_holder.set_periods(TEST_EPOCH, TEST_DELTA, wait_for=True)
     assert tx_res.receipt['status'] == 1
     print(tx_res.receipt)
-    print("-------------------------")
     reward_period = skale.constants_holder.get_reward_period()
     delta_period = skale.constants_holder.get_delta_period()
     print(f'New times for SM: {reward_period}, {delta_period}')
@@ -162,7 +148,7 @@ def create_set_of_nodes(skale, first_node_id, nodes_number=2):
 
         print(f'Starting creating {nodes_number} nodes from id = {first_node_id}:')
         for node_id in range(first_node_id, first_node_id + nodes_number):
-            print(f'--- creating node, id = {node_id}')
+            print(f'Creating node with id = {node_id}')
             create_node(skale, node_id)
     else:
         print(f'Node with id = {first_node_id} is already exists! Try another start id...')

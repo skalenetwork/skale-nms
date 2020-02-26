@@ -1,7 +1,6 @@
 """ SKALE config test """
 
 import pytest
-from web3.auto import w3
 
 from skale import Skale
 from skale.wallets import Web3Wallet
@@ -16,13 +15,3 @@ def skale():
     web3 = init_web3(ENDPOINT)
     wallet = Web3Wallet(ETH_PRIVATE_KEY, web3)
     return Skale(ENDPOINT, TEST_ABI_FILEPATH, wallet)
-
-
-@pytest.fixture
-def empty_account():
-    return w3.eth.account.create()
-
-
-@pytest.fixture
-def node_id():
-    return 1
