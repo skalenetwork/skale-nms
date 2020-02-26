@@ -1,5 +1,5 @@
 docker==4.2.0
-skale-py==3.0dev4
+skale-py==3.0dev8
 schedule==0.6.0
 tenacity==6.0.0
 mysqlclient==1.4.6
