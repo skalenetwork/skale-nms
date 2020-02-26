@@ -106,14 +106,10 @@ def test_send_reports_neg(monitor):
     print(f'now: {datetime.utcnow()}')
 
     fake_nodes = [{'id': 1, 'ip': FAKE_IP, 'rep_date': FAKE_REPORT_DATE}]
-    # err_status = monitor.send_reports(fake_nodes)
-    # assert err_status == 1
     with pytest.raises(TransactionFailedError):
         monitor.send_reports(fake_nodes)
 
     fake_nodes = [{'id': 2, 'ip': FAKE_IP, 'rep_date': FAKE_REPORT_DATE}]
-    # err_status = monitor.send_reports(fake_nodes)
-    # assert err_status == 1
     with pytest.raises(TransactionFailedError):
         monitor.send_reports(fake_nodes)
 

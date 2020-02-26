@@ -26,7 +26,6 @@ import time
 from datetime import datetime, timedelta
 
 import tenacity
-# from skale.utils.web3_utils import wait_receipt
 from web3.logs import DISCARD
 
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
