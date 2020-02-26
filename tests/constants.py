@@ -32,7 +32,8 @@ MIN_NODES_IN_SCHAIN = 2
 N_TEST_WALLETS = 2
 
 ENDPOINT = os.environ['ENDPOINT']
-TEST_ABI_FILEPATH = os.path.join(DIR_PATH, 'test_abi.json')
+# TEST_ABI_FILEPATH = os.path.join(DIR_PATH, 'test_abi.json')
+TEST_ABI_FILEPATH = '/skale_vol/contracts_info/manager.json'
 ETH_PRIVATE_KEY = os.environ['ETH_PRIVATE_KEY']
 
 # constants contract
