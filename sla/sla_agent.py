@@ -142,7 +142,7 @@ class Monitor(base_agent.BaseAgent):
                     args = h_receipt[0]['args']
                     try:
                         db.save_report_event(datetime.utcfromtimestamp(args['time']),
-                                             str(tx_hash), args['fromValidatorIndex'],
+                                             str(tx_hash), args['fromMonitorIndex'],
                                              args['toNodeIndex'], args['downtime'],
                                              args['latency'], res_tx.receipt["gasUsed"])
                     except Exception as err:
