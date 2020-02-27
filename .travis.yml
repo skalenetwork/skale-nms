@@ -23,7 +23,7 @@ jobs:
         - "flake8 ."
       script:
       - export PYTHONPATH=$PYTHONPATH:.
-      - python tests/integration/prepare_validator.py # patch - remove after fix in SKALE manager
+      - python tests/integration/prepare_validator.py
       - ENV=DEV py.test -v -s --cov=./ tests/ --cov-report term-missing
       after_success:
       - codecov -t $CODECOV_TOKEN

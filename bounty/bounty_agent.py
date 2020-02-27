@@ -33,7 +33,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from tools import base_agent, db
 from tools.configs import (BLOCK_STEP_SIZE, LONG_DOUBLE_LINE, LONG_LINE, REWARD_DELAY,
                            MISFIRE_GRACE_TIME)
-from tools.exceptions import GetBountyTxFailedException, IsNotTimeException
+from tools.exceptions import IsNotTimeException
 from tools.helper import find_block_for_tx_stamp, run_agent
 
 
@@ -109,6 +109,9 @@ class BountyCollector(base_agent.BaseAgent):
         res_tx = self.skale.manager.get_bounty(self.id, wait_for=True)
 
         tx_hash = res_tx.receipt['transactionHash'].hex()
+
+        self.logger.info(LONG_DOUBLE_LINE)
+        self.logger.info('The bounty was successfully received')
         self.logger.info(f'tx hash: {tx_hash}')
         self.logger.debug(f'Receipt: {res_tx.receipt}')
 
@@ -122,26 +125,18 @@ class BountyCollector(base_agent.BaseAgent):
         except Exception as err:
             self.logger.error(f'Cannot save getBounty stats. Error: {err}')
 
-        self.logger.info(LONG_DOUBLE_LINE)
-
-        if res_tx.receipt['status'] == 1:
-            self.logger.info('The bounty was successfully received')
-            h_receipt = self.skale.manager.contract.events.BountyGot().processReceipt(
-                res_tx.receipt, errors=DISCARD)
-            self.logger.info(LONG_LINE)
-            self.logger.info(h_receipt)
-            args = h_receipt[0]['args']
-            try:
-                db.save_bounty_event(datetime.utcfromtimestamp(args['time']), str(tx_hash),
-                                     res_tx.receipt['blockNumber'], args['nodeIndex'],
-                                     args['bounty'], args['averageDowntime'],
-                                     args['averageLatency'], res_tx.receipt['gasUsed'])
-            except Exception as err:
-                self.logger.error(f'Cannot save getBounty event. Error: {err}')
-        else:
-            self.logger.info('The bounty was not received - transaction failed')
-            # TODO: notify Skale Admin
-            raise GetBountyTxFailedException
+        h_receipt = self.skale.manager.contract.events.BountyGot().processReceipt(
+            res_tx.receipt, errors=DISCARD)
+        self.logger.info(LONG_LINE)
+        self.logger.info(h_receipt)
+        args = h_receipt[0]['args']
+        try:
+            db.save_bounty_event(datetime.utcfromtimestamp(args['time']), str(tx_hash),
+                                 res_tx.receipt['blockNumber'], args['nodeIndex'],
+                                 args['bounty'], args['averageDowntime'],
+                                 args['averageLatency'], res_tx.receipt['gasUsed'])
+        except Exception as err:
+            self.logger.error(f'Cannot save getBounty event. Error: {err}')
 
         return res_tx.receipt['status']
 
