@@ -53,7 +53,7 @@ def generate_random_hash():
 
 
 class ValidatorsData:
-    def get_validated_array(self, node_id=None, account=None):
+    def get_checked_array(self, node_id=None, account=None):
         # now = datetime.utcnow().timestamp()
         now = int(datetime.utcnow().replace(tzinfo=timezone.utc).timestamp())
         rep_date0 = now
@@ -137,7 +137,7 @@ class Token:
 class Skale:
     """Mock class for testing SLA and Bounty agents"""
     def __init__(self, skale_env, ip=None, ws_port=None, abi_filepath=None):
-        self.validators_data = ValidatorsData()
+        self.monitors_data = ValidatorsData()
         self.web3 = Web3()
         self.local_wallet = {'address': None}
         self.manager = Manager()
