@@ -174,4 +174,4 @@ def delegation_patch(skale):  # temporary patch for sending SKL for SKALE manage
 if __name__ == "__main__":
     skale = init_skale()
     setup_validator(skale)
-    delegation_patch(skale)
+    # delegation_patch(skale)

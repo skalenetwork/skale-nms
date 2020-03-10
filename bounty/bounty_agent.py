@@ -57,6 +57,16 @@ class BountyCollector(base_agent.BaseAgent):
         reward_period = self.skale.constants_holder.get_reward_period()
         reward_date = self.skale.nodes_data.get(
             self.id)['last_reward_date'] + reward_period
+
+        utc_now = datetime.utcnow()
+        last_block_number = self.skale.web3.eth.blockNumber
+        block_data = self.skale.web3.eth.getBlock(last_block_number)
+        block_timestamp = datetime.utcfromtimestamp(block_data['timestamp'])
+        rew_date = datetime.utcfromtimestamp(reward_date) + timedelta(seconds=REWARD_DELAY)
+        self.logger.info(f'Reward date: {rew_date}')
+        self.logger.info(f'Timestamp: {block_timestamp}')
+        self.logger.info(f'Now: {utc_now}')
+
         return datetime.utcfromtimestamp(reward_date) + timedelta(seconds=REWARD_DELAY)
 
     def collect_last_bounty_logs(self):
@@ -159,8 +169,12 @@ class BountyCollector(base_agent.BaseAgent):
         block_timestamp = datetime.utcfromtimestamp(block_data['timestamp'])
         self.logger.info(f'Reward date: {reward_date}')
         self.logger.info(f'Timestamp: {block_timestamp}')
+        print(f'Reward date: {reward_date}')
+        print(f'Timestamp: {block_timestamp}')
+
         if reward_date > block_timestamp:
             self.logger.info('Current block timestamp is less than reward time. Will try in 1 min')
+            print('Current block timestamp is less than reward time. Will try in 1 min')
             raise IsNotTimeException(Exception)
 
         if utc_now >= reward_date:
