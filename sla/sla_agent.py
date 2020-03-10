@@ -22,7 +22,7 @@ SLA agent runs on every node of SKALE network, periodically gets a list of nodes
 from SC, checks its health metrics and sends transactions with average metrics to CS when it's time
 to send it
 """
-from skale.utils.web3_utils import TransactionFailedError
+# from skale.utils.web3_utils import TransactionFailedError
 import socket
 import sys
 import threading
@@ -152,7 +152,8 @@ class Monitor(base_agent.BaseAgent):
                     err_status = 1
                 self.logger.debug(f'Receipt: {res_tx.receipt}')
                 self.logger.info(LONG_DOUBLE_LINE)
-            except TransactionFailedError as err:
+            # except TransactionFailedError as err:
+            except ValueError as err:
                 self.logger.info(f'An error occurred while sending report. Error: {err}')
                 raise
             except Exception as err:

@@ -21,7 +21,7 @@ import time
 from datetime import datetime
 
 import pytest
-from skale.utils.web3_utils import TransactionFailedError
+# from skale.utils.web3_utils import TransactionFailedError
 
 from bounty import bounty_agent
 from sla import sla_agent as sla
@@ -105,11 +105,13 @@ def test_send_reports_neg(monitor):
     print(f'Now date: {datetime.utcnow()}')
 
     fake_nodes = [{'id': 1, 'ip': FAKE_IP, 'rep_date': FAKE_REPORT_DATE}]
-    with pytest.raises(TransactionFailedError):
+    # with pytest.raises(TransactionFailedError):
+    with pytest.raises(ValueError):
         monitor.send_reports(fake_nodes)
 
     fake_nodes = [{'id': 2, 'ip': FAKE_IP, 'rep_date': FAKE_REPORT_DATE}]
-    with pytest.raises(TransactionFailedError):
+    # with pytest.raises(TransactionFailedError):
+    with pytest.raises(ValueError):
         monitor.send_reports(fake_nodes)
 
 
@@ -125,7 +127,8 @@ def test_get_bounty_neg(bounty_collector):
     print(f'ETH balance of account : '
           f'{bounty_collector.skale.web3.eth.getBalance(bounty_collector.skale.wallet.address)}')
 
-    with pytest.raises(TransactionFailedError):
+    # with pytest.raises(TransactionFailedError):
+    with pytest.raises(ValueError):
         bounty_collector.get_bounty()
 
 
