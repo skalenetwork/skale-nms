@@ -27,9 +27,10 @@ export DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 docker run \
     -v $DIR/contracts_data:/usr/src/manager/data \
     --network host -it \
+    -e ENDPOINT=http://127.0.0.1:8545 \
+    -e PRIVATE_KEY=$ETH_PRIVATE_KEY \
     skalenetwork/skale-manager:1.1.0-develop.0 \
     npx truffle migrate --network unique
-#    skalenetwork/skale-manager:$MANAGER_BRANCH-latest \
 
 # Prepare directories
 sudo mkdir -p /skale_vol/contracts_info
