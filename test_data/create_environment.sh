@@ -16,7 +16,7 @@ docker run -d --restart=always --name skale-mysql -e MYSQL_ROOT_PASSWORD=$DB_ROO
 
 # Run ganache
 docker run -d --network host --name ganache trufflesuite/ganache-cli:v6.8.1-beta.0 \
-    --account="${ETH_PRIVATE_KEY},100000000000000000000000000" -l 80000000 -b 1
+    --account="0x${ETH_PRIVATE_KEY},100000000000000000000000000" -l 80000000 -b 1
 
 
 echo "$PASSWORD" | docker login --username $USERNAME --password-stdin
