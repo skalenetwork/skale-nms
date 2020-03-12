@@ -1,15 +1,12 @@
-import json
 import os
 
 from skale import Skale
-from skale.transactions.tools import post_transaction
 from skale.utils.web3_utils import init_web3
 from skale.wallets import Web3Wallet
 
 from tests.constants import (
-    D_DELEGATION_INFO, D_DELEGATION_PERIOD, D_VALIDATOR_DESC, D_VALIDATOR_FEE, D_VALIDATOR_ID,
-    D_VALIDATOR_MIN_DEL, D_VALIDATOR_NAME, ENDPOINT, ETH_PRIVATE_KEY, TEST_ABI_FILEPATH,
-    TEST_DELTA, TEST_EPOCH
+    D_VALIDATOR_DESC, D_VALIDATOR_FEE, D_VALIDATOR_ID, D_VALIDATOR_MIN_DEL, D_VALIDATOR_NAME,
+    ENDPOINT, ETH_PRIVATE_KEY, TEST_ABI_FILEPATH, TEST_DELTA, TEST_EPOCH
 )
 
 IP_BASE = '10.1.0.'
@@ -43,59 +40,18 @@ def accelerate_skale_manager(skale):
 
     reward_period = skale.constants_holder.get_reward_period()
     delta_period = skale.constants_holder.get_delta_period()
-    print(f'Existing times for SM: {reward_period}, {delta_period}')
+    print(f'Existing times for SKALE Manager: {reward_period}, {delta_period}')
 
     tx_res = skale.constants_holder.set_periods(TEST_EPOCH, TEST_DELTA, wait_for=True)
     assert tx_res.receipt['status'] == 1
-    print(tx_res.receipt)
     reward_period = skale.constants_holder.get_reward_period()
     delta_period = skale.constants_holder.get_delta_period()
-    print(f'New times for SM: {reward_period}, {delta_period}')
-
-
-def link_address_to_validator(skale):
-    print('Linking address to validator')
-    skale.delegation_service.link_node_address(
-        node_address=skale.wallet.address,
-        wait_for=True
-    )
-
-
-def skip_delegation_delay(skale, delegation_id):
-    print(f'Activating delegation with ID {delegation_id}')
-    skale.token_state._skip_transition_delay(
-        delegation_id,
-        wait_for=True
-    )
-
-
-def accept_pending_delegation(skale, delegation_id):
-    print(f'Accepting delegation with ID: {delegation_id}')
-    skale.delegation_controller.accept_pending_delegation(
-        delegation_id=delegation_id,
-        wait_for=True
-    )
-
-
-def get_test_delegation_amount(skale):
-    msr = skale.constants_holder.msr()
-    return msr * 10
+    print(f'New time values for SKALE Manager: {reward_period}, {delta_period}')
 
 
 def set_test_msr(skale, msr=D_VALIDATOR_MIN_DEL):
     skale.constants_holder._set_msr(
         new_msr=msr,
-        wait_for=True
-    )
-
-
-def delegate_to_validator(skale):
-    print(f'Delegating tokens to validator ID: {D_VALIDATOR_ID}')
-    skale.delegation_controller.delegate(
-        validator_id=D_VALIDATOR_ID,
-        amount=get_test_delegation_amount(skale),
-        delegation_period=D_DELEGATION_PERIOD,
-        info=D_DELEGATION_INFO,
         wait_for=True
     )
 
@@ -149,29 +105,6 @@ def init_skale():
     return Skale(ENDPOINT, TEST_ABI_FILEPATH, wallet)
 
 
-def get_abi(abi_filepath=TEST_ABI_FILEPATH):
-    with open(abi_filepath) as data_file:
-        return json.load(data_file)
-
-
-def delegation_patch(skale):  # temporary patch for sending SKL for SKALE manager
-    skl_amount = 5000000000000000000000000
-    gas = 600000
-    data = "0x000000000000000000000000"
-
-    abi = get_abi()
-    skale_balances_address = abi['skale_balances_address']
-    skale_manager_address = abi['skale_manager_address']
-    data += skale_manager_address[2:]
-    print(skale.web3.eth.getBalance(skale_balances_address))
-    print(skale.web3.eth.getBalance(skale_manager_address))
-
-    op = skale.token.contract.functions.send(skale_balances_address, skl_amount, data)
-    res = post_transaction(skale.wallet, op, gas)
-    print(res.receipt)
-
-
 if __name__ == "__main__":
     skale = init_skale()
     setup_validator(skale)
-    # delegation_patch(skale)
