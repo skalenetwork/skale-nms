@@ -63,7 +63,7 @@ def enable_validator(skale):
 
 def create_validator(skale):
     print('Creating default validator')
-    skale.delegation_service.register_validator(
+    skale.validator_service.register_validator(
         name=D_VALIDATOR_NAME,
         description=D_VALIDATOR_DESC,
         fee_rate=D_VALIDATOR_FEE,

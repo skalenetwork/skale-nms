@@ -1,4 +1,4 @@
-skale-py==3.1.dev6
+skale-py==3.2dev1
 docker==4.2.0
 pingparsing==1.0.1
 schedule==0.6.0
