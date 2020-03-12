@@ -24,12 +24,13 @@ echo "$PASSWORD" | docker login --username $USERNAME --password-stdin
 export DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # Deploy SKALE manager
+docker pull skalenetwork/skale-manager:$MANAGER_BRANCH-latest
 docker run \
     -v $DIR/contracts_data:/usr/src/manager/data \
     --network host -it \
     -e ENDPOINT=http://127.0.0.1:8545 \
     -e PRIVATE_KEY=$ETH_PRIVATE_KEY \
-    skalenetwork/skale-manager:1.1.0-develop.0 \
+    skalenetwork/skale-manager:$MANAGER_BRANCH-latest \
     npx truffle migrate --network unique
 
 # Prepare directories
