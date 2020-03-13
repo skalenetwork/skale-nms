@@ -17,4 +17,4 @@ COPY ./tools   ./tools
 RUN pip install --no-cache-dir -r ./sla/requirements.txt
 
 ENV PYTHONPATH="/usr/src/sla"
-CMD [ "python", "./sla/sla_agent.py" ]
+CMD [ "python3", "./sla/sla_agent.py" ]

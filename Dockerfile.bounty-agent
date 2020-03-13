@@ -17,4 +17,4 @@ COPY ./tools   ./tools
 RUN pip install --no-cache-dir -r ./bounty/requirements.txt
 
 ENV PYTHONPATH="/usr/src/bounty"
-CMD [ "python", "./bounty/bounty_agent.py" ]
+CMD [ "python3", "./bounty/bounty_agent.py" ]
