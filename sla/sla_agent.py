@@ -43,6 +43,7 @@ class Monitor(base_agent.BaseAgent):
     def __init__(self, skale, node_id=None):
         super().__init__(skale, node_id)
         self.nodes = self.get_validated_nodes(skale)
+        self.reward_period = self.skale.constants_holder.get_reward_period()
 
     def get_validated_nodes(self, skale) -> list:
         """Returns a list of nodes to validate - node node_id, report date, ip address"""
@@ -113,11 +114,8 @@ class Monitor(base_agent.BaseAgent):
         ids = []
         latencies = []
         downtimes = []
-
         for node in nodes_for_report:
-            reward_period = self.skale.constants_holder.get_reward_period()
-            start_date = node['rep_date'] - reward_period
-
+            start_date = node['rep_date'] - self.reward_period
             try:
                 self.logger.info(f'Getting month metrics for node id = {node["id"]}:')
                 self.logger.info(f'Start date: {datetime.utcfromtimestamp(start_date)}')
