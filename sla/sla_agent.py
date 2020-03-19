@@ -88,14 +88,18 @@ class Monitor(base_agent.BaseAgent):
 
     def get_reported_nodes(self, nodes) -> list:
         """Returns a list of nodes to be reported"""
+
+        last_block_number = self.skale.web3.eth.blockNumber
+        block_data = self.skale.web3.eth.getBlock(last_block_number)
+        block_timestamp = datetime.utcfromtimestamp(block_data['timestamp'])
+        self.logger.info(f'Timestamp of current block: {block_timestamp}')
+
         nodes_for_report = []
         for node in nodes:
             # Check report date of current validated node
             rep_date = datetime.utcfromtimestamp(node['rep_date'])
-            now = datetime.utcnow()
-            self.logger.debug(f'now date: {now}')
-            self.logger.debug(f'report date: {rep_date}')
-            if rep_date < now:
+            self.logger.info(f'Report date for node id={node["id"]}: {rep_date}')
+            if rep_date < block_timestamp:
                 # Forming a list of nodes that already need to be reported
                 nodes_for_report.append({'id': node['id'], 'rep_date': node['rep_date']})
         return nodes_for_report
