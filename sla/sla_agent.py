@@ -43,6 +43,7 @@ class Monitor(base_agent.BaseAgent):
     def __init__(self, skale, node_id=None):
         super().__init__(skale, node_id)
         self.nodes = self.get_validated_nodes(skale)
+        self.reward_period = self.skale.constants_holder.get_reward_period()
 
     def get_validated_nodes(self, skale) -> list:
         """Returns a list of nodes to validate - node node_id, report date, ip address"""
@@ -88,14 +89,18 @@ class Monitor(base_agent.BaseAgent):
 
     def get_reported_nodes(self, nodes) -> list:
         """Returns a list of nodes to be reported"""
+
+        last_block_number = self.skale.web3.eth.blockNumber
+        block_data = self.skale.web3.eth.getBlock(last_block_number)
+        block_timestamp = datetime.utcfromtimestamp(block_data['timestamp'])
+        self.logger.info(f'Timestamp of current block: {block_timestamp}')
+
         nodes_for_report = []
         for node in nodes:
             # Check report date of current validated node
             rep_date = datetime.utcfromtimestamp(node['rep_date'])
-            now = datetime.utcnow()
-            self.logger.debug(f'now date: {now}')
-            self.logger.debug(f'report date: {rep_date}')
-            if rep_date < now:
+            self.logger.info(f'Report date for node id={node["id"]}: {rep_date}')
+            if rep_date < block_timestamp:
                 # Forming a list of nodes that already need to be reported
                 nodes_for_report.append({'id': node['id'], 'rep_date': node['rep_date']})
         return nodes_for_report
@@ -109,11 +114,8 @@ class Monitor(base_agent.BaseAgent):
         ids = []
         latencies = []
         downtimes = []
-
         for node in nodes_for_report:
-            reward_period = self.skale.constants_holder.get_reward_period()
-            start_date = node['rep_date'] - reward_period
-
+            start_date = node['rep_date'] - self.reward_period
             try:
                 self.logger.info(f'Getting month metrics for node id = {node["id"]}:')
                 self.logger.info(f'Start date: {datetime.utcfromtimestamp(start_date)}')
