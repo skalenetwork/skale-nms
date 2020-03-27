@@ -13,7 +13,6 @@ jobs:
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_USER: ${{ secrets.DB_USER }}
       DB_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PASSWORD }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
       MANAGER_BRANCH: "develop"
     steps:
