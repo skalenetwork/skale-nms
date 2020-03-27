@@ -9,12 +9,13 @@ set -e
 : "${DB_ROOT_PASSWORD?Need to set DB_ROOT_PASSWORD}"
 : "${DB_USER?Need to set DB_USER}"
 : "${DB_PASSWORD?Need to set DB_PASSWORD}"
+: "${DB_PORT?Need to set DB_PORT}"
 
 
 # Run mysql docker container
 echo "pwd:"
 echo ${PWD}
-docker run -d --restart=always --name skale-mysql -e MYSQL_ROOT_PASSWORD=$DB_ROOT_PASSWORD -e MYSQL_DATABASE=db_skale -e MYSQL_USER=$DB_USER -e MYSQL_PASSWORD=$DB_PASSWORD -v ${PWD}/test_data/init.sql:/docker-entrypoint-initdb.d/init.sql -p 3307:3306  mysql/mysql-server:5.7
+docker run -d --restart=always --name skale-mysql -e MYSQL_ROOT_PASSWORD=$DB_ROOT_PASSWORD -e MYSQL_DATABASE=db_skale -e MYSQL_USER=$DB_USER -e MYSQL_PASSWORD=$DB_PASSWORD -v ${PWD}/test_data/init.sql:/docker-entrypoint-initdb.d/init.sql -p ${DB_PORT}:3306  mysql/mysql-server:5.7
 
 # Run ganache
 docker run -d --network host --name ganache trufflesuite/ganache-cli:v6.8.1-beta.0 \
