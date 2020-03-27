@@ -39,5 +39,4 @@ docker run \
 sudo mkdir -p /skale_vol/contracts_info
 sudo chown -R travis:travis /skale_vol
 sudo mkdir -p /skale_node_data
-sudo chown -R travis:travis /skale_node_data
 yes |sudo cp $DIR/contracts_data/unique.json /skale_vol/contracts_info/manager.json
