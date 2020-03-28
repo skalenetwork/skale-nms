@@ -37,6 +37,11 @@ docker run \
     npx truffle migrate --network unique
 
 # Prepare directories
+whoami
+echo $USER
+echo $GITHUB_ACTOR
 sudo mkdir -p /skale_vol/contracts_info
-sudo mkdir -p /skale_node_data/log
+sudo chown -R $USER:$USER /skale_vol
+sudo mkdir -p /skale_node_data
+sudo chown -R $USER:$USER /skale_node_data
 yes |sudo cp $DIR/contracts_data/unique.json /skale_vol/contracts_info/manager.json
