@@ -27,7 +27,7 @@ from bounty import bounty_agent
 from sla import sla_agent as sla
 from tests.constants import FAKE_IP, FAKE_REPORT_DATE, N_TEST_NODES
 from tests.integration.prepare_validator import (
-    TEST_BOUNTY_DELAY, TEST_DELTA, TEST_EPOCH, create_dirs, create_set_of_nodes,
+    TEST_BOUNTY_DELAY, TEST_DELTA, TEST_EPOCH, create_set_of_nodes,
     get_active_ids, init_skale
 )
 from tools import db
@@ -39,7 +39,7 @@ skale = init_skale()
 
 
 def setup_module(module):
-    create_dirs()
+    # create_dirs()
     global cur_node_id
     global nodes_count_before, nodes_count_to_add
     ids = get_active_ids(skale)

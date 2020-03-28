@@ -38,5 +38,5 @@ docker run \
 
 # Prepare directories
 sudo mkdir -p /skale_vol/contracts_info
-sudo mkdir -p /skale_node_data
+sudo mkdir -p /skale_node_data/log
 yes |sudo cp $DIR/contracts_data/unique.json /skale_vol/contracts_info/manager.json
