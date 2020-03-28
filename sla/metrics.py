@@ -125,7 +125,7 @@ def get_ping_node_results(host) -> dict:
     transmitter.ping_option = '-w1'
     transmitter.count = 3
     result = transmitter.ping()
-
+    print(result)
     if ping_parser.parse(
             result).as_dict()['rtt_avg'] is None or ping_parser.parse(
                 result).as_dict()['packet_loss_count'] > 0:
