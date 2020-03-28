@@ -13,8 +13,6 @@ set -e
 
 
 # Run mysql docker container
-echo "pwd:"
-echo ${PWD}
 docker run -d --restart=always --name skale-mysql -e MYSQL_ROOT_PASSWORD=$DB_ROOT_PASSWORD -e MYSQL_DATABASE=db_skale -e MYSQL_USER=$DB_USER -e MYSQL_PASSWORD=$DB_PASSWORD -v ${PWD}/test_data/init.sql:/docker-entrypoint-initdb.d/init.sql -p ${DB_PORT}:3306  mysql/mysql-server:5.7
 
 # Run ganache
