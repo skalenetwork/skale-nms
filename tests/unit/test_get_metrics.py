@@ -21,7 +21,7 @@
 from sla.metrics import get_ping_node_results
 
 ID = 0
-IP_GOOD = '8.8.8.8'
+IP_GOOD = '127.0.0.1'
 IP_BAD = '192.0.2.0'
 
 

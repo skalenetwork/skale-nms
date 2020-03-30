@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.com/skalenetwork/skale-nms.svg?token=5WWNQpSwuzBij2zT49wg&branch=develop)](https://travis-ci.com/skalenetwork/skale-nms)
+![Test](https://github.com/skalenetwork/skale-nms/workflows/Test/badge.svg)
+![Build and publish](https://github.com/skalenetwork/skale-nms/workflows/Build%20and%20publish/badge.svg)
 [![codecov](https://codecov.io/gh/skalenetwork/skale-nms/branch/develop/graph/badge.svg?token=aPCwLvSCAi)](https://codecov.io/gh/skalenetwork/skale-nms)
 [![Discord](https://img.shields.io/discord/534485763354787851.svg)](https://discord.gg/vvUtWJB)
 
