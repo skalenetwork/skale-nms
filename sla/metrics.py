@@ -20,7 +20,7 @@
 import pingparsing
 import requests
 from skale.dataclasses.skaled_ports import SkaledPorts
-from skale.schain_config.ports_allocation import calc_schain_base_port
+from skale.schain_config.ports_allocation import get_schain_base_port_on_node
 from web3 import HTTPProvider, Web3
 
 from tools.configs import GOOD_IP, WATCHDOG_PORT, WATCHDOG_URL
@@ -66,8 +66,9 @@ def check_schains_for_node(skale, node_id, node_ip):
 
     schains = [{'name': schain['name'],
                 'index': schain['index'],
-                'http_rpc_port': calc_schain_base_port(
-                    node_base_port, schain['index']) + SkaledPorts.HTTP_JSON.value}
+                'http_rpc_port':
+                    get_schain_base_port_on_node(raw_schains, schain['name'],
+                                                 node_base_port) + SkaledPorts.HTTP_JSON.value}
                for schain in raw_schains]
     logger.debug(f'schains = {schains}')
     for schain in schains:

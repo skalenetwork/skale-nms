@@ -82,19 +82,12 @@ def test_check_node_id():
     assert not check_node_id(skale, 100)
 
 
-def test_get_validated_nodes(monitor):
-    nodes = monitor.get_validated_nodes(skale)
-    print(f'\n Validated nodes = {nodes}')
-    assert type(nodes) is list
-    assert any(node.get('id') == cur_node_id + 1 for node in nodes)
-
-
 def test_send_reports_neg(monitor):
     print(f'--- Gas Price = {monitor.skale.web3.eth.gasPrice}')
     print(f'ETH balance of account : '
           f'{monitor.skale.web3.eth.getBalance(monitor.skale.wallet.address)}')
 
-    nodes = monitor.get_validated_nodes(skale)
+    nodes = monitor.skale.monitors_data.get_checked_array(monitor.id)
     reported_nodes = monitor.get_reported_nodes(nodes)
     assert type(reported_nodes) is list
     print(f'\nrep nodes = {reported_nodes}')
@@ -133,7 +126,7 @@ def test_get_reported_nodes_pos(monitor):
 
     print(f'Sleep for {TEST_EPOCH - TEST_DELTA} sec')
     time.sleep(TEST_EPOCH - TEST_DELTA)
-    nodes = monitor.get_validated_nodes(skale)
+    nodes = monitor.skale.monitors_data.get_checked_array(monitor.id)
     print(LONG_LINE)
     print(f'report date: {datetime.utcfromtimestamp(nodes[0]["rep_date"])}')
     print(f'now: {datetime.utcnow()}')

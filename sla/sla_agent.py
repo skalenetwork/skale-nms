@@ -23,7 +23,6 @@ from SC, checks its health metrics and sends transactions with average metrics t
 to send it
 """
 from skale.utils.web3_utils import TransactionFailedError
-import socket
 import sys
 import threading
 import time
@@ -42,28 +41,8 @@ class Monitor(base_agent.BaseAgent):
 
     def __init__(self, skale, node_id=None):
         super().__init__(skale, node_id)
-        self.nodes = self.get_validated_nodes(skale)
+        self.nodes = skale.monitors_data.get_checked_array(node_id)
         self.reward_period = self.skale.constants_holder.get_reward_period()
-
-    def get_validated_nodes(self, skale) -> list:
-        """Returns a list of nodes to validate - node node_id, report date, ip address"""
-
-        # get raw binary data list from SKALE Manager SC
-        try:
-            nodes_in_bytes_array = skale.monitors_data.get_checked_array(self.id)
-        except Exception as err:
-            self.logger.error(f'Cannot get a list of nodes for validating: {str(err)}',
-                              exc_info=True)
-            raise
-        # extract  node id, report date and ip from binary
-        nodes = []
-        for node_in_bytes in nodes_in_bytes_array:
-            node_id = int.from_bytes(node_in_bytes[:14], byteorder='big')
-            report_date = int.from_bytes(node_in_bytes[14:28], byteorder='big')
-            node_ip = socket.inet_ntoa(node_in_bytes[28:])
-
-            nodes.append({'id': node_id, 'ip': node_ip, 'rep_date': report_date})
-        return nodes
 
     def validate_nodes(self, skale, nodes):
         """Validate nodes and returns a list of nodes to be reported"""
@@ -169,7 +148,7 @@ class Monitor(base_agent.BaseAgent):
         self.logger.info('New monitor job started...')
         skale = spawn_skale_lib(self.skale)
         try:
-            self.nodes = self.get_validated_nodes(skale)
+            self.nodes = self.skale.monitors_data.get_checked_array(self.id)
         except Exception as err:
             self.logger.exception(f'Failed to get list of monitored nodes. Error: {err}')
             self.logger.info('Monitoring nodes from previous job list')
