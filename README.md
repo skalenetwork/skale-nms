@@ -1,9 +1,7 @@
-![Test](https://github.com/skalenetwork/skale-nms/workflows/Test/badge.svg)
-![Build and publish](https://github.com/skalenetwork/skale-nms/workflows/Build%20and%20publish/badge.svg)
-[![codecov](https://codecov.io/gh/skalenetwork/skale-nms/branch/develop/graph/badge.svg?token=aPCwLvSCAi)](https://codecov.io/gh/skalenetwork/skale-nms)
-[![Discord](https://img.shields.io/discord/534485763354787851.svg)](https://discord.gg/vvUtWJB)
 
-# SKALE Node Monitoring Service (NMS)
+# NOTE: `SKALE-NMS` is deprecated and no longer in active maintenance. Please see [sla-agent](https://github.com/skalenetwork/sla-agent) and [bounty-agent](https://github.com/skalenetwork/bounty-agent) repos.</p>
+
+## SKALE Node Monitoring Service (NMS)
 
 SKALE NMS is comprised of the SLA agent and Bounty collector, which are parts of the [SKALE node](https://github.com/skalenetwork/skale-node).
 
